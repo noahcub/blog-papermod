@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Reinstalar Debian con LVM | Las notas de Noah</title>
+<meta name="keywords" content="Admin">
+<meta name="description" content="Reinstalar Debian en particiones LVM ya existentes sin perder datos">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/debian-luks-recovery/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/debian-luks-recovery/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Reinstalar Debian con LVM
+    </h1>
+    <div class="post-description">
+      Reinstalar Debian en particiones LVM ya existentes sin perder datos
+    </div>
+    <div class="post-meta"><span title='2024-02-08 08:00:00 +0100 CET'>February 8, 2024</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#instalar-debian-en-particiones-lvm-encriptadas-ya-existentes-conservando-datos" aria-label="Instalar Debian en particiones LVM encriptadas ya existentes conservando datos">Instalar Debian en particiones LVM encriptadas ya existentes conservando datos</a></li>
+                <li>
+                    <a href="#instalar-debian-en-particiones-lvm-no-encriptadas-ya-existentes-conservando-datos" aria-label="Instalar Debian en particiones LVM NO encriptadas ya existentes conservando datos">Instalar Debian en particiones LVM NO encriptadas ya existentes conservando datos</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="instalar-debian-en-particiones-lvm-encriptadas-ya-existentes-conservando-datos">Instalar Debian en particiones LVM encriptadas ya existentes conservando datos<a hidden class="anchor" aria-hidden="true" href="#instalar-debian-en-particiones-lvm-encriptadas-ya-existentes-conservando-datos">#</a></h2>
+<p>Arrancamos con el médio de instalación de Debian y seleccionamos Opciones avanzadas - Instalación experta</p>
+<p><img alt="debian.png" loading="lazy" src="/posts/debian-luks-recovery/debian.png"><br>
+<img alt="debian2.png" loading="lazy" src="/posts/debian-luks-recovery/debian2.png"></p>
+<p>Avanzamos en el proceso de instalación normalmente y en Load Installer components from CD cargamos los siguientes:<br>
+<strong>crypto-dm-modules and rescue-mode</strong></p>
+<p><img alt="debian3.png" loading="lazy" src="/posts/debian-luks-recovery/debian3.png"></p>
+<p>Continuamos con la instalación y nos detenemos antes de Detect disks:</p>
+<p><img alt="debian4.png" loading="lazy" src="/posts/debian-luks-recovery/debian4.png"></p>
+<p>Accedemos a una consola con <strong>ctrl+alt+f2</strong> y realizamos la carga de nuestro LVM:</p>
+<p>Cargamos los módulos necesarios (<strong>por motivo que desconozco este comando no funciona pero no es relevante para la instalación</strong>)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>depmod -a
+</span></span></code></pre></div><p>Listamos las particiones del sistema:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>blkid
+</span></span></code></pre></div><p>Desbloqueamos nuestro volumen LVM con <strong>cryptsetup</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cryptsetup luksOpen /dev/vda3 debian-encriptado
+</span></span><span style="display:flex;"><span>Enter passphrase <span style="color:#66d9ef">for</span> /dev/vda3:
+</span></span></code></pre></div><p><img alt="debian5.png" loading="lazy" src="/posts/debian-luks-recovery/debian5.png"></p>
+<p>Abrimos nuestro VG volume group y verificamos que esté disponible en dev/mapper/debian-encriptado:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vgchange -ay
+</span></span><span style="display:flex;"><span>ls /dev/mapper
+</span></span></code></pre></div><p><img alt="debian6.png" loading="lazy" src="/posts/debian-luks-recovery/debian6.png"></p>
+<p>Presionamos <strong>ctrl+alt+f1</strong> y continuamos con la instalación normalmente:</p>
+<p>Ahora ya tenemos disponibles nuestros volúmenes para instalar nuevamente el sistema:<br>
+<img alt="debian7.png" loading="lazy" src="/posts/debian-luks-recovery/debian7.png"></p>
+<p>En mi caso, formateo todas las particiones excepto el volumen /home que es donde estan mis datos de usuario y efi que está compartido con Windows:<br>
+Como se ve tengo el siguiente particionado:<br>
+vda1 - uefi - 100MB   				/boot/efi<br>
+vda2 - boot - 1GB  					/boot<br>
+vda3 - luks - 20GB<br>
+VG debian - LV home - 5GB 		/home<br>
+VG debian - LV root - 15GB		/root</p>
+<p><img alt="debian8.png" loading="lazy" src="/posts/debian-luks-recovery/debian8.png"></p>
+<p>Continuamos con la instalación del sistema normal y nos detenemos antes de <strong>Install the GRUB bootloader to a hard disk.</strong><br>
+Accedemos nuevamente a la consola con <strong>ctrl+alt+f2</strong> para configurar <strong>initramfs</strong>:</p>
+<p>Nos interesa la partición <strong>TYPE=&ldquo;crypto_LUKS&rdquo;</strong>, que en mi caso es /dev/vda3:<br>
+Listamos las particiones del sistema:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>blkid
+</span></span><span style="display:flex;"><span>cryptsetup luksDump /dev/vda3 |grep -F UUID
+</span></span></code></pre></div><p>Tenemos que modificar el fichero /target/etc/crypttab.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cryptsetup luksDump /dev/vda3 |grep -F UUID &gt;&gt; /target/etc/crypttab
+</span></span></code></pre></div><p><img alt="debian9.png" loading="lazy" src="/posts/debian-luks-recovery/debian9.png"></p>
+<p>Modificamos <strong>crypttab</strong> dejandolo así:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># &lt;target name&gt; &lt;source device&gt;		&lt;key file&gt;	&lt;options&gt;</span>
+</span></span><span style="display:flex;"><span>debian-encriptado UUID<span style="color:#f92672">=</span>3dfb977c-8368-4146-b7b9-5a2426aa4347 none luks,discard
+</span></span></code></pre></div><p>Volvemos a la instalación con <strong>ctrl+alt+f1</strong> y procedemos a instalar Grub bootloader.</p>
+<p>Si algo ha ido mal en la generación de initramfs podemos iniciar nuevamente desde nuestro usb de debian y ejecutar un Rescue mode, seguimos los pasos de carga de nuestros volúmnes LUKS, etc y a la hora de generamos initramfs manualmente con el siguiente comando:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> update-initramfs -u -k all
+</span></span></code></pre></div><p>Si hay algún error nos lo dirá el comando y podemos corregir lo que sea neceario.</p>
+<h2 id="instalar-debian-en-particiones-lvm-no-encriptadas-ya-existentes-conservando-datos">Instalar Debian en particiones LVM NO encriptadas ya existentes conservando datos<a hidden class="anchor" aria-hidden="true" href="#instalar-debian-en-particiones-lvm-no-encriptadas-ya-existentes-conservando-datos">#</a></h2>
+<p>En este caso es todo muy sencillo. Seleccionamos particionado manual y el instalador de Debian nos detectará la estructura de particiones que tiene el disco y simplemente tenemos que indicar que volumenes queremos que se formateen y cuales no.<br>
+Debemos dejar el sistema configurado como se muestra en la imangen y en ningún momento es preciso salir del instalador a una consola. (NOTA: esta imagen está aprovechada del apartado donde se hacía con encriptado, pero es exactamente lo mismo).</p>
+<p><img alt="debian8.png" loading="lazy" src="/posts/debian-luks-recovery/debian8.png"></p>
+<hr>
+<p>Fuentes:<br>
+<a href="https://www.blakecarpenter.dev/installing-debian-on-existing-encrypted-lvm/">https://www.blakecarpenter.dev/installing-debian-on-existing-encrypted-lvm/</a><br>
+<a href="https://consolematt.wordpress.com/2013/06/19/reinstalling-debian-on-existing-lukslvm-partition/">https://consolematt.wordpress.com/2013/06/19/reinstalling-debian-on-existing-lukslvm-partition/</a><br>
+<a href="https://www.reddit.com/r/debian/comments/1599rkt/how_to_reinstall_debian_12_with_existing/">https://www.reddit.com/r/debian/comments/1599rkt/how_to_reinstall_debian_12_with_existing/</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

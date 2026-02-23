@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Debian | Las notas de Noah</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/categories/debian/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/categories/debian/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/categories/debian/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body class="list" id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Debian
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Microsoft Office Online
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Añadir accesos directos de Office Online a Gnome Hay que reconocer que Microsoft Office es muy superior a alternativas libres. En alguna ocasión podemos necesitar su uso. Para que resulte más cómodo creamos estos accesos en el escritorio de Gnome:
+Copiar los ficheros de acceso en:
+~/.local/share/applications Copiar los iconos en:
+~/.local/share/icons Ficheros:
+Iconos de Office
+Ficheros .desktop
+</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-19 18:00:00 +0100 CET'>February 19, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Microsoft Office Online" href="http://localhost:1313/posts/office/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Problemas con Nvidia
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Problemas al ejecutar algunos programas con renderizado gpu Algunos programas generan errores de visualización debido al renderizado de GPU con drivers Nvidia. En la mayoría lo podemos deshabilitar:
+VISUAL STUDIO CODE
+Primera opción
+Dentro de Visual Studio abrimos la paleta (Ctrl&#43;Shift&#43;P). Ejecutamos: Preferences: Configure Runtime Arguments Este comando abre el fichero de configuración “argv.json” y añadimos el siguiente texto &#34;disable-hardware-acceleration&#34;: true y reiniciamos Visual Studio Code
+Segunda Opción
+Modificar el fichero “argv.json” de Visual Studio desde la terminal: nano ~/.vscode/argv.json Añadimos el mismo texto que decíamos antes
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-19 08:00:00 +0100 CET'>February 19, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Problemas con Nvidia" href="http://localhost:1313/posts/gpu-render/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Comando &#34;screen&#34;
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Qué es y cómo funciona el comando Screen en Linux Hablamos del programa Screen, que permite en los sistemas GNU/Linux, abrir múltiples instancias de terminal dentro de una sola sesión. De esta manera, si salimos de una de las instancias de terminal, el proceso que se ejecute en dicha terminal no se interrumpirá y continuará en segundo plano.
+¿En qué consiste el comando Screen? Screen, según indica su página de man, es un administrador de ventanas en pantalla completa, que multiplexa un terminal en varios procesos, cada proceso asociado a una nueva terminal.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-06 08:00:00 +0100 CET'>February 6, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Comando &#34;screen&#34;" href="http://localhost:1313/posts/screen-command/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Comando &#34;find&#34;
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Qué es y cómo funciona el comando find en Linux La sintáxis básica del comando “find” es:
+find directorio criterio acción
+Directorio.- define la ubicación desde la que se quiere empezar la búsqueda. Por ejemplo: /home/ Criterio.- se usa para seleccionar los archivos. Se pueden usar comodines. Por ejemplo: *.tmp Acción.- se especifica aquí qué debe hacer el comando con los archivos que cumplan con el criterio indicado. Para eliminar múltiples archivos del tipo que queramos:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-06 08:00:00 +0200 +0200'>February 6, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Comando &#34;find&#34;" href="http://localhost:1313/posts/find-command/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Entware
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Instalación de Entware en firmware Merlin Entware es un repositorio de software que nos va a permitir la instalación de diferentes programas en nuestro router. Software disponible en Entware
+Requisitos
+Es necesario tener conectado un disco USB en el router formateado con ext2 o ext3 Si está instalado Download Manager, se debe desinstalar y reiniciar el router Instalación
+Descargar el script y añadirlo al usb. Nos conectamos por ssh al router. Ejecutar el script:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-02 19:00:00 +0100 CET'>February 2, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Entware" href="http://localhost:1313/posts/asus-merlin/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Firewalld Instalación
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>FirewallD Instalación y configuración del firewallD
+Si queremos tener el applet en la barra de tareas de gnome añadimos lo siguiente:
+sudo dnf install firewall-config firewall-applet -y FirewalID debería estar ya habilitado por defecto, lo comprobamos: La mejor práctica es habilitar automáticamente el software de firewall al iniciar el sistema e iniciarlo de inmediato. Esto se puede lograr con un comando todo en uno de la siguiente manera.
+sudo systemctl enable firewalld --now A continuación, verificamos el estado de FirewallD para asegurarse de que todo funcione y no haya errores.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-02 17:00:00 +0100 CET'>February 2, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Firewalld Instalación" href="http://localhost:1313/posts/firewalld/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Software imprescindible
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>System quitar entradas antiguas de UEFI Instalarción Zsh Alias .zshrc (fichero .zshrc) firewall-config y firewall-applet (ojo añadir firewall-applet al arranque del sistema) Instalación conky (fichero .conkyrc) Traductor de consola (sudo apt install translate-shell) Apps Configuración Flatpak Timeshift Deja-dup Insync Nextcloud Joplin (Flatpak) Thunderbird o Geary (Actualmente estoy con Geary) Idioma thunderbird Libreoffice Idioma en Libreoffice - OK Kooha (Flatpak) Teams Telegram Boxes de Gnome Virtual box Network Configurar claves ssh con NAS principal Configurar claves ssh con NAS secundario Configurar accesos smb al NAS principal Configurar accesos smb al NAS secundario a través de Zerotier o Tailscale Con tailscale el recurso compartido en smb es: smb://xxx.xxx.xxx.xxx/Recurso_compartido Configurar claves ssh con ROUTERS Configurar el cliente Wireguard de nuestra VPN al NAS (para debian): sudo apt install wireguard Copiamos el fichero wg0.conf generado por el servidor a la carpeta /etc/wireguard sudo wg-quick up wg0 - Conexión a la VPN sudo wg-quick down wg0 - Desconexión a la VPN Configurar VPN de pago en Gnome Instalar antes el paquete network-manager-openvpn-gnome Configuración ZeroTier (ultima versión da fallo en Debian testing) Configuración Tailscale Configuración NextDNS curl -fsSL https://tailscale.com/install.sh | sh (en la web de Tailscale se detalla) Instalar extensión Gnome: Tailscale Status Desktop Primeros pasos con Gnome (https://itsfoss.com/things-to-do-after-installing-fedora/) Tweeks Gnome extensions Extension manager (está como paquete en Flathub) Minimizar y Maximizar Night-light settings Cambiar primer dia calendario (Generar locales Debian) Añadir accesos directos Office Online Nuevo documento en plantillas de nautilus SaveDesktop - Backup de la configuración de escritorio Programming visual studio code Python entornos virtuales </p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-02 14:00:00 +0100 CET'>February 2, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Software imprescindible" href="http://localhost:1313/posts/mis-imprescindibles/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Locales Debian
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Instalación nuevos locales en Debian Revisamos los locales que tenemos generados en el sistema:
+locale -a Podemos generar más editando /etc/locale.gen y descomentando la línea que nos interesa:
+es_ES.UTF-8 UTF-8 Generamos nuevamente los locales con:
+locale-gen Hacemos el cambio en “Region &amp; Language”
+</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-02 14:00:00 +0200 +0200'>February 2, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Locales Debian" href="http://localhost:1313/posts/locales-debian/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Flatpak
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Soporte Flatpak en Debian 11 Bullseye Información en la web oficial de Flatpak.
+Aunque, a mi modo de ver, es importante instalar el software con la paquetería .deb, en ocasiones es necesario usar flatpak porque el software no está disponible en otro formato.
+Instalamos el paquete flatpak
+Dependiendo nuestro sistema operativo, el comando será el siguiente:
+# Debian apt install flatpak # Fedora dnf install flatpak Instalamos el plugin para la tienda de software. En este caso la tienda de Gnome.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-01 14:00:00 +0200 +0200'>February 1, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Flatpak" href="http://localhost:1313/posts/flatpak/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">DNS Over TLS
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Según su web, NextDNS ofrece un firewall para la Internet moderna. NextDNS protege de todo tipo de amenazas a la seguridad, bloquea anuncios y rastreadores en sitios web y aplicaciones, y brinda una Internet segura y supervisada para niños, en todos los dispositivos y en todas las redes.
+Me parece un servicio genial por 20€ al año que ofrece mucha seguridad a la hora de navegar por internet.
+Configuración de DNS privado en Fedora En nuestro sistema Fedora, estarán conviviendo NetworkMananger con systemd-resolved, por tanto, el primer paso que debemos hacer es indicarle a NetworkManager que la resolución de DNS se va a realizar con systemd-resolved.
+Editamos el fichero /etc/NetworkManager/conf.d/dns.conf y añadimos el siguiente contenido:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-10-18 16:00:00 +0100 +0100'>October 18, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to DNS Over TLS" href="http://localhost:1313/posts/dns-over-tls/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="http://localhost:1313/categories/debian/">
+      «&nbsp;Prev&nbsp;
+    </a>
+    <a class="next" href="http://localhost:1313/categories/debian/page/3/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

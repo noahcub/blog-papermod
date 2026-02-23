@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.155.3"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Las notas de Noah</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="rss">
+<link rel="alternate" type="application/json" href="http://localhost:1313/index.json" title="json">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body class="list" id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <h1>Apuntes de linux y tecnología 💾</h1>
+    </header>
+    <div class="entry-content">
+        Producido por un humano imperfecto. Errores incluidos sin coste adicional.
+    </div>
+    <footer class="entry-footer">
+        <div class="social-icons" >
+    <a href="https://mastodon.social/@noahcub" target="_blank" rel="noopener noreferrer me"
+        title="Mastodon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M21.58 13.913c-.29 1.469-2.592 3.121-5.238 3.396-1.379.184-2.737.368-4.185.276-2.368-.092-4.237-.551-4.237-.551 0 .184.014.459.043.643.308 2.294 2.317 2.478 4.22 2.57 1.922 0 3.633-.46 3.633-.46l.079 1.653s-1.344.734-3.738.918c-1.32.091-2.96-.092-4.869-.551-4.14-1.102-4.853-5.507-4.961-10.005-.034-1.285-.013-2.57-.013-3.58 0-4.589 3-5.966 3-5.966 1.513-.734 4.11-1.01 6.808-1.01h.067c2.699 0 5.296.276 6.81 1.01 0 0 3 1.377 3 5.967 0 0 .037 3.304-.419 5.69"
+        stroke="currentColor" />
+    <path
+        d="M17.832 8.633v5h-1.978V8.78c0-1.023-.43-1.542-1.29-1.542-.95 0-1.427.616-1.427 1.834v2.655H11.17V9.072c0-1.218-.476-1.834-1.427-1.834-.86 0-1.29.52-1.29 1.542v4.852H6.475V8.633c0-1.022.26-1.834.782-2.434.538-.6 1.243-.909 2.118-.909 1.012 0 1.779.39 2.286 1.169l.492.827.493-.827c.507-.78 1.274-1.169 2.286-1.169.875 0 1.58.308 2.118.909.522.6.782 1.412.782 2.434"
+        fill="currentColor" stroke="none" />
+</svg>
+    </a>
+    <a href="https://github.com/noahcub" target="_blank" rel="noopener noreferrer me"
+        title="Github">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+    </a>
+</div>
+
+    </footer>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Proxy Inverso en VPS
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Traefik y crowdsec Estoy hasta el gorro de la liga y sus puñeteros bloqueos. Este blog y mis servicios estaban configurados en el NAS con un traefik como proxy inverso. Para proteger mi IP pública uso el Proxied de cloudflare, que además aporta un WAF muy potente, geolocalización, etc. PROBLEMA: cada vez que hay futbol pierdo la conexión a homeassistant y otros servicios que para mi son muy importantes.
+Hoy vamos a configurar traefik en un VPS y desde allí enrutamos todo el tráfico a nuestro NAS local a través de Tailscale. Desactivaremos el proxied de cloudflare y de esta forma no está expuesta mi IP pública, sólo está expuesta la IP del VPS.
+He contratado el VPS más económico que tiene Piensasolutions. En mi caso pago 0,75€ al mes durante 12 meses y después el coste pasa a ser 1€ al mes.
+El VPS tiene 1 GB de RAM, 1 vCPU, 10GB SSD NVMe y conexión de 1Gbps.
+Al principio intenté instalar Pangolín, que ya lo tuve operativo en un VPS de prueba más potente. Pero creo que en este servidor es muy exigente y no puede para nada con él. Solo Pangolín consume 300 Mb de RAM más el sistema, crowdsec, etc. IMPOSIBLE !!!!!
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-02-23 14:00:00 +0200 +0200'>February 23, 2026</span></footer>
+  <a class="entry-link" aria-label="post link to Proxy Inverso en VPS" href="http://localhost:1313/posts/vps-proxy/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Traefik v3 y Crowdsec
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Traefik y crowdsec Hasta hace poco tenía en funcionamiento traefik con crowdsec usando las plantillas de unraid. Hice varios manuales sobre la instalación pero por motivos que desconozco crowdsec no parseaba las líneas de logs de traefik y por tanto no hacía absolutamente nada.
+He decicido hacer una instalación limpia desde 0 y aquí va.
+Gran parte de este manual se ha hecho usando Perplexity. Debo decir que tiene mucho que mejorar, pero nos marca unas bases buenas para empezar.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-01-23 07:00:00 +0100 CET'>January 23, 2026</span></footer>
+  <a class="entry-link" aria-label="post link to Traefik v3 y Crowdsec" href="http://localhost:1313/posts/traefik/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Borg Backups
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Configuración de Backups con Borg Nuestro servidor de Unraid va a servir para guardar los backups de nuestras máquinas. En concreto vamos a guardar los backups de los equipos (portátiles y móviles) a través de Vorta, del VPS y del servidor Debian sanMi.
+Esta necesidad ha surgido por dos temas distintos:
+El primero es la necesidad de hacer backup de nuestros servidores secundarios. Podría instalar Duplicacy, que es el sistema que uso para hacer backup de unRaid en la cuenta de GoogleDrive pero visto lo bien que habla todo el mundo de borg vamos a probarlo una temporada.
+Segundo, los equipos de oficina estaban configurados con Gnome y usando la herramienta Deja-dup hacía los backups. El problema es que Deja-dup no funciona con KDE y me he visto obligado a emplear otra aplicación. Kbackup es una buena opción, pero no acaba de convencerme. Vorta me parece que es una opción excelente así que vamos a ello.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-08-21 13:40:36 +0200 CEST'>August 21, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to Borg Backups" href="http://localhost:1313/posts/borg-backups/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Reinstalar Debian con LVM
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Instalar Debian en particiones LVM encriptadas ya existentes conservando datos Arrancamos con el médio de instalación de Debian y seleccionamos Opciones avanzadas - Instalación experta
+Avanzamos en el proceso de instalación normalmente y en Load Installer components from CD cargamos los siguientes:
+crypto-dm-modules and rescue-mode
+Continuamos con la instalación y nos detenemos antes de Detect disks:
+Accedemos a una consola con ctrl&#43;alt&#43;f2 y realizamos la carga de nuestro LVM:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-02-08 08:00:00 +0100 CET'>February 8, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Reinstalar Debian con LVM" href="http://localhost:1313/posts/debian-luks-recovery/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Home Assistant y Telegram
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Integrar Telegram en Home Assistant Resulta muy sencillo la integración de Telegram. Modificamos el fichero configuration.yaml y añadimos lo siguiente:
+Tenemos que crear nuestro bot a través de @BotFather. Una vez finalizado nos dará el api_key que necesitamos.
+Para obtener el id del chat usamos @GetIDs bot
+telegram_bot: - platform: polling api_key: xxxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx allowed_chat_ids: - 123456789 - 123456789-dos notify: - platform: telegram name: &#34;telegram&#34; chat_id: 123456789 - platform: telegram name: &#34;telegram_dos&#34; chat_id: 123456789-dos En name: “telegram” podemos poner el nombre que queramos, teniendo en cuenta que cuando llamemos a nuestro servicio debemos usar: notify.telegram, notify.my_home, etc…
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-02-02 09:00:00 +0100 CET'>February 2, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Home Assistant y Telegram" href="http://localhost:1313/posts/home-assistant/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Backups a USB automático
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Script de backup con rsync Con este pequeño script hacemos el backup del USB del trabajo a nuestro disco duro:
+Origen: /ruta origen
+Destino: /ruta destino
+OJO - cuando tenemos espacios en los nombres hay que usar ‘&#39; para que el script sepa que es un espacio
+#!/bin/bash &lt;&lt; &#39;Comment&#39; Opciones rsync: --delete: borrar los archivos que fueron borrados de la carpeta origen en la carpeta destino -a: mantiene el usuario, grupo, permisos, fecha y hora, así como los enlaces simbólicos -v: la información imprimida durante la ejecución del programa será mucho más detallada, -h: nos da las tasas de transferencia y el tamaño de los archivos en unidades razonables -u: evitar copiar archivos que ya tenemos en la carpeta de destino que no has sido modificados en la carpeta de origen Comment rsync --progress --stats --delete -avhiu /media/user/Nuevo\ vol/Origen /home/user/Destino Configuración con reglas UDEV Primero debemos obtener el idProduct y el idVendor del nuestro usb
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-01-13 08:00:00 +0100 CET'>January 13, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Backups a USB automático" href="http://localhost:1313/posts/backup-usb/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gsconnect (kdeconnect para Gnome)
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>GSconnect Instalación y configuración de GSconnect
+GSConnect es una implementación completa de KDE Connect especialmente para GNOME Shell con integración de Nautilus, Chrome y Firefox. No depende de la aplicación de escritorio KDE Connect y no funcionará si está instalada.
+KDE Connect permite que los dispositivos compartan contenido de forma segura, como notificaciones o archivos, y otras funciones como mensajería SMS y control remoto. El equipo de KDE Connect cuenta con aplicaciones para Linux, BSD, Android, Sailfish, iOS, macOS y Windows.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-12-21 11:00:00 +0100 CET'>December 21, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Gsconnect (kdeconnect para Gnome)" href="http://localhost:1313/posts/gsconnect/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Python
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Notas sobre configuraciones para uso de Python Instalación de Pip
+Pip es un sistema de gestión de paquetes utilizado para instalar y administrar paquetes de software escritos en Python.
+Además de instalar pip aprovechamos para instalar software de desarrollo de python muy util.
+sudo apt install python3-pip python-dev build-essential python3-venv El módulo venv proporciona soporte para crear «entornos virtuales» ligeros con sus propios directorios de ubicación, aislados opcionalmente de los directorios de ubicación del sistema.
+Cada entorno virtual tiene su propio binario Python (que coincide con la versión del binario que se utilizó para crear este entorno) y puede tener su propio conjunto independiente de paquetes Python instalados en sus directorios de ubicación.
+En resumen, los entornos virtuales nos permiten tener un entorno de desarrollo en cada proyecto sin llenar el sistema de dependencias y paquetes instalados.
+Para crear un entorno virtual dentro del proyecto que estemos:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-12-20 18:00:00 +0100 CET'>December 20, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Python" href="http://localhost:1313/posts/python/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Firewalld configuración
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Uso de FirewallD NOTA: En Joplin tengo un manual más completo
+Manual de ayuda:
+firewall-cmd --help FirewallD funciona con systemd, por lo que se emplean todos los comandos de systemd:
+systemctl enable firewalld systemctl start firewalld systemctl restart firewalld systemctl status firewalld Zonas de firewall Zonas de Firewalld.
+De modo predeterminado Firewalld tiene diferentes tipos de zonas. Cada una tiene un distinto nivel de seguridad.
+drop Descripción: Para redes públicas. Se descartan los paquetes de red entrantes no solicitados. Los paquetes entrantes que están relacionados con las conexiones de red salientes son aceptados. Se permite el tráfico de salida. Ésta sería la zona más segura. Ideal para paranoicos. Servicios habilitados: ninguno. Política predeterminada: DROP.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-12-18 16:00:00 +0100 CET'>December 18, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Firewalld configuración" href="http://localhost:1313/posts/firewalld-config/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Nextdns
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> title: Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager date: 2023-10-20 09:00:00 &#43;0100 categories: [Network] tags: [config, network] # TAG names should always be lowercase img_path: /assets/pictures/ author: Instalación de Nextdns firmware Merlin router ASUS En el github de Nextdns tenemos toda la información para la instalación del NextDNS CLI Client en nuestro router. Este cliente emplea DNS-over-HTTPS.
+Instalación
+Nos conectamos por ssh al router y ejecutamos el script de instalación:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-10-20 09:00:00 +0100 +0100'>October 20, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Nextdns" href="http://localhost:1313/posts/nextdns/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="http://localhost:1313/page/2/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

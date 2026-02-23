@@ -1,0 +1,65 @@
+baseURL = "https://blog.lasnotasdenoah.com"
+languageCode = "es-es"
+title = "Las notas de Noah"
+theme = "PaperMod"
+
+[params]
+    defaultTheme = "auto" # Cambia entre modo claro/oscuro según el sistema
+    showCodeCopyButtons = true
+    displayFullPostContent = false
+    ShowToc= true
+    TocOpen= false # En true, el menú aparecerá expandido al abrir la página
+    
+    [params.homeInfoParams]
+        Title = "Apuntes de linux y tecnología 💾"
+        Content = "Producido por un humano imperfecto. Errores incluidos sin coste adicional."
+
+    [[params.socialIcons]]
+        name = "mastodon"
+        url = "https://mastodon.social/@noahcub"
+    [[params.socialIcons]]
+        name = "github"
+        url = "https://github.com/noahcub"
+
+    [params.fuseOpts]
+	isCaseSensitive = false
+	shouldSort = true
+	location = 0
+	distance = 100
+	threshold = 0.4
+	minMatchCharLength = 0
+	keys= ["title", "permalink", "summary", "content"]
+
+[menu]
+  [[menu.main]]
+    identifier = "search"
+    name = "Buscar"
+    url = "/search/"
+    weight = 10
+
+  [[menu.main]]
+    identifier = "posts"
+    name = "Publicaciones"
+    url = "/posts/"
+    weight = 20
+
+  [[menu.main]]
+    identifier = "archives"
+    name = "Archivo"
+    url = "/archives/"
+    weight = 30
+
+  [[menu.main]]
+    identifier = "categories"
+    name = "Categorías"
+    url = "/categories/"
+    weight = 40 
+
+  [[menu.main]]
+    identifier = "tags"
+    name = "Etiquetas"
+    url = "/tags/"
+    weight = 50
+
+[outputs]
+    home = ["HTML", "RSS", "JSON"]

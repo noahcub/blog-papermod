@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Primeros pasos con Fedora Gnome | Las notas de Noah</title>
+<meta name="keywords" content="Admin">
+<meta name="description" content="Instalación y configuración de Fedora Workstation Gnome">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/primeros-pasos/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/primeros-pasos/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Primeros pasos con Fedora Gnome
+    </h1>
+    <div class="post-description">
+      Instalación y configuración de Fedora Workstation Gnome
+    </div>
+    <div class="post-meta"><span title='2023-02-02 18:00:00 +0200 +0200'>February 2, 2023</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#primeros-pasos-despu%c3%a9s-de-instalar-fedora-o-debian" aria-label="Primeros pasos después de instalar Fedora o Debian">Primeros pasos después de instalar Fedora o Debian</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="primeros-pasos-después-de-instalar-fedora-o-debian">Primeros pasos después de instalar Fedora o Debian<a hidden class="anchor" aria-hidden="true" href="#primeros-pasos-después-de-instalar-fedora-o-debian">#</a></h2>
+<p>NOTA: Aunque la mayor parte de este post se centra en Fedora, debo decir que Debian para mí siempre será la mejor, por ese motivo he añadido unas notas sobre instalación en Debian.
+Configurar DNF para descargas más rápidas:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano /etc/dnf/dnf.conf
+</span></span></code></pre></div><p>y añadimos la siguiente línea:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>max_parallel_downloads<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span></code></pre></div><p>Realizamos una acutalización completa del sistema:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf upgrade -y
+</span></span></code></pre></div><p>Habilitamos los respostorios de RPM Fusion:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-<span style="color:#66d9ef">$(</span>rpm -E %fedora<span style="color:#66d9ef">)</span>.noarch.rpm
+</span></span><span style="display:flex;"><span>sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-<span style="color:#66d9ef">$(</span>rpm -E %fedora<span style="color:#66d9ef">)</span>.noarch.rpm
+</span></span></code></pre></div><p>Compatibilidad con ciertos formatos comprimidos, así como OpenSSL para usar la extensión GSConnect:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf install openssl unrar p7zip p7zip-plugins
+</span></span></code></pre></div><p>Principales codecs multimedia:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf install gstreamer1-plugins-bad-free-extras gstreamer1-plugin-openh264 gstreamer1-plugins-good-extras mozilla-openh264 gstreamer1-plugins-bad-free-fluidsynth gstreamer1-plugins-bad-free-wildmidi gstreamer1-svt-av1
+</span></span><span style="display:flex;"><span>sudo dnf install vlc
+</span></span></code></pre></div><p><em><strong>ACTUALIZACIÓN 28/07/2025</strong></em>
+He tenido problemas de reproducción de videos H.265 del sistema CCTV. Para solucionarlo he tenido que instalar los siguientes paquetes según <a href="https://discussion.fedoraproject.org/t/cleanest-way-to-install-all-video-codecs-on-fedora-kde-40/134005/23">este hilo de los foros de Fedora</a>:<br>
+Esto creo que no es necesario porque los repositorios rpmfusion ya deberían estar instalados de los pasos anteriores:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-<span style="color:#66d9ef">$(</span>rpm -E %fedora<span style="color:#66d9ef">)</span>.noarch.rpm
+</span></span><span style="display:flex;"><span>sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-<span style="color:#66d9ef">$(</span>rpm -E %fedora<span style="color:#66d9ef">)</span>.noarch.rpm
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf install libavcodec-freeworld --allowerasing
+</span></span><span style="display:flex;"><span>sudo dnf install intel-media-driver --allowerasing
+</span></span></code></pre></div><p>Por defecto Fedora ofrece la versión libre para el códec de vídeo H264, que resulta insuficiente. Con la anterior orden ampliamos el soporte, pero si usamos Firefox debemos efectuar un pequeño cambio: Menú &gt; Complementos y temas &gt; Plugins, y allí activaremos el códec Open H264 de Cisco. Esta información ha sido obtenida de la web <a href="https://thecheis.com/2023/08/09/puesta-a-punto-intel-nuc-fedora/">thecheis.com</a>.</p>
+<p>Añadimos el repositorio de Flathub:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+</span></span></code></pre></div><p><em><strong>Solo para Debian</strong></em> Si queremos tener disponible el software de faltpak en el administrador de software de gnome debemos instalar el siguiente paquete:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install gnome-software-plugin-flatpak
+</span></span></code></pre></div><p>En la instalación Fedora no pregunta por el nombre del host. Ahora podemos modificarlo:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo hostnamectl set-hostname <span style="color:#e6db74">&#34;New_Custom_Name&#34;</span>
+</span></span></code></pre></div><p>Instalamos las aplicaciones esenciales para personalizar Gnome:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf install gnome-tweaks gnome-extensions-app
+</span></span></code></pre></div><p>Instalamos también Extension Manager desde el administrador de Software de Gnome (es una aplicación Flatpak).</p>
+<p>Instalamos Flatseal y Warehouse, que son aplicaciones de Flatpak para gestionar permisos y almacenamientos de estas aplicaciones.
+<img alt="flatpak-admin.png" loading="lazy" src="/posts/primeros-pasos/flatpak-admin.png"></p>
+<p>Extensiones instaladas:
+<img alt="Foto.png" loading="lazy" src="/posts/primeros-pasos/extensiones-instaladas.png"></p>
+<p>Habilitamos Maximizar y Minimizar en las ventanas:</p>
+<p><img alt="Foto.png" loading="lazy" src="/posts/primeros-pasos/add-minimize-button-to-windows.png"></p>
+<p>Habilitar/deshabilitar los informes de errores:
+<img alt="Foto.png" loading="lazy" src="/posts/primeros-pasos/automatic-problem-reporting-feature.png"></p>
+<p>Configuraciones de energía:
+<img alt="Foto.png" loading="lazy" src="/posts/primeros-pasos/power-settings.png"></p>
+<p>Habilitamos luz nocturna para reducir la fatiga visual:
+<img alt="Foto.png" loading="lazy" src="/posts/primeros-pasos/night-light-settings.png"></p>
+<p>Ordenación de directorios antes de los ficheros:
+<img alt="Foto.png" loading="lazy" src="/posts/primeros-pasos/sort-folder-before-files.png"></p>
+<p>Configuraciones de papelera de reciclaje:
+<img alt="Foto.png" loading="lazy" src="/posts/primeros-pasos/automatically-delete-trash-content.png"></p>
+<p><em><strong>Nota: Lista de flatpak que he instalado a mayores de lo que había:</strong></em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Warp                                    app.drey.Warp                                         0.6.1      stable        flathub   system
+</span></span><span style="display:flex;"><span>teams-for-linux                         com.github.IsmaelMartinez.teams_for_linux             1.3.19     stable        flathub   system
+</span></span><span style="display:flex;"><span>Flatseal                                com.github.tchx84.Flatseal                            2.1.0      stable        flathub   system
+</span></span><span style="display:flex;"><span>IntelliJ IDEA Community                 com.jetbrains.IntelliJ-IDEA-Community                 2023.2.5   stable        flathub   system
+</span></span><span style="display:flex;"><span>Extension Manager                       com.mattjakeman.ExtensionManager                      0.4.3      stable        flathub   system
+</span></span><span style="display:flex;"><span>Warehouse                               io.github.flattool.Warehouse                          1.3.0      stable        flathub   system
+</span></span><span style="display:flex;"><span>Kooha                                   io.github.seadve.Kooha                                2.2.4      stable        flathub   system
+</span></span><span style="display:flex;"><span>SaveDesktop                             io.github.vikdevelop.SaveDesktop                      2.9        stable        flathub   system
+</span></span><span style="display:flex;"><span>Photoflare                              io.photoflare.photoflare                              1.6.13     stable        flathub   system
+</span></span><span style="display:flex;"><span>Joplin                                  net.cozic.joplin_desktop                              2.12.19    stable        flathub   system
+</span></span><span style="display:flex;"><span>Geary                                   org.gnome.Geary                                       44.1       stable        fedora    system
+</span></span><span style="display:flex;"><span>Kasts                                   org.kde.kasts                                         23.08.1    stable        fedora    system
+</span></span></code></pre></div><p><em><strong>Nota: Lista de paquetes instalados por dnf:</strong></em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    <span style="color:#ae81ff">8</span>  sudo dnf install vlc conky zsh
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">14</span>  sudo dnf install teams
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">17</span>  sudo dnf install gnome-tweaks gnome-extensions-app
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">19</span>  sudo dnf install timeshift
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">20</span>  sudo dnf install firewall-config firewall-applet
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">28</span>  sudo dnf install translate-shell
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">31</span>  sudo dnf install nvme-cli
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">38</span>  sudo dnf install etherwake
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">39</span>  sudo dnf install ether-wake
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">40</span>  sudo dnf install net-tools
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">43</span>  sudo dnf install thunderbird <span style="color:#75715e"># Ya no lo uso, ahora uso Geary</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">55</span>  sudo dnf install wireguard-tools
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">72</span>  sudo dnf install code
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">149</span>  sudo dnf install util-linux-user
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">456</span>  sudo dnf install codium
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">794</span>  sudo dnf install nextcloud-client-nautilus nextcloud-client
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">1013</span>  sudo dnf install brave-browser
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">1016</span>  sudo dnf install photoflare
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">1295</span>  sudo dnf install telegram-desktop
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">1965</span>  sudo dnf install steam
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2291</span>  sudo dnf install dconf-editor
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2348</span>  sudo dnf install htop
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2351</span>  sudo dnf install gstreamer1-plugins-bad-free-extras gstreamer1-plugin-openh264 gstreamer1-plugins-good-extras mozilla-openh264 gstreamer1-plugins-bad-free-fluidsynth gstreamer1-plugins-bad-free-wildmidi gstreamer1-svt-av1
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2352</span>  sudo dnf install openssl unrar p7zip p7zip-plugins
+</span></span></code></pre></div><p><em><strong>Nota: Lista de paquetes instalados por apt:</strong></em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install zram-tools
+</span></span><span style="display:flex;"><span>sudo apt install flatpak
+</span></span><span style="display:flex;"><span>sudo apt install gnome-software-plugin-flatpak
+</span></span><span style="display:flex;"><span>sudo apt autoremove gnome-games
+</span></span><span style="display:flex;"><span>sudo apt install nextcloud-desktop nautilus-nextcloud
+</span></span></code></pre></div><hr>
+<p>Fuentes:<br>
+<a href="https://itsfoss.com/things-to-do-after-installing-fedora/">https://itsfoss.com/things-to-do-after-installing-fedora/</a><br>
+<a href="https://thecheis.com/2023/08/09/puesta-a-punto-intel-nuc-fedora/">https://thecheis.com/2023/08/09/puesta-a-punto-intel-nuc-fedora/</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

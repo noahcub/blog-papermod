@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Proxy Inverso en VPS | Las notas de Noah</title>
+<meta name="keywords" content="Admin">
+<meta name="description" content="VPS como proxy inverso">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/vps-proxy/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/vps-proxy/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Proxy Inverso en VPS
+    </h1>
+    <div class="post-description">
+      VPS como proxy inverso
+    </div>
+    <div class="post-meta"><span title='2026-02-23 14:00:00 +0200 +0200'>February 23, 2026</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#traefik-y-crowdsec" aria-label="Traefik y crowdsec">Traefik y crowdsec</a><ul>
+                        
+                <li>
+                    <a href="#preparaci%c3%b3n-del-entorno" aria-label="Preparación del entorno">Preparación del entorno</a></li>
+                <li>
+                    <a href="#docker-compose-de-traefik-y-crowdsec" aria-label="Docker compose de traefik y crowdsec">Docker compose de traefik y crowdsec</a></li>
+                <li>
+                    <a href="#ficheros-de-configuraci%c3%b3n-de-traefik" aria-label="Ficheros de configuración de traefik">Ficheros de configuración de traefik</a></li>
+                <li>
+                    <a href="#ficheros-de-configuraci%c3%b3n-de-crowdsec" aria-label="Ficheros de configuración de crowdsec">Ficheros de configuración de crowdsec</a></li>
+                <li>
+                    <a href="#extra-ampliar-la-capacidad-de-ram-de-nuestro-vps-con-swap" aria-label="EXTRA: Ampliar la capacidad de RAM de nuestro VPS con swap">EXTRA: Ampliar la capacidad de RAM de nuestro VPS con swap</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="traefik-y-crowdsec">Traefik y crowdsec<a hidden class="anchor" aria-hidden="true" href="#traefik-y-crowdsec">#</a></h2>
+<p>Estoy hasta el gorro de la liga y sus puñeteros bloqueos.  Este blog y mis servicios estaban configurados en el NAS con un traefik como proxy inverso. Para proteger mi IP pública uso el Proxied de cloudflare, que además aporta un WAF muy potente, geolocalización, etc. <strong>PROBLEMA</strong>: cada vez que hay futbol pierdo la conexión a homeassistant y otros servicios que para mi son muy importantes.</p>
+<p>Hoy vamos a configurar traefik en un VPS y desde allí enrutamos todo el tráfico a nuestro NAS local a través de Tailscale.  Desactivaremos el proxied de cloudflare y de esta forma no está expuesta mi IP pública, sólo está expuesta la IP del VPS.<br>
+He contratado el VPS más económico que tiene <a href="https://www.piensasolutions.com/">Piensasolutions</a>. En mi caso pago 0,75€ al mes durante 12 meses y después el coste pasa a ser 1€ al mes.<br>
+El VPS tiene 1 GB de RAM, 1 vCPU, 10GB SSD NVMe y conexión de 1Gbps.<br>
+Al principio intenté instalar Pangolín, que ya lo tuve operativo en un VPS de prueba más potente. Pero creo que en este servidor es muy exigente y no puede para nada con él. Solo Pangolín consume 300 Mb de RAM más el sistema, crowdsec, etc. IMPOSIBLE !!!!!</p>
+<h3 id="preparación-del-entorno">Preparación del entorno<a hidden class="anchor" aria-hidden="true" href="#preparación-del-entorno">#</a></h3>
+<p>Como sistema operativo tengo Debian 13. Una maravilla que consume pocos recursos. Instalamos y actualizamos:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update <span style="color:#f92672">&amp;&amp;</span> sudo apt upgrade -y
+</span></span></code></pre></div><p>Instalamos Tailscale:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -fsSL https://tailscale.com/install.sh | sh
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo tailscale up -d
+</span></span></code></pre></div><p>Configuración del Firewall. Instalamos ufw:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install ufw
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Reglas iniciales</span>
+</span></span><span style="display:flex;"><span>sudo ufw default deny incoming <span style="color:#75715e"># Ojo con esta regla estamos bloqueando hasta el ssh, que luego permitimos a través de tailscale.</span>
+</span></span><span style="display:flex;"><span>sudo ufw default allow outgoing
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Permitimos todo el tráfico a través de tailscale0</span>
+</span></span><span style="display:flex;"><span>sudo ufw allow in on tailscale0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Puertos 80 y 443 para traefik</span>
+</span></span><span style="display:flex;"><span>sudo ufw allow 80/tcp
+</span></span><span style="display:flex;"><span>sudo ufw allow 443/tcp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Activamos el firewall</span>
+</span></span><span style="display:flex;"><span>sudo ufw enable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Verificamos reglas</span>
+</span></span><span style="display:flex;"><span>sudo ufw status numbered
+</span></span><span style="display:flex;"><span>Status: active
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     To                         Action      From
+</span></span><span style="display:flex;"><span>     --                         ------      ----
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> 1<span style="color:#f92672">]</span> Anywhere on tailscale0     ALLOW IN    Anywhere                  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> 2<span style="color:#f92672">]</span> 80/tcp                     ALLOW IN    Anywhere                  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> 3<span style="color:#f92672">]</span> 443/tcp                    ALLOW IN    Anywhere                            
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> 5<span style="color:#f92672">]</span> Anywhere <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span> on tailscale0 ALLOW IN    Anywhere <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span>             
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> 6<span style="color:#f92672">]</span> 80/tcp <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span>                ALLOW IN    Anywhere <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span>             
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> 7<span style="color:#f92672">]</span> 443/tcp <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span>               ALLOW IN    Anywhere <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Nota para borrar alguna regla:</span>
+</span></span><span style="display:flex;"><span>sudo ufw delete <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Antes de cerrar esta sesión abrimos otra terminal y probamos a conectar por ssh. Si hubiera algún fallo siempre tenemos la opción de acceder a través de la web de nuestro VPS.</span>
+</span></span></code></pre></div><p>En nuestro panel de control del VPS verificamos que los puertos que vamos a usar estén abiertos. En este caso necesitamos los puertos 80 y 443:
+<img alt="vps.png" loading="lazy" src="/posts/vps-proxy/vps.png"></p>
+<p>Mi dominio está registrado en cloudflare. Tenemos que apuntar los registros DNS a la IP pública de nuestro VPS. Desactivamos el Proxied y nos quedamos sin protección para evitar que la dichosa liga y sus esbirros nos jodan a los pobres de a pie. Dejamos la nube de color gris para que cloudflare dirija el tráfico de forma transparente al VPS.
+<img alt="vps-2.png" loading="lazy" src="/posts/vps-proxy/vps-2.png"></p>
+<p>CLoudflare nos muestra el siguiente aviso, pero da igual, nos jodemos porques estamos compartiendo la misma IP que alguna web ilegal. Cortamos medio internet y encima no se dan cuenta que no están consiguiendo nada, casi están animando a todo lo contrario. <strong>En fin que me caliento</strong>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Es necesario redirigir mediante proxy para la mayoría de las funciones de seguridad y rendimiento
+</span></span><span style="display:flex;"><span>Para configurar sus registros DNS estableciendo la opción redirigido mediante proxy haga clic en <span style="color:#e6db74">&#34;Editar&#34;</span> en la tabla siguiente y se beneficiará de la protección DDoS, las reglas de seguridad, el almacenamiento en caché y mucho más.
+</span></span></code></pre></div><p>Por último necesitamos una API Key de cloudflare para los certificados.</p>
+<p>Instalamos docker:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+</span></span><span style="display:flex;"><span>docker version
+</span></span><span style="display:flex;"><span>docker compose version
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Damos permisos a nuestro usuario para ejecutar docker sin sudo</span>
+</span></span><span style="display:flex;"><span>sudo usermod -aG docker $USER
+</span></span></code></pre></div><h3 id="docker-compose-de-traefik-y-crowdsec">Docker compose de traefik y crowdsec<a hidden class="anchor" aria-hidden="true" href="#docker-compose-de-traefik-y-crowdsec">#</a></h3>
+<p>Creamos directorios:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir -p /home/noah/traefik-crowdsec
+</span></span><span style="display:flex;"><span>mkdir -p /home/noah/traefik-crowdsec/traefik/<span style="color:#f92672">{</span>conf.d,logs,ssl<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>mkdir -p /home/noah/traefik-crowdsec/crowdsec/<span style="color:#f92672">{</span>config,data<span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Dentro de /home/noah/traefik-crowdsec creamos nuestro docker-compose.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  traefik:
+</span></span><span style="display:flex;"><span>    image: traefik:v3.5.0
+</span></span><span style="display:flex;"><span>    container_name: traefik
+</span></span><span style="display:flex;"><span>    hostname: traefik
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    security_opt:
+</span></span><span style="display:flex;"><span>      - no-new-privileges:true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      TZ: <span style="color:#e6db74">${</span>TZ<span style="color:#66d9ef">:-</span>Europe/Madrid<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>      CF_DNS_API_TOKEN: <span style="color:#e6db74">${</span>CF_DNS_API_TOKEN<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - traefik
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;80:80&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;443:443&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /usr/share/zoneinfo/<span style="color:#e6db74">${</span>TZ<span style="color:#66d9ef">:-</span>Europe/Madrid<span style="color:#e6db74">}</span>:/etc/localtime:ro
+</span></span><span style="display:flex;"><span>      - ./traefik/traefik.yml:/traefik.yml:ro
+</span></span><span style="display:flex;"><span>      - ./traefik/conf.d:/conf.d:ro
+</span></span><span style="display:flex;"><span>      - ./traefik/ssl:/ssl
+</span></span><span style="display:flex;"><span>      - ./traefik/logs:/var/log/traefik
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  crowdsec:
+</span></span><span style="display:flex;"><span>    image: crowdsecurity/crowdsec
+</span></span><span style="display:flex;"><span>    container_name: crowdsec
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      - COLLECTIONS<span style="color:#f92672">=</span>crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/appsec-generic-rules
+</span></span><span style="display:flex;"><span>      - DISABLE_CAPI<span style="color:#f92672">=</span>true  <span style="color:#75715e"># Ignora CAPI completamente</span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - ./traefik/logs:/var/log/traefik:ro   <span style="color:#75715e"># comparte los logs</span>
+</span></span><span style="display:flex;"><span>      - ./crowdsec/data:/var/lib/crowdsec/data
+</span></span><span style="display:flex;"><span>      - ./crowdsec/config:/etc/crowdsec
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - traefik
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  traefik:
+</span></span><span style="display:flex;"><span>    name: traefik
+</span></span></code></pre></div><p><em><strong>IMPORTANTE</strong></em>: Las colecciones de crowdsec que he incluido son las siguientes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>- COLLECTIONS<span style="color:#f92672">=</span>crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/appsec-generic-rules
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># La coleccion appsec es para usar el WAF integrado que tiene crowdsec</span>
+</span></span></code></pre></div><p>Creamos nuestro fichero .env:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>TZ<span style="color:#f92672">=</span>Europe/Madrid
+</span></span><span style="display:flex;"><span>CF_DNS_API_TOKEN<span style="color:#f92672">=</span>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+</span></span></code></pre></div><h3 id="ficheros-de-configuración-de-traefik">Ficheros de configuración de traefik<a hidden class="anchor" aria-hidden="true" href="#ficheros-de-configuración-de-traefik">#</a></h3>
+<p>Fichero traefik.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Global configuration</span>
+</span></span><span style="display:flex;"><span>global:
+</span></span><span style="display:flex;"><span>  checknewversion: false
+</span></span><span style="display:flex;"><span>  sendanonymoususage: false
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># API and dashboard configuration</span>
+</span></span><span style="display:flex;"><span>api:
+</span></span><span style="display:flex;"><span>  insecure: false
+</span></span><span style="display:flex;"><span>  dashboard: true
+</span></span><span style="display:flex;"><span>  debug: false
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Load dynamic configuration from .yaml files in a directory - Routers </span>
+</span></span><span style="display:flex;"><span>providers:
+</span></span><span style="display:flex;"><span>  file:
+</span></span><span style="display:flex;"><span>    directory: /conf.d
+</span></span><span style="display:flex;"><span>    watch: true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Certificate Resolvers</span>
+</span></span><span style="display:flex;"><span>certificatesResolvers:
+</span></span><span style="display:flex;"><span>  letsencrypt:
+</span></span><span style="display:flex;"><span>    acme:
+</span></span><span style="display:flex;"><span>      email: micorreo@gmail.com
+</span></span><span style="display:flex;"><span>      storage: /ssl/acme.json
+</span></span><span style="display:flex;"><span>      caServer: https://acme-v02.api.letsencrypt.org/directory
+</span></span><span style="display:flex;"><span>      dnsChallenge:
+</span></span><span style="display:flex;"><span>        provider: cloudflare
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        resolvers:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          - &#34;1.1.1.1:53&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          - &#34;1.0.0.1:53&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  letsencrypt_staging:
+</span></span><span style="display:flex;"><span>    acme:
+</span></span><span style="display:flex;"><span>      email: micorreo@gmail.com
+</span></span><span style="display:flex;"><span>      storage: /ssl/acme.json
+</span></span><span style="display:flex;"><span>      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+</span></span><span style="display:flex;"><span>      dnsChallenge:
+</span></span><span style="display:flex;"><span>        provider: cloudflare
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        resolvers:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          - &#34;1.1.1.1:53&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          - &#34;1.0.0.1:53&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># EntryPoints configuration</span>
+</span></span><span style="display:flex;"><span>entryPoints:
+</span></span><span style="display:flex;"><span>  web:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:80&#34;</span>
+</span></span><span style="display:flex;"><span>    http:
+</span></span><span style="display:flex;"><span>      redirections:
+</span></span><span style="display:flex;"><span>        entryPoint:
+</span></span><span style="display:flex;"><span>          to: websecure
+</span></span><span style="display:flex;"><span>          scheme: https
+</span></span><span style="display:flex;"><span>  websecure:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:443&#34;</span>
+</span></span><span style="display:flex;"><span>    http:
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: letsencrypt
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        certResolver: letsencrypt_staging</span>
+</span></span><span style="display:flex;"><span>      middlewares:
+</span></span><span style="display:flex;"><span>        - geoblock-es
+</span></span><span style="display:flex;"><span>        - crowdsec-bouncer
+</span></span><span style="display:flex;"><span>        - security-headers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>accessLog:
+</span></span><span style="display:flex;"><span>  filePath: <span style="color:#e6db74">&#34;/var/log/traefik/access.log&#34;</span>
+</span></span><span style="display:flex;"><span>  format: json
+</span></span><span style="display:flex;"><span>  bufferingSize: <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>  fields:
+</span></span><span style="display:flex;"><span>    headers:
+</span></span><span style="display:flex;"><span>      defaultMode: keep <span style="color:#75715e"># Mantiene headers para que CrowdSec vea IPs reales</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># PLUGINS (CrowdSec Bouncer para Traefik v3)</span>
+</span></span><span style="display:flex;"><span>experimental:
+</span></span><span style="display:flex;"><span>  plugins:
+</span></span><span style="display:flex;"><span>    crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+</span></span><span style="display:flex;"><span>      version: v1.3.5
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    geoblock:
+</span></span><span style="display:flex;"><span>      moduleName: github.com/PascalMinder/geoblock
+</span></span><span style="display:flex;"><span>      version: v0.3.6
+</span></span></code></pre></div><p><em><strong>IMPORTANTE</strong></em>: Para hacer pruebas usaremos el <strong>certResolver: letsencrypt_staging</strong>. Una vez esté todo configurado cambiamos a certResolver: letsencrypt. En el <a href="https://www.manelrodero.com/blog/instalacion-y-uso-de-traefik-en-docker-sin-etiquetas">blog de manelrodero</a> explica muy bien el motivo.</p>
+<p>Dentro de ssl creamos nuestro fichero acme.json para los certificados:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>  touch acme.json
+</span></span><span style="display:flex;"><span>  chmod <span style="color:#ae81ff">600</span> acme.json
+</span></span></code></pre></div><p>Dentro de conf.d crearemos nuestros ficheros para dashboard, middlewares y distintos servicios.
+Fichero dashboard.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>http:
+</span></span><span style="display:flex;"><span>  routers:
+</span></span><span style="display:flex;"><span>    dashboard:
+</span></span><span style="display:flex;"><span>      rule: <span style="color:#e6db74">&#34;Host(`traefik.midominio.com`)&#34;</span>
+</span></span><span style="display:flex;"><span>      service: api@internal
+</span></span><span style="display:flex;"><span>      entryPoints:
+</span></span><span style="display:flex;"><span>        - websecure
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: letsencrypt
+</span></span><span style="display:flex;"><span>      middlewares:
+</span></span><span style="display:flex;"><span>        - auth
+</span></span></code></pre></div><p>Fichero middelwares.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>http:
+</span></span><span style="display:flex;"><span>  middlewares:
+</span></span><span style="display:flex;"><span>    auth:
+</span></span><span style="display:flex;"><span>      basicAuth:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Generar con: echo $(htpasswd -nB usuario) | sed -e s/\\$/\\$\\$/g</span>
+</span></span><span style="display:flex;"><span>        users:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;noah:</span>$XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    security-headers:
+</span></span><span style="display:flex;"><span>      headers:
+</span></span><span style="display:flex;"><span>        stsSeconds: <span style="color:#ae81ff">15552000</span>
+</span></span><span style="display:flex;"><span>        stsIncludeSubdomains: true
+</span></span><span style="display:flex;"><span>        stsPreload: true
+</span></span><span style="display:flex;"><span>        forceSTSHeader: true
+</span></span><span style="display:flex;"><span>        frameDeny: true <span style="color:#75715e"># Previene Clickjacking</span>
+</span></span><span style="display:flex;"><span>        contentTypeNosniff: true <span style="color:#75715e"># Previene sniffing de MIME</span>
+</span></span><span style="display:flex;"><span>        browserXssFilter: true
+</span></span><span style="display:flex;"><span>        referrerPolicy: <span style="color:#e6db74">&#34;same-origin&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Ajuste para Nextcloud:</span>
+</span></span><span style="display:flex;"><span>        customFrameOptionsValue: <span style="color:#e6db74">&#34;SAMEORIGIN&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>      plugin:
+</span></span><span style="display:flex;"><span>        crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>          Enabled: true
+</span></span><span style="display:flex;"><span>          CrowdsecMode: live          <span style="color:#75715e"># o streaming si prefieres</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Identidad fija para evitar los &#34;bouncers fantasmas&#34;</span>
+</span></span><span style="display:flex;"><span>          bouncerName: <span style="color:#e6db74">&#34;traefik-bouncer&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Conexión a la LAPI (Local API)</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiUrl: <span style="color:#e6db74">&#34;http://crowdsec:8080&#34;</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiKey: <span style="color:#e6db74">&#34;07F+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Configuración del WAF (AppSec)</span>
+</span></span><span style="display:flex;"><span>          appsecEnabled: true
+</span></span><span style="display:flex;"><span>          appsecHost: <span style="color:#e6db74">&#34;crowdsec:7422&#34;</span> <span style="color:#75715e"># Puerto por defecto del WAF en el contenedor crowdsec</span>
+</span></span><span style="display:flex;"><span>          appsecFailureAction: <span style="color:#e6db74">&#34;passthrough&#34;</span> <span style="color:#75715e"># Si el WAF falla, deja pasar (o &#34;block&#34; para máxima seguridad)</span>
+</span></span><span style="display:flex;"><span>          ForwardedHeadersCustomName: <span style="color:#e6db74">&#34;X-Forwarded-For&#34;</span>
+</span></span><span style="display:flex;"><span>          ForwardedHeadersTrustedIps:
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.21.244.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.22.200.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.31.4.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.16.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.24.0.0/14&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;108.162.192.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;131.0.72.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;141.101.64.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;162.158.0.0/15&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;172.64.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;173.245.48.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;188.114.96.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;190.93.240.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;197.234.240.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;198.41.128.0/17&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    geoblock-es:
+</span></span><span style="display:flex;"><span>      plugin:
+</span></span><span style="display:flex;"><span>        geoblock:
+</span></span><span style="display:flex;"><span>          httpStatusCodeDeniedRequest: <span style="color:#ae81ff">404</span>
+</span></span><span style="display:flex;"><span>          api: <span style="color:#e6db74">&#34;https://get.geojs.io/v1/ip/country/{ip}&#34;</span>  <span style="color:#75715e"># ← OBLIGATORIO</span>
+</span></span><span style="display:flex;"><span>          ipGeolocationHttpHeaderField: <span style="color:#e6db74">&#34;CF-IPCountry&#34;</span>  <span style="color:#75715e"># ← Prioriza este header!</span>
+</span></span><span style="display:flex;"><span>          ipHeaders: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;X-Forwarded-For&#34;</span>, <span style="color:#e6db74">&#34;CF-Connecting-IP&#34;</span><span style="color:#f92672">]</span>  <span style="color:#75715e"># Backup</span>
+</span></span><span style="display:flex;"><span>          ipHeaderStrategy: <span style="color:#e6db74">&#34;CheckFirst&#34;</span>
+</span></span><span style="display:flex;"><span>          countries:  <span style="color:#75715e"># Permitir SOLO estos (ISO 3166-1 alpha-2)</span>
+</span></span><span style="display:flex;"><span>            - ES
+</span></span><span style="display:flex;"><span>          allowLocalRequests: true  <span style="color:#75715e"># VPS/local/Tailscale</span>
+</span></span><span style="display:flex;"><span>          allowUnknownCountries: false  <span style="color:#75715e"># Bloquea IPs sin país</span>
+</span></span><span style="display:flex;"><span>          apiTimeoutMs: <span style="color:#ae81ff">200</span>  <span style="color:#75715e"># Rápido</span>
+</span></span><span style="display:flex;"><span>          cacheSize: <span style="color:#ae81ff">100</span>  <span style="color:#75715e"># Para tu tráfico</span>
+</span></span><span style="display:flex;"><span>          forwardedHeadersTrustedIps:  <span style="color:#75715e"># Cloudflare + Tailscale</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.21.244.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.22.200.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.31.4.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.16.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.24.0.0/14&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;108.162.192.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;131.0.72.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;141.101.64.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;162.158.0.0/15&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;172.64.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;173.245.48.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;188.114.96.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;190.93.240.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;197.234.240.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;198.41.128.0/17&#34;</span>
+</span></span></code></pre></div><p>Cuando arranquemos por primera vez el stack crowdsec no funcionará porque no hemos creado el bouncer de traefik:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec -it crowdsec cscli bouncers add traefik-bouncer
+</span></span></code></pre></div><p>Este comando nos genera una API Key que tenemos que copiar en el fichero middlewares.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>      plugin:
+</span></span><span style="display:flex;"><span>        crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>          Enabled: true
+</span></span><span style="display:flex;"><span>          CrowdsecMode: live          <span style="color:#75715e"># o streaming si prefieres</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Identidad fija para evitar los &#34;bouncers fantasmas&#34;</span>
+</span></span><span style="display:flex;"><span>          bouncerName: <span style="color:#e6db74">&#34;traefik-bouncer&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Conexión a la LAPI (Local API)</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiUrl: <span style="color:#e6db74">&#34;http://crowdsec:8080&#34;</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiKey: <span style="color:#e6db74">&#34;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&#34;</span> &lt;&lt;--COPIAR AQUI EL API KEY
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Configuración del WAF (AppSec)</span>
+</span></span><span style="display:flex;"><span>          appsecEnabled: true
+</span></span></code></pre></div><p>Reiniciamos nuestro compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker compose restart
+</span></span></code></pre></div><p>Fichero de ejemplo de un servicio:
+karakeep.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>http:
+</span></span><span style="display:flex;"><span>  routers:
+</span></span><span style="display:flex;"><span>    karakeep:
+</span></span><span style="display:flex;"><span>      rule: <span style="color:#e6db74">&#34;Host(`karakeep.midominio.com`)&#34;</span>
+</span></span><span style="display:flex;"><span>      service: karakeep
+</span></span><span style="display:flex;"><span>      entryPoints:
+</span></span><span style="display:flex;"><span>        - websecure
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: letsencrypt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  services:
+</span></span><span style="display:flex;"><span>    karakeep:
+</span></span><span style="display:flex;"><span>      loadBalancer:
+</span></span><span style="display:flex;"><span>        servers:
+</span></span><span style="display:flex;"><span>          - url: <span style="color:#e6db74">&#34;http://100.105.100.10:3333&#34;</span>
+</span></span></code></pre></div><p>Script para creación de servicios:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>service<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;my_servicio&#34;</span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://100.105.100.10:3333&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt; EOF &gt; &#34;./data/conf.d/${service}.yml&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">http:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  routers:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ${service}:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      rule: &#34;Host(\`${service}.midominio.com\`)&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      service: ${service}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      entryPoints:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        - websecure
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      tls:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        certResolver: letsencrypt
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#      middlewares:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#        - crowdsec-bouncer
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#        - security-headers
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#        - geoblock-es
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  services:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ${service}:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      loadBalancer:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        servers:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          - url: &#34;${url}&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span></code></pre></div><p><strong>NOTA</strong>: En el fichero traefik.yml ya le indicamos a traefik que todo el tráfico que entre por 443 pase por los siguientes middlewares:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>  websecure:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:443&#34;</span>
+</span></span><span style="display:flex;"><span>    http:
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: letsencrypt
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        certResolver: letsencrypt_staging</span>
+</span></span><span style="display:flex;"><span>      middlewares:
+</span></span><span style="display:flex;"><span>        - geoblock-es
+</span></span><span style="display:flex;"><span>        - crowdsec-bouncer
+</span></span><span style="display:flex;"><span>        - security-headers
+</span></span></code></pre></div><p>En nuestro script de creación de servicios no es necesario añadir los middlewares porque traefik se lo añade a todos de forma general, por eso está comentado en el script.</p>
+<h3 id="ficheros-de-configuración-de-crowdsec">Ficheros de configuración de crowdsec<a hidden class="anchor" aria-hidden="true" href="#ficheros-de-configuración-de-crowdsec">#</a></h3>
+<p>Fichero obtención datos /traefik-crowdsec/crowdsec/config/acquis.yaml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>filenames:
+</span></span><span style="display:flex;"><span>  - /var/log/traefik/access.log
+</span></span><span style="display:flex;"><span>poll_without_inotify: true
+</span></span><span style="display:flex;"><span>labels:
+</span></span><span style="display:flex;"><span>  type: traefik
+</span></span></code></pre></div><p>Fichero definir baneos y tipo de notificaciones /traefik-crowdsec/crowdsec/config/profiles.yaml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>name: default_ip_remediation
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#debug: true</span>
+</span></span><span style="display:flex;"><span>filters:
+</span></span><span style="display:flex;"><span> - Alert.Remediation <span style="color:#f92672">==</span> true <span style="color:#f92672">&amp;&amp;</span> Alert.GetScope<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Ip&#34;</span>
+</span></span><span style="display:flex;"><span>decisions:
+</span></span><span style="display:flex;"><span> - type: ban
+</span></span><span style="display:flex;"><span>   duration: 4h
+</span></span><span style="display:flex;"><span>notifications:
+</span></span><span style="display:flex;"><span> - telegram
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#duration_expr: Sprintf(&#39;%dh&#39;, (GetDecisionsCount(Alert.GetValue()) + 1) * 4)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># notifications:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - slack_default  # Set the webhook in /etc/crowdsec/notifications/slack.y&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - splunk_default # Set the splunk url and token in /etc/crowdsec/notifica&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - http_default   # Set the required http parameters in /etc/crowdsec/noti&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - email_default  # Set the required email parameters in /etc/crowdsec/not&gt;</span>
+</span></span><span style="display:flex;"><span>on_success: break
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>name: default_range_remediation
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#debug: true</span>
+</span></span><span style="display:flex;"><span>filters:
+</span></span><span style="display:flex;"><span> - Alert.Remediation <span style="color:#f92672">==</span> true <span style="color:#f92672">&amp;&amp;</span> Alert.GetScope<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Range&#34;</span>
+</span></span><span style="display:flex;"><span>decisions:
+</span></span><span style="display:flex;"><span> - type: ban
+</span></span><span style="display:flex;"><span>   duration: 4h
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#duration_expr: Sprintf(&#39;%dh&#39;, (GetDecisionsCount(Alert.GetValue()) + 1) * 4)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># notifications:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - slack_default  # Set the webhook in /etc/crowdsec/notifications/slack.y&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - splunk_default # Set the splunk url and token in /etc/crowdsec/notifica&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - http_default   # Set the required http parameters in /etc/crowdsec/noti&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   - email_default  # Set the required email parameters in /etc/crowdsec/not&gt;</span>
+</span></span><span style="display:flex;"><span>on_success: break
+</span></span></code></pre></div><p>Fichero notificaciones traefik-crowdsec/crowdsec/config/notifications/http.yaml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>type: http          <span style="color:#75715e"># Don&#39;t change</span>
+</span></span><span style="display:flex;"><span>name: telegram      <span style="color:#75715e"># Must match the registered plugin in the profile</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># One of &#34;trace&#34;, &#34;debug&#34;, &#34;info&#34;, &#34;warn&#34;, &#34;error&#34;, &#34;off&#34;</span>
+</span></span><span style="display:flex;"><span>log_level: info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>format: |
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;chat_id&#34;</span>: <span style="color:#e6db74">&#34;-XXXXXXXXXXXXXXXX&#34;</span>, 
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     {{range . -}}  
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     {{</span>$alert<span style="color:#e6db74"> := . -}}  
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     {{range .Decisions -}}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     🚨 CrowdSec Alert on Piensa! 🚨
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  🆔 IP: {{.Value}}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  ⚠️  Scenario: {{ .Scenario }}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  🚧 Decision: {{.Type}} for next {{.Duration}}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     {{end -}}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     {{end -}}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">   &#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;reply_markup&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;inline_keyboard&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">{{</span> $arrLength :<span style="color:#f92672">=</span> len . -<span style="color:#f92672">}}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">{{</span> range $i, $value :<span style="color:#f92672">=</span> . -<span style="color:#f92672">}}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">{{</span> $V :<span style="color:#f92672">=</span> $value.Source.Value -<span style="color:#f92672">}}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;See {{ </span>$V<span style="color:#e6db74"> }} on shodan.io&#34;</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;https://www.shodan.io/host/{{ </span>$V<span style="color:#e6db74"> -}}&#34;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;See {{ </span>$V<span style="color:#e6db74"> }} on crowdsec.net&#34;</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#e6db74">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;https://app.crowdsec.net/cti/{{ </span>$V<span style="color:#e6db74"> -}}&#34;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">]{{</span><span style="color:#66d9ef">if</span> lt $i <span style="color:#f92672">(</span> sub $arrLength 1<span style="color:#f92672">)</span> <span style="color:#f92672">}}</span>,<span style="color:#f92672">{{</span>end <span style="color:#f92672">}}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">{{</span>end -<span style="color:#f92672">}}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url: https://api.telegram.org/bot111111111111:XXXXXXXXXx-XXXXXXXXXXXXXXXXXXXXXXXXX/sendMessage
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>method: POST
+</span></span><span style="display:flex;"><span>headers:
+</span></span><span style="display:flex;"><span>  Content-Type: <span style="color:#e6db74">&#34;application/json&#34;</span>
+</span></span></code></pre></div><h3 id="extra-ampliar-la-capacidad-de-ram-de-nuestro-vps-con-swap">EXTRA: Ampliar la capacidad de RAM de nuestro VPS con swap<a hidden class="anchor" aria-hidden="true" href="#extra-ampliar-la-capacidad-de-ram-de-nuestro-vps-con-swap">#</a></h3>
+<p>Nuestro VPS está muy escaso de RAM. Vamos a darle algo de margen aprovechando nuestro nvme y creando una swap de 1GB de tamaño.</p>
+<p>Creación de nuestro fichero swap:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo fallocate -l 1G /swapfile
+</span></span><span style="display:flex;"><span>ls -la /
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo chmod <span style="color:#ae81ff">600</span> /swapfile
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo mkswap /swapfile
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo swapon /swapfile
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;/swapfile none swap sw 0 0&#39;</span> | sudo tee -a /etc/fstab
+</span></span><span style="display:flex;"><span>cat /etc/fstab
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>free -h
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo sysctl vm.swappiness<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>htop
+</span></span></code></pre></div><p><img alt="vps-3.png" loading="lazy" src="/posts/vps-proxy/vps-3.png"></p>
+<hr>
+<p>Fuentes y enlaces de interés que ayudaran a complementar esta guía:</p>
+<p><a href="https://www.manelrodero.com/blog/instalacion-y-uso-de-traefik-en-docker-sin-etiquetas">Instalación de traefik sin etiquetas</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

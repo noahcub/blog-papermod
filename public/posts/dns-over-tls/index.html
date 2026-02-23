@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>DNS Over TLS | Las notas de Noah</title>
+<meta name="keywords" content="Admin, Network">
+<meta name="description" content="DNS Over TLS con systemd-resolved y NextDNS. Nuestro firewall online">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/dns-over-tls/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/dns-over-tls/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      DNS Over TLS
+    </h1>
+    <div class="post-description">
+      DNS Over TLS con systemd-resolved y NextDNS. Nuestro firewall online
+    </div>
+    <div class="post-meta"><span title='2024-10-18 16:00:00 +0100 +0100'>October 18, 2024</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>Según su <a href="https://nextdns.io/">web</a>, NextDNS ofrece un firewall para la Internet moderna. NextDNS protege de todo tipo de amenazas a la seguridad, bloquea anuncios y rastreadores en sitios web y aplicaciones, y brinda una Internet segura y supervisada para niños, en todos los dispositivos y en todas las redes.<br>
+Me parece un servicio genial por 20€ al año que ofrece mucha seguridad a la hora de navegar por internet.</p>
+<h2 id="configuración-de-dns-privado-en-fedora">Configuración de DNS privado en Fedora<a hidden class="anchor" aria-hidden="true" href="#configuración-de-dns-privado-en-fedora">#</a></h2>
+<p>En nuestro sistema Fedora, estarán conviviendo NetworkMananger con systemd-resolved, por tanto, el primer paso que debemos hacer es indicarle a NetworkManager que la resolución de DNS se va a realizar con systemd-resolved.<br>
+Editamos el fichero <strong>/etc/NetworkManager/conf.d/dns.conf</strong> y añadimos el siguiente contenido:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>main<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>dns<span style="color:#f92672">=</span>systemd-resolved
+</span></span></code></pre></div><p>En versiones actuales del servicio systemd-resolved el fichero de configuración resolved.conf se encuentra en /etc/systemd/resolved.conf.d/, anteriormente se encontraba en /etc/systemd/</p>
+<p>Creamos el fichero <strong>resolved.conf</strong> en la ruta <strong>/etc/systemd/resolved.conf.d</strong>:</p>
+<p>Tenemos como ejemplo los DNS de quad9, que funcionan muy bien:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Resolve<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>DNS<span style="color:#f92672">=</span>9.9.9.9#dns.quad9.net
+</span></span><span style="display:flex;"><span>DNSOverTLS<span style="color:#f92672">=</span>yes
+</span></span></code></pre></div><p>En nuestro caso vamos a usar los DNS de NetxDNS, para ello accedemos a nuestro panel de usuario de NextDNS y copiamos la configuración:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Resolve<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>DNS<span style="color:#f92672">=</span>xx.xx.xx.xx#AAAAAAAA.dns.nextdns.io
+</span></span><span style="display:flex;"><span>DNS<span style="color:#f92672">=</span>xx.xx.xx.xx#AAAAAAAA.dns.nextdns.io
+</span></span><span style="display:flex;"><span>DNS<span style="color:#f92672">=</span>xx.xx.xx.xx#AAAAAAAA.dns.nextdns.io
+</span></span><span style="display:flex;"><span>DNS<span style="color:#f92672">=</span>xx.xx.xx.xx#AAAAAAAA.dns.nextdns.io
+</span></span><span style="display:flex;"><span>DNSOverTLS<span style="color:#f92672">=</span>yes
+</span></span></code></pre></div><p>En Fedora ya debería estar el enlace simbólico de /etc/resolv.conf. Lo comprobamos y sino procedemos a crearlo:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+</span></span></code></pre></div><p>El servicio systemd-resolved debería estar habilitado, sino lo habilitamos:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl status systemd-resolved.service
+</span></span><span style="display:flex;"><span>sudo systemctl enable systemd-resolved.service
+</span></span></code></pre></div><p>Podemos habilitar el registro de logs para detectar errores en la resolución de DNS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo resolvectl log-level debug
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>journalctl -u systemd-resolved -f
+</span></span></code></pre></div><p>Como en nuestro sistema tenemos conviviendo systemd-resolved con NetworkManager, debemos reiniciar ambos para que todo funcione correctamente:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl restart systemd-resolved.service <span style="color:#f92672">&amp;&amp;</span> sudo service NetworkManager restart
+</span></span></code></pre></div><p>Verificamos si está bien configurada la resolución de nombres:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>resolvectl status
+</span></span></code></pre></div><p>Por último, si accedemos a nuestro panel de NextDNS veremos que ya estamos trabajando con sus servidores.</p>
+<p><img alt="dns-systemd.png" loading="lazy" src="/posts/dns-over-tls/dns-systemd.png"></p>
+<p><strong>Nota importante</strong>: En mi caso tuve problemas con la resolución de nombres porque tengo configuradas varias redes en mi equipo. La red que me generó problemas era la que crea TailScale, la red <strong>tailscale0</strong>.<br>
+En el panel de control de Tailscale tenía configurada la resolución de nombres a través de un perfil diferente de NextDNS, entonces al acceder al panel de control de NextDNS, por motivos que desconozco mi portátil Fedora hacía la resolución de nombres a través del perfil configurado en Tailscale en lugar del perfil configurado en el equipo.<br>
+No he descubierto porque lo hace así, la solución fue sencilla, a través de la extensión de Tailscale Status de Gnome habilito la red de Tailscale cuando es necesario para conectarme a mis NAS de forma remota.</p>
+<p><em><strong>ACTUALIZACIÓN 26/07/2025</strong></em>
+En mi última configuración de Fedora 42 con KDE he tenido que seguir al pie de la letra la siguiente <a href="https://www.adityathebe.com/systemd-resolved-dns-over-tls/">guia</a> para que funcione.<br>
+Por el motivo que sea el fichero /etc/systemd/resolved.conf.d/resolved.conf no se lee por systemd-resolved y no se aplica la configuración.<br>
+Si configuramos los datos de NEXTDNS en el fichero <strong>/etc/systemd/resolved.conf</strong>, todo comenzó a funcionar a la primera.</p>
+<hr>
+<p>Fuentes:<br>
+<a href="https://nextdns.io/pricing">https://nextdns.io/</a><br>
+<a href="https://www.adityathebe.com/systemd-resolved-dns-over-tls/">https://www.adityathebe.com/systemd-resolved-dns-over-tls/</a></p>
+<p><a href="https://dev.to/archerallstars/using-dns-over-tls-on-opensuse-linux-in-4-easy-steps-enable-cloud-firewall-for-free-today-2job">https://dev.to/archerallstars/using-dns-over-tls-on-opensuse-linux-in-4-easy-steps-enable-cloud-firewall-for-free-today-2job</a></p>
+<p><a href="https://docs.quad9.net/Setup_Guides/Linux_and_BSD/Ubuntu_22.04_%28Encrypted%29/#instructions">https://docs.quad9.net/Setup_Guides/Linux_and_BSD/Ubuntu_22.04_%28Encrypted%29/#instructions</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+      <li><a href="http://localhost:1313/tags/network/">Network</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

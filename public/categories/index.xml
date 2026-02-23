@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Categories on Las notas de Noah</title>
+    <link>http://localhost:1313/categories/</link>
+    <description>Recent content in Categories on Las notas de Noah</description>
+    <generator>Hugo -- 0.155.3</generator>
+    <language>es-es</language>
+    <lastBuildDate>Mon, 23 Feb 2026 14:00:00 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Debian</title>
+      <link>http://localhost:1313/categories/debian/</link>
+      <pubDate>Mon, 23 Feb 2026 14:00:00 +0200</pubDate>
+      <guid>http://localhost:1313/categories/debian/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Nas</title>
+      <link>http://localhost:1313/categories/nas/</link>
+      <pubDate>Fri, 23 Jan 2026 07:00:00 +0100</pubDate>
+      <guid>http://localhost:1313/categories/nas/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Unraid</title>
+      <link>http://localhost:1313/categories/unraid/</link>
+      <pubDate>Thu, 21 Aug 2025 13:40:36 +0200</pubDate>
+      <guid>http://localhost:1313/categories/unraid/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fedora</title>
+      <link>http://localhost:1313/categories/fedora/</link>
+      <pubDate>Fri, 18 Oct 2024 16:00:00 +0100</pubDate>
+      <guid>http://localhost:1313/categories/fedora/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Android</title>
+      <link>http://localhost:1313/categories/android/</link>
+      <pubDate>Mon, 25 Sep 2023 16:00:00 +0100</pubDate>
+      <guid>http://localhost:1313/categories/android/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

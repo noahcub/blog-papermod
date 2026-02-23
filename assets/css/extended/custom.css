@@ -1,0 +1,19 @@
+@media screen and (min-width: 1280px) {
+    .post-content {
+        position: relative;
+    }
+
+    .toc {
+        position: fixed;
+        left: calc((100% - var(--main-width)) / 2 + var(--main-width) + 30px);
+        top: 100px;
+        width: 250px;
+        max-height: 80vh;
+        overflow-y: auto;
+        background: var(--theme);
+        padding: 15px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+}

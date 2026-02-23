@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Unraid on Las notas de Noah</title>
+    <link>http://localhost:1313/categories/unraid/</link>
+    <description>Recent content in Unraid on Las notas de Noah</description>
+    <generator>Hugo -- 0.155.3</generator>
+    <language>es-es</language>
+    <lastBuildDate>Thu, 21 Aug 2025 13:40:36 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/unraid/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Borg Backups</title>
+      <link>http://localhost:1313/posts/borg-backups/</link>
+      <pubDate>Thu, 21 Aug 2025 13:40:36 +0200</pubDate>
+      <guid>http://localhost:1313/posts/borg-backups/</guid>
+      <description>Backups con borg en server y PC</description>
+    </item>
+    <item>
+      <title>Home Assistant y Telegram</title>
+      <link>http://localhost:1313/posts/home-assistant/</link>
+      <pubDate>Fri, 02 Feb 2024 09:00:00 +0100</pubDate>
+      <guid>http://localhost:1313/posts/home-assistant/</guid>
+      <description>Integrar Telegram en Home Assistant</description>
+    </item>
+    <item>
+      <title>Web estática con Jekyll</title>
+      <link>http://localhost:1313/posts/jekyll/</link>
+      <pubDate>Thu, 02 Feb 2023 18:00:00 +0100</pubDate>
+      <guid>http://localhost:1313/posts/jekyll/</guid>
+      <description>Web estática con Jekyll y Bundle</description>
+    </item>
+  </channel>
+</rss>

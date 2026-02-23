@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin | Las notas de Noah</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/tags/admin/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/admin/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/admin/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body class="list" id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Admin
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Proxy Inverso en VPS
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Traefik y crowdsec Estoy hasta el gorro de la liga y sus puñeteros bloqueos. Este blog y mis servicios estaban configurados en el NAS con un traefik como proxy inverso. Para proteger mi IP pública uso el Proxied de cloudflare, que además aporta un WAF muy potente, geolocalización, etc. PROBLEMA: cada vez que hay futbol pierdo la conexión a homeassistant y otros servicios que para mi son muy importantes.
+Hoy vamos a configurar traefik en un VPS y desde allí enrutamos todo el tráfico a nuestro NAS local a través de Tailscale. Desactivaremos el proxied de cloudflare y de esta forma no está expuesta mi IP pública, sólo está expuesta la IP del VPS.
+He contratado el VPS más económico que tiene Piensasolutions. En mi caso pago 0,75€ al mes durante 12 meses y después el coste pasa a ser 1€ al mes.
+El VPS tiene 1 GB de RAM, 1 vCPU, 10GB SSD NVMe y conexión de 1Gbps.
+Al principio intenté instalar Pangolín, que ya lo tuve operativo en un VPS de prueba más potente. Pero creo que en este servidor es muy exigente y no puede para nada con él. Solo Pangolín consume 300 Mb de RAM más el sistema, crowdsec, etc. IMPOSIBLE !!!!!
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-02-23 14:00:00 +0200 +0200'>February 23, 2026</span></footer>
+  <a class="entry-link" aria-label="post link to Proxy Inverso en VPS" href="http://localhost:1313/posts/vps-proxy/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Reinstalar Debian con LVM
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Instalar Debian en particiones LVM encriptadas ya existentes conservando datos Arrancamos con el médio de instalación de Debian y seleccionamos Opciones avanzadas - Instalación experta
+Avanzamos en el proceso de instalación normalmente y en Load Installer components from CD cargamos los siguientes:
+crypto-dm-modules and rescue-mode
+Continuamos con la instalación y nos detenemos antes de Detect disks:
+Accedemos a una consola con ctrl&#43;alt&#43;f2 y realizamos la carga de nuestro LVM:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-02-08 08:00:00 +0100 CET'>February 8, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Reinstalar Debian con LVM" href="http://localhost:1313/posts/debian-luks-recovery/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Backups a USB automático
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Script de backup con rsync Con este pequeño script hacemos el backup del USB del trabajo a nuestro disco duro:
+Origen: /ruta origen
+Destino: /ruta destino
+OJO - cuando tenemos espacios en los nombres hay que usar ‘&#39; para que el script sepa que es un espacio
+#!/bin/bash &lt;&lt; &#39;Comment&#39; Opciones rsync: --delete: borrar los archivos que fueron borrados de la carpeta origen en la carpeta destino -a: mantiene el usuario, grupo, permisos, fecha y hora, así como los enlaces simbólicos -v: la información imprimida durante la ejecución del programa será mucho más detallada, -h: nos da las tasas de transferencia y el tamaño de los archivos en unidades razonables -u: evitar copiar archivos que ya tenemos en la carpeta de destino que no has sido modificados en la carpeta de origen Comment rsync --progress --stats --delete -avhiu /media/user/Nuevo\ vol/Origen /home/user/Destino Configuración con reglas UDEV Primero debemos obtener el idProduct y el idVendor del nuestro usb
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-01-13 08:00:00 +0100 CET'>January 13, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Backups a USB automático" href="http://localhost:1313/posts/backup-usb/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Gsconnect (kdeconnect para Gnome)
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>GSconnect Instalación y configuración de GSconnect
+GSConnect es una implementación completa de KDE Connect especialmente para GNOME Shell con integración de Nautilus, Chrome y Firefox. No depende de la aplicación de escritorio KDE Connect y no funcionará si está instalada.
+KDE Connect permite que los dispositivos compartan contenido de forma segura, como notificaciones o archivos, y otras funciones como mensajería SMS y control remoto. El equipo de KDE Connect cuenta con aplicaciones para Linux, BSD, Android, Sailfish, iOS, macOS y Windows.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-12-21 11:00:00 +0100 CET'>December 21, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Gsconnect (kdeconnect para Gnome)" href="http://localhost:1313/posts/gsconnect/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Firewalld configuración
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Uso de FirewallD NOTA: En Joplin tengo un manual más completo
+Manual de ayuda:
+firewall-cmd --help FirewallD funciona con systemd, por lo que se emplean todos los comandos de systemd:
+systemctl enable firewalld systemctl start firewalld systemctl restart firewalld systemctl status firewalld Zonas de firewall Zonas de Firewalld.
+De modo predeterminado Firewalld tiene diferentes tipos de zonas. Cada una tiene un distinto nivel de seguridad.
+drop Descripción: Para redes públicas. Se descartan los paquetes de red entrantes no solicitados. Los paquetes entrantes que están relacionados con las conexiones de red salientes son aceptados. Se permite el tráfico de salida. Ésta sería la zona más segura. Ideal para paranoicos. Servicios habilitados: ninguno. Política predeterminada: DROP.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-12-18 16:00:00 +0100 CET'>December 18, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Firewalld configuración" href="http://localhost:1313/posts/firewalld-config/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Nextdns
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> title: Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager date: 2023-10-20 09:00:00 &#43;0100 categories: [Network] tags: [config, network] # TAG names should always be lowercase img_path: /assets/pictures/ author: Instalación de Nextdns firmware Merlin router ASUS En el github de Nextdns tenemos toda la información para la instalación del NextDNS CLI Client en nuestro router. Este cliente emplea DNS-over-HTTPS.
+Instalación
+Nos conectamos por ssh al router y ejecutamos el script de instalación:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-10-20 09:00:00 +0100 +0100'>October 20, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Nextdns" href="http://localhost:1313/posts/nextdns/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">KVM y VirtManager
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Instalación de Entware en firmware Merlin Fedora con Gnome trae instalado por defecto Gnome-Boxes. La verdad es que está genial pero tiene algunas carencias, como por ejemplo la conectividad de red.
+Con Gnome Boxes solo podemos acceder a nuestra máquina virtual desde el host pero no podemos acceder desde la red local o contactar con la red local desde la máquina virtual. Para eso vamos a instalar y configurar KVM Y Virt Manger.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-19 18:00:00 +0100 +0100'>July 19, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to KVM y VirtManager" href="http://localhost:1313/posts/kvm-virtmanager/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Systemd
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Crear un servicio con systemd Crear un script Antes que nada necesitamos crear un script que no es más que un simple archivo, que debe contener algo muy importante para arrancar y es #!/bin/bash, así que usamos un editor, en mi caso nano para crearlo:
+nano /usr/local/sbin/servicios Dentro vamos a colocar lo que necesitamos quedando con la siguiente estructura:
+#!/bin/bash contenido del script Una vez que lo guardamos con F2, le damos permisos de ejecución.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-21 22:00:00 +0100 CET'>February 21, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Systemd" href="http://localhost:1313/posts/systemd/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Problemas con Nvidia
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Problemas al ejecutar algunos programas con renderizado gpu Algunos programas generan errores de visualización debido al renderizado de GPU con drivers Nvidia. En la mayoría lo podemos deshabilitar:
+VISUAL STUDIO CODE
+Primera opción
+Dentro de Visual Studio abrimos la paleta (Ctrl&#43;Shift&#43;P). Ejecutamos: Preferences: Configure Runtime Arguments Este comando abre el fichero de configuración “argv.json” y añadimos el siguiente texto &#34;disable-hardware-acceleration&#34;: true y reiniciamos Visual Studio Code
+Segunda Opción
+Modificar el fichero “argv.json” de Visual Studio desde la terminal: nano ~/.vscode/argv.json Añadimos el mismo texto que decíamos antes
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-19 08:00:00 +0100 CET'>February 19, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Problemas con Nvidia" href="http://localhost:1313/posts/gpu-render/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Comando &#34;screen&#34;
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Qué es y cómo funciona el comando Screen en Linux Hablamos del programa Screen, que permite en los sistemas GNU/Linux, abrir múltiples instancias de terminal dentro de una sola sesión. De esta manera, si salimos de una de las instancias de terminal, el proceso que se ejecute en dicha terminal no se interrumpirá y continuará en segundo plano.
+¿En qué consiste el comando Screen? Screen, según indica su página de man, es un administrador de ventanas en pantalla completa, que multiplexa un terminal en varios procesos, cada proceso asociado a una nueva terminal.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-06 08:00:00 +0100 CET'>February 6, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Comando &#34;screen&#34;" href="http://localhost:1313/posts/screen-command/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="http://localhost:1313/tags/admin/page/2/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

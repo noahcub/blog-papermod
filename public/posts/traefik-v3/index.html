@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Traefik v3 y Crowdsec | Mi Blog Personal</title>
+<meta name="keywords" content="Unraid, Software, Config">
+<meta name="description" content="Configuración de traefik v3 con crowdsec">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/traefik-v3/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/traefik-v3/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Mi Blog Personal (Alt + H)">Mi Blog Personal</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Traefik v3 y Crowdsec
+    </h1>
+    <div class="post-description">
+      Configuración de traefik v3 con crowdsec
+    </div>
+    <div class="post-meta"><span title='2026-01-23 07:00:00 +0100 CET'>January 23, 2026</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="traefik-y-crowdsec">Traefik y crowdsec<a hidden class="anchor" aria-hidden="true" href="#traefik-y-crowdsec">#</a></h2>
+<p>Hasta hace poco tenía en funcionamiento traefik con crowdsec usando las plantillas de unraid. Hice varios manuales sobre la instalación pero por motivos que desconozco crowdsec no parseaba las líneas de logs de traefik y por tanto no hacía absolutamente nada.<br>
+He decicido hacer una instalación limpia desde 0 y aquí va.<br>
+Gran parte de este manual se ha hecho usando <a href="https://www.perplexity.ai/">Perplexity</a>. Debo decir que tiene mucho que mejorar, pero nos marca unas bases buenas para empezar.</p>
+<h3 id="preparación-del-entorno">Preparación del entorno<a hidden class="anchor" aria-hidden="true" href="#preparación-del-entorno">#</a></h3>
+<p>Lo primero que vamos a hacer es preparar nuestro entorno de directorios:</p>
+<p>Directorios de traefik y crowdsec:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir -p /mnt/user/appdata/traefik/<span style="color:#f92672">{</span>letsencrypt,log<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/appdata/crowdsec/data
+</span></span></code></pre></div><p>Ficheros de configuración y logs de traefik:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>touch /mnt/user/appdata/traefik/letsencrypt/acme.json
+</span></span><span style="display:flex;"><span>chmod <span style="color:#ae81ff">600</span> /mnt/user/appdata/traefik/letsencrypt/acme.json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>touch /mnt/user/appdata/traefik/traefik.yml
+</span></span><span style="display:flex;"><span>touch /mnt/user/appdata/traefik/dynamic_conf.yml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>touch /mnt/user/appdata/traefik/log/access.log
+</span></span><span style="display:flex;"><span>chmod <span style="color:#ae81ff">644</span> /mnt/user/appdata/traefik/log/access.log
+</span></span></code></pre></div><p>Fichero de configuración de crowdsec. Dentro de la carpeta de configuración de crowdsec creamos el fichero acquis.yaml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>touch /mnt/user/appdata/crowdsec/config/acquis.yaml
+</span></span></code></pre></div><h3 id="docker-compose">Docker-compose<a hidden class="anchor" aria-hidden="true" href="#docker-compose">#</a></h3>
+<p>Sigo usando Unraid. Nos vamos a la pestaña compose y creamos nuestro stack de docker:</p>
+<p><strong>docker-compose.yml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  traefik:
+</span></span><span style="display:flex;"><span>    image: traefik:v3.0
+</span></span><span style="display:flex;"><span>    container_name: traefik
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    security_opt:
+</span></span><span style="display:flex;"><span>      - no-new-privileges:true
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;1880:80&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;18443:443&#34;</span>
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      - CF_DNS_API_TOKEN<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>CF_DNS_API_TOKEN<span style="color:#e6db74">}</span> <span style="color:#75715e"># API TOKEN DE CLOUDFLARE</span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /var/run/docker.sock:/var/run/docker.sock:ro
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/traefik/letsencrypt/acme.json:/letsencrypt/acme.json
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/traefik/dynamic_conf.yml:/etc/traefik/dynamic_conf.yml:ro
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/traefik/log:/var/log/traefik <span style="color:#75715e"># Volumen para persistencia de logs</span>
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - cloud
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>  crowdsec:
+</span></span><span style="display:flex;"><span>    image: crowdsecurity/crowdsec
+</span></span><span style="display:flex;"><span>    container_name: crowdsec
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      - COLLECTIONS<span style="color:#f92672">=</span>crowdsecurity/traefik crowdsecurity/http-cve
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/traefik/log:/var/log/traefik:ro   <span style="color:#75715e"># comparte los logs</span>
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/crowdsec/data:/var/lib/crowdsec/data
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/crowdsec/config:/etc/crowdsec
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - cloud
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  cloud:
+</span></span><span style="display:flex;"><span>    external: true
+</span></span></code></pre></div><p><strong>Fichero .env</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>CF_DNS_API_TOKEN<span style="color:#f92672">=</span>MI_API_KEY_CLOUDFLARE. <span style="color:#75715e"># Se obtiene en el panel de cloudflare</span>
+</span></span><span style="display:flex;"><span>CROWDSEC_BOUNCER_API_KEY<span style="color:#f92672">=</span> xxxxxxxx <span style="color:#75715e"># Con la última versión del docker-compose se puede borrar</span>
+</span></span><span style="display:flex;"><span>DOMAIN_NAME<span style="color:#f92672">=</span>mi_dominio.com  <span style="color:#75715e"># Con la última versión del docker-compose se puede borrar</span>
+</span></span><span style="display:flex;"><span>EMAIL<span style="color:#f92672">=</span>mi_correo@hotmail.com <span style="color:#75715e"># Con la última versión del docker-compose se puede borrar</span>
+</span></span></code></pre></div><p><strong>Nota Importante: ES IMPRESCINDIBLE QUE LOS SERVICIOS QUE USEMOS CON TRAEFIK ESTÉN EN LA MISMA RED DOCKER. En mi caso se llama cloud</strong></p>
+<h3 id="ficheros-de-configuración">Ficheros de configuración<a hidden class="anchor" aria-hidden="true" href="#ficheros-de-configuración">#</a></h3>
+<p><strong>Traefik - traefik.yml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>api:
+</span></span><span style="display:flex;"><span>  dashboard: false <span style="color:#75715e"># Cuando necesito revisar el dashboard lo cambio a true y reinicio el contenedor. Mientras no sea necesario lo dejo en false.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>providers:
+</span></span><span style="display:flex;"><span>  docker:
+</span></span><span style="display:flex;"><span>    exposedByDefault: false
+</span></span><span style="display:flex;"><span>    network: cloud <span style="color:#75715e"># Debe coincidir con el nombre de tu red externa en docker-compose</span>
+</span></span><span style="display:flex;"><span>  file:
+</span></span><span style="display:flex;"><span>    fileName: /etc/traefik/dynamic_conf.yml
+</span></span><span style="display:flex;"><span>    watch: true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>entryPoints:
+</span></span><span style="display:flex;"><span>  web:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:80&#34;</span>
+</span></span><span style="display:flex;"><span>    http:
+</span></span><span style="display:flex;"><span>      redirections:
+</span></span><span style="display:flex;"><span>        entryPoint:
+</span></span><span style="display:flex;"><span>          to: websecure
+</span></span><span style="display:flex;"><span>          scheme: https
+</span></span><span style="display:flex;"><span>  websecure:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:443&#34;</span>
+</span></span><span style="display:flex;"><span>    transport:
+</span></span><span style="display:flex;"><span>      respondingTimeouts:
+</span></span><span style="display:flex;"><span>        idleTimeout: <span style="color:#ae81ff">3600</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 1. HABILITAR LOGS (Vital para que CrowdSec detecte ataques)</span>
+</span></span><span style="display:flex;"><span>accessLog:
+</span></span><span style="display:flex;"><span>  filePath: <span style="color:#e6db74">&#34;/var/log/traefik/access.log&#34;</span>
+</span></span><span style="display:flex;"><span>  format: json
+</span></span><span style="display:flex;"><span>  bufferingSize: <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>  fields:
+</span></span><span style="display:flex;"><span>    headers:
+</span></span><span style="display:flex;"><span>      defaultMode: keep <span style="color:#75715e"># Mantiene headers para que CrowdSec vea IPs reales</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2. PLUGINS (CrowdSec Bouncer para Traefik v3)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># AQUI AÑADIREMOS EL PLUGIN DE CROWDSEC</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 3. CONFIGURACIÓN DE CERTIFICADOS (Cloudflare DNS Challenge)</span>
+</span></span><span style="display:flex;"><span>certificatesResolvers:
+</span></span><span style="display:flex;"><span>  cloudflare:
+</span></span><span style="display:flex;"><span>    acme:
+</span></span><span style="display:flex;"><span>      email: mi_correo@hotmail.com
+</span></span><span style="display:flex;"><span>      storage: /letsencrypt/acme.json
+</span></span><span style="display:flex;"><span>      dnsChallenge:
+</span></span><span style="display:flex;"><span>        provider: cloudflare
+</span></span><span style="display:flex;"><span>        resolvers:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;1.1.1.1:53&#34;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;8.8.8.8:53&#34;</span>
+</span></span></code></pre></div><p><strong>Traefik - dynamic_conf.yml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>http:
+</span></span><span style="display:flex;"><span>  routers:
+</span></span><span style="display:flex;"><span>    dashboard:
+</span></span><span style="display:flex;"><span>      rule: <span style="color:#e6db74">&#34;Host(`traefik.mi_dominio.com`)&#34;</span>
+</span></span><span style="display:flex;"><span>      service: api@internal
+</span></span><span style="display:flex;"><span>      entryPoints:
+</span></span><span style="display:flex;"><span>        - websecure
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: cloudflare
+</span></span><span style="display:flex;"><span>      middlewares:
+</span></span><span style="display:flex;"><span>        - auth
+</span></span><span style="display:flex;"><span>        - security-headers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  middlewares:
+</span></span><span style="display:flex;"><span>    auth:
+</span></span><span style="display:flex;"><span>      basicAuth:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Generar con: echo $(htpasswd -nB usuario) | sed -e s/\\$/\\$\\$/g</span>
+</span></span><span style="display:flex;"><span>        users:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;noah:</span>$mi_pass_hasheada<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    security-headers:
+</span></span><span style="display:flex;"><span>      headers:
+</span></span><span style="display:flex;"><span>        stsSeconds: <span style="color:#ae81ff">15552000</span>
+</span></span><span style="display:flex;"><span>        stsIncludeSubdomains: true
+</span></span><span style="display:flex;"><span>        stsPreload: true
+</span></span><span style="display:flex;"><span>        forceSTSHeader: true
+</span></span><span style="display:flex;"><span>        frameDeny: true <span style="color:#75715e"># Previene Clickjacking</span>
+</span></span><span style="display:flex;"><span>        contentTypeNosniff: true <span style="color:#75715e"># Previene sniffing de MIME</span>
+</span></span><span style="display:flex;"><span>        browserXssFilter: true
+</span></span><span style="display:flex;"><span>        referrerPolicy: <span style="color:#e6db74">&#34;same-origin&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Ajuste para Nextcloud:</span>
+</span></span><span style="display:flex;"><span>        customFrameOptionsValue: <span style="color:#e6db74">&#34;SAMEORIGIN&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># AQUI AÑADIREMOS EL MIDDLEWARE DE CROWDSEC</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#</span>
+</span></span></code></pre></div><p><strong>Crowdsec - acquis.yaml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>filenames:
+</span></span><span style="display:flex;"><span>  - /var/log/traefik/access.log
+</span></span><span style="display:flex;"><span>poll_without_inotify: true
+</span></span><span style="display:flex;"><span>labels:
+</span></span><span style="display:flex;"><span>  type: traefik
+</span></span></code></pre></div><h3 id="integración-del-bouncer-en-traefik">Integración del bouncer en traefik<a hidden class="anchor" aria-hidden="true" href="#integración-del-bouncer-en-traefik">#</a></h3>
+<p>Iniciamos nuestro compose y no debería lanzar errores.<br>
+Es momento de crear nuestra API key del bouncer crowdsec:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>docker exec -it crowdsec cscli bouncers add traefik-bouncer
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># te devolverá una API key, guárdala</span>
+</span></span></code></pre></div><p>Verificamos que nuestras colecciones estén actualizadas:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec -it crowdsec cscli hub update
+</span></span><span style="display:flex;"><span>docker exec -it crowdsec cscli hub upgrade
+</span></span><span style="display:flex;"><span>docker restart crowdsec
+</span></span></code></pre></div><p>Modificamos nuestros ficheros traefik.yml y dynamic_conf.yml para añadir lo siguente:</p>
+<p><strong>Traefik - traefik.yml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>experimental:
+</span></span><span style="display:flex;"><span>  plugins:
+</span></span><span style="display:flex;"><span>    crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+</span></span><span style="display:flex;"><span>      version: v1.3.5
+</span></span></code></pre></div><p><strong>Traefik - dynamic_conf.yml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>  middlewares:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>...AQUI TENEMOS NUESTROS OTROS MIDDLEWARES......<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>      plugin:
+</span></span><span style="display:flex;"><span>        crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>          Enabled: true
+</span></span><span style="display:flex;"><span>          CrowdsecMode: live          <span style="color:#75715e"># o streaming si prefieres</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiUrl: <span style="color:#e6db74">&#34;http://crowdsec:8080&#34;</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiKey: <span style="color:#e6db74">&#34;ESTA KEY SE GENERA MAS ADELANTE&#34;</span>
+</span></span><span style="display:flex;"><span>          ForwardedHeadersCustomName: <span style="color:#e6db74">&#34;X-Forwarded-For&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Obtenemos la lista oficial de IPs con el siguiente comando:</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># curl https://www.cloudflare.com/ips-v4 -o cloudflare-ips-v4.txt</span>
+</span></span><span style="display:flex;"><span>          ForwardedHeadersTrustedIps:
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.21.244.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.22.200.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.31.4.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.16.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.24.0.0/14&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;108.162.192.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;131.0.72.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;141.101.64.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;162.158.0.0/15&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;172.64.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;173.245.48.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;188.114.96.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;190.93.240.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;197.234.240.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;198.41.128.0/17&#34;</span>
+</span></span></code></pre></div><p><strong>Ficheros completos:</strong></p>
+<p><strong>Traefik - traefik.yml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>api:
+</span></span><span style="display:flex;"><span>  dashboard: false <span style="color:#75715e"># Cuando necesito revisar el dashboard lo cambio a true y reinicio el contenedor. Mientras no sea necesario lo dejo en false.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>providers:
+</span></span><span style="display:flex;"><span>  docker:
+</span></span><span style="display:flex;"><span>    exposedByDefault: false
+</span></span><span style="display:flex;"><span>    network: cloud <span style="color:#75715e"># Debe coincidir con el nombre de tu red externa en docker-compose</span>
+</span></span><span style="display:flex;"><span>  file:
+</span></span><span style="display:flex;"><span>    fileName: /etc/traefik/dynamic_conf.yml
+</span></span><span style="display:flex;"><span>    watch: true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>entryPoints:
+</span></span><span style="display:flex;"><span>  web:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:80&#34;</span>
+</span></span><span style="display:flex;"><span>    http:
+</span></span><span style="display:flex;"><span>      redirections:
+</span></span><span style="display:flex;"><span>        entryPoint:
+</span></span><span style="display:flex;"><span>          to: websecure
+</span></span><span style="display:flex;"><span>          scheme: https
+</span></span><span style="display:flex;"><span>  websecure:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:443&#34;</span>
+</span></span><span style="display:flex;"><span>    transport:
+</span></span><span style="display:flex;"><span>      respondingTimeouts:
+</span></span><span style="display:flex;"><span>        idleTimeout: <span style="color:#ae81ff">3600</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 1. HABILITAR LOGS (Vital para que CrowdSec detecte ataques)</span>
+</span></span><span style="display:flex;"><span>accessLog:
+</span></span><span style="display:flex;"><span>  filePath: <span style="color:#e6db74">&#34;/var/log/traefik/access.log&#34;</span>
+</span></span><span style="display:flex;"><span>  format: json
+</span></span><span style="display:flex;"><span>  bufferingSize: <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>  fields:
+</span></span><span style="display:flex;"><span>    headers:
+</span></span><span style="display:flex;"><span>      defaultMode: keep <span style="color:#75715e"># Mantiene headers para que CrowdSec vea IPs reales</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2. PLUGINS (CrowdSec Bouncer para Traefik v3)</span>
+</span></span><span style="display:flex;"><span>experimental:
+</span></span><span style="display:flex;"><span>  plugins:
+</span></span><span style="display:flex;"><span>    crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+</span></span><span style="display:flex;"><span>      version: v1.3.5
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 3. CONFIGURACIÓN DE CERTIFICADOS (Cloudflare DNS Challenge)</span>
+</span></span><span style="display:flex;"><span>certificatesResolvers:
+</span></span><span style="display:flex;"><span>  cloudflare:
+</span></span><span style="display:flex;"><span>    acme:
+</span></span><span style="display:flex;"><span>      email: mi_correo@hotmail.com
+</span></span><span style="display:flex;"><span>      storage: /letsencrypt/acme.json
+</span></span><span style="display:flex;"><span>      dnsChallenge:
+</span></span><span style="display:flex;"><span>        provider: cloudflare
+</span></span><span style="display:flex;"><span>        resolvers:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;1.1.1.1:53&#34;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;8.8.8.8:53&#34;</span>
+</span></span></code></pre></div><p><strong>Traefik - dynamic_conf.yml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>http:
+</span></span><span style="display:flex;"><span>  routers:
+</span></span><span style="display:flex;"><span>    dashboard:
+</span></span><span style="display:flex;"><span>      rule: <span style="color:#e6db74">&#34;Host(`traefik.mi_dominio.com`)&#34;</span>
+</span></span><span style="display:flex;"><span>      service: api@internal
+</span></span><span style="display:flex;"><span>      entryPoints:
+</span></span><span style="display:flex;"><span>        - websecure
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: cloudflare
+</span></span><span style="display:flex;"><span>      middlewares:
+</span></span><span style="display:flex;"><span>        - auth
+</span></span><span style="display:flex;"><span>        - security-headers
+</span></span><span style="display:flex;"><span>        - crowdsec-bouncer <span style="color:#75715e"># Protegemos el dashboard con crowdsec</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  middlewares:
+</span></span><span style="display:flex;"><span>    auth:
+</span></span><span style="display:flex;"><span>      basicAuth:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Generar con: echo $(htpasswd -nB usuario) | sed -e s/\\$/\\$\\$/g</span>
+</span></span><span style="display:flex;"><span>        users:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;noah:</span>$mi_pass_hasheada<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    security-headers:
+</span></span><span style="display:flex;"><span>      headers:
+</span></span><span style="display:flex;"><span>        stsSeconds: <span style="color:#ae81ff">15552000</span>
+</span></span><span style="display:flex;"><span>        stsIncludeSubdomains: true
+</span></span><span style="display:flex;"><span>        stsPreload: true
+</span></span><span style="display:flex;"><span>        forceSTSHeader: true
+</span></span><span style="display:flex;"><span>        frameDeny: true <span style="color:#75715e"># Previene Clickjacking</span>
+</span></span><span style="display:flex;"><span>        contentTypeNosniff: true <span style="color:#75715e"># Previene sniffing de MIME</span>
+</span></span><span style="display:flex;"><span>        browserXssFilter: true
+</span></span><span style="display:flex;"><span>        referrerPolicy: <span style="color:#e6db74">&#34;same-origin&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Ajuste para Nextcloud:</span>
+</span></span><span style="display:flex;"><span>        customFrameOptionsValue: <span style="color:#e6db74">&#34;SAMEORIGIN&#34;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>      plugin:
+</span></span><span style="display:flex;"><span>        crowdsec-bouncer:
+</span></span><span style="display:flex;"><span>          Enabled: true
+</span></span><span style="display:flex;"><span>          CrowdsecMode: live          <span style="color:#75715e"># o streaming si prefieres</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiUrl: <span style="color:#e6db74">&#34;http://crowdsec:8080&#34;</span>
+</span></span><span style="display:flex;"><span>          CrowdsecLapiKey: <span style="color:#e6db74">&#34;zEtyY2gJsQgQca03vEvWWwcowSG8f9yJz84nF95qZq4&#34;</span>
+</span></span><span style="display:flex;"><span>          ForwardedHeadersCustomName: <span style="color:#e6db74">&#34;X-Forwarded-For&#34;</span>
+</span></span><span style="display:flex;"><span>          ForwardedHeadersTrustedIps:
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.21.244.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.22.200.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;103.31.4.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.16.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;104.24.0.0/14&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;108.162.192.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;131.0.72.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;141.101.64.0/18&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;162.158.0.0/15&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;172.64.0.0/13&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;173.245.48.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;188.114.96.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;190.93.240.0/20&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;197.234.240.0/22&#34;</span>
+</span></span><span style="display:flex;"><span>            - <span style="color:#e6db74">&#34;198.41.128.0/17&#34;</span>
+</span></span></code></pre></div><h3 id="obtener-las-ips-confiables-de-cloudflare">Obtener las IPs confiables de cloudflare<a hidden class="anchor" aria-hidden="true" href="#obtener-las-ips-confiables-de-cloudflare">#</a></h3>
+<p>Para configurar ForwardedHeadersTrustedIps con precisión en el middleware de CrowdSec, se usan las IPs de Cloudflare. Esto evita que IPs falsas se usen para evadir bloqueos.<br>
+​
+Lista oficial de IPs de Cloudflare.</p>
+<p>Cloudflare publica sus rangos IPv4/IPv6 en dos archivos JSON. Los podemos obetner así</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Desde la terminal de Unraid (donde corre Docker)</span>
+</span></span><span style="display:flex;"><span>curl https://www.cloudflare.com/ips-v4 -o cloudflare-ips-v4.txt
+</span></span><span style="display:flex;"><span>curl https://www.cloudflare.com/ips-v6 -o cloudflare-ips-v6.txt
+</span></span></code></pre></div><p>Las IPs que obtenemos las añadimos al fichero dynamic_conf.yml, apartado <strong>ForwardedHeadersTrustedIps</strong> del middleware crowdsec-bouncer.</p>
+<h3 id="puesta-en-marcha-y-comprobación">Puesta en marcha y comprobación<a hidden class="anchor" aria-hidden="true" href="#puesta-en-marcha-y-comprobación">#</a></h3>
+<p>Con todo esto reiniciamos el stack de docker y debería arrancar funcionando sin errores. Revisaremos los logs para verificar fallos.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker compose down
+</span></span><span style="display:flex;"><span>docker compose up -d
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># En Unraid lo hacemos de forma gráfica</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker logs traefik | grep -i crowdsec
+</span></span><span style="display:flex;"><span>docker logs crowdsec
+</span></span><span style="display:flex;"><span>docker exec crowdsec cscli decisions list
+</span></span></code></pre></div><p>Comandos intersantes de crowdsec:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Listado de decisiones tomadas</span>
+</span></span><span style="display:flex;"><span>docker exec -it crowdsec cscli decisions list
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Métricas completas de crowdsec</span>
+</span></span><span style="display:flex;"><span>docker exec -it crowdsec cscli metrics
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Unban IP</span>
+</span></span><span style="display:flex;"><span>docker exec -it crowdsec cscli decisions delete -i x.x.x.x
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Banear una IP</span>
+</span></span><span style="display:flex;"><span>docker exec -it crowdsec cscli decisions add --ip xx.xx.xx.xx --duration 1h
+</span></span></code></pre></div><h3 id="enrutar-servicios-a-través-de-traefik">Enrutar servicios a través de traefik<a hidden class="anchor" aria-hidden="true" href="#enrutar-servicios-a-través-de-traefik">#</a></h3>
+<p>Las etiquetas básicas que debe llevar cualquier servicio para que traefik lo enrute son las siguientes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Ejemplo para nuestro karakeep  </span>
+</span></span><span style="display:flex;"><span>traefik.enable<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>traefik.http.routers.karakeep.rule<span style="color:#f92672">=</span>Host<span style="color:#f92672">(</span><span style="color:#e6db74">`</span>karakeep.mi_dominio.com<span style="color:#e6db74">`</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>traefik.http.routers.karakeep.entrypoints<span style="color:#f92672">=</span>websecure
+</span></span><span style="display:flex;"><span>traefik.http.routers.karakeep.tls.certresolver<span style="color:#f92672">=</span>cloudflare
+</span></span><span style="display:flex;"><span>traefik.http.services.karakeep.loadbalancer.server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">3000</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># middelware que vamos a aplicar a este servcio</span>
+</span></span><span style="display:flex;"><span>traefik.http.routers.karakeep.middlewares<span style="color:#f92672">=</span>crowdsec-bouncer@file,security-headers@file
+</span></span></code></pre></div><p>IMPORTANTE: La etiqueta <strong>traefik.http.services.karakeep.loadbalancer.server.port</strong> debe indicar el puerto interno del contenedor, ya que tenemos que recordar que nuestros <strong>servicios siempre deben estar en la misma red que traefik</strong> para que funcionen.<br>
+En mi caso, el docker-compose de karakeep lleva la siguiente configuración de puertos porque el puerto 3000 lo estoy usando para otro servicio:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    <span style="color:#f92672">[</span>....<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>      - 3333:3000
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>....<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Entonces, el acceso a karakeep a través de la red local es:<br>
+http://192.168.10.55:3333</p>
+<p>Pero traefik sólo entiende de la red docker, por lo que el <strong>puerto para traefik es 3000</strong>.</p>
+<h3 id="protección-de-servicios-con-crowdsec">Protección de servicios con crowdsec<a hidden class="anchor" aria-hidden="true" href="#protección-de-servicios-con-crowdsec">#</a></h3>
+<p>Hemos configurado crowdsec como un middleware, por tanto, la solicitud de conexión al servicio debe pasar antes por crowdsec que dirá si permite esa conexión o no.</p>
+<p>Para proteger servicios tenemos dos opciones:<br>
+1.- Configuración estática en dynamic_conf.yml<br>
+2.- Etiquetas traefik en el servicio en cuestión.<br>
+Por facilidad vamos a hacer la segunda opción, a través de etiquetas, así mantenemos más limpio el dynamic_conf.yml y traefik hace una carga en vivo sin reiniciar el proxy.</p>
+<p>Etiqueta:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Ejemplo para Nextcloud. El resto de servicios sería exactamente igual</span>
+</span></span><span style="display:flex;"><span>traefik.http.routers.nextcloud.middlewares<span style="color:#f92672">=</span>rowdsec-bouncer@file,security-headers@file
+</span></span></code></pre></div><h3 id="protección-de-nextcloud">Protección de Nextcloud<a hidden class="anchor" aria-hidden="true" href="#protección-de-nextcloud">#</a></h3>
+<p>Crowdsec tiene una colección específica para Nextcloud. Vamos a proteger nuestra instancia.<br>
+Modificamos el docker-compose añadiendo la colección de crowdsecurity/nextcloud y montando la carpeta donde almacenamos los logs de Nextcloud.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>  crowdsec:
+</span></span><span style="display:flex;"><span>    image: crowdsecurity/crowdsec
+</span></span><span style="display:flex;"><span>    container_name: crowdsec
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      - COLLECTIONS<span style="color:#f92672">=</span>crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/nextcloud
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/traefik/log:/var/log/traefik:ro   <span style="color:#75715e"># comparte los logs</span>
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/nextcloud/config/nextcloud-logs:/var/log/nextcloud:ro   <span style="color:#75715e"># comparte los logs</span>
+</span></span></code></pre></div><p>Reiniciamos crowdsec y podemos actualizar las colletions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec -it crowdsec cscli hub update
+</span></span></code></pre></div><p>Revisamos nuestro config.php de Nextcloud para verificar que los logs se guardan en el lugar correcto:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;mail_smtpport&#39;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;465&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;bulkupload.enabled&#39;</span> <span style="color:#f92672">=</span>&gt; false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;loglevel&#39;</span> <span style="color:#f92672">=</span>&gt; 2,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;logfile&#39;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;/var/www/html/config/nextcloud-logs/nextcloud.log&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;log_rotate_size = 0&#39;</span>,
+</span></span></code></pre></div><p>Modificamos nuestro fichero acquis.yaml de crowdsec, quedano así:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Logs de Traefik (para todo lo que pasa por el proxy)</span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>filenames:
+</span></span><span style="display:flex;"><span>  - /var/log/traefik/access.log
+</span></span><span style="display:flex;"><span>poll_without_inotify: true
+</span></span><span style="display:flex;"><span>labels:
+</span></span><span style="display:flex;"><span>  type: traefik
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Logs de Nextcloud (brute-force y eventos específicos NC)</span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>filenames:
+</span></span><span style="display:flex;"><span>  - /var/log/nextcloud/nextcloud.log
+</span></span><span style="display:flex;"><span>labels:
+</span></span><span style="display:flex;"><span>  type: nextcloud
+</span></span></code></pre></div><p>Reiniciamos y verificamos si se están parseando los dos ficheros de logs que tenemos:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker restart crowdsec
+</span></span><span style="display:flex;"><span>docker exec crowdsec cscli metrics  <span style="color:#75715e"># Verifica parsing</span>
+</span></span></code></pre></div><p><img alt="crowdsec-nextcloud.png" loading="lazy" src="crowdsec-nextcloud.png"></p>
+<p>Con esta configuración Nextcloud registraba la dirección IP de Cloudflare, no la IP real del usuario que accede a Nextcloud. Vamos a arreglarlo.<br>
+Problema clásico Cloudflare + Traefik + Nextcloud: Nextcloud ve IP de Cloudflare porque no confía en Traefik como proxy ni lee el header CF-Connecting-IP (IP real que pasa Cloudflare).</p>
+<p>Editamos nuestro fichero config.php de Nextcloud:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>  <span style="color:#f92672">[</span>.......<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;dbtype&#39;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;mysql&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;version&#39;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;32.0.5.0&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;trusted_proxies&#39;</span> <span style="color:#f92672">=</span>&gt; 
+</span></span><span style="display:flex;"><span>  array <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>    0 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;192.168.10.55&#39;</span>,
+</span></span><span style="display:flex;"><span>// añadida rango IP de nuestra red <span style="color:#e6db74">&#34;cloud&#34;</span> de docker:
+</span></span><span style="display:flex;"><span>    1 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;172.21.0.0/16&#39;</span>,
+</span></span><span style="display:flex;"><span>// añadidas IPs de clouflare para que Nextcloud confíe en ellas:
+</span></span><span style="display:flex;"><span>    2 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;103.21.244.0/22&#39;</span>,
+</span></span><span style="display:flex;"><span>    3 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;103.22.200.0/22&#39;</span>,
+</span></span><span style="display:flex;"><span>    4 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;103.31.4.0/22&#39;</span>,
+</span></span><span style="display:flex;"><span>    5 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;104.16.0.0/13&#39;</span>,
+</span></span><span style="display:flex;"><span>    6 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;104.24.0.0/14&#39;</span>,
+</span></span><span style="display:flex;"><span>    7 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;108.162.192.0/18&#39;</span>,
+</span></span><span style="display:flex;"><span>    8 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;131.0.72.0/22&#39;</span>,
+</span></span><span style="display:flex;"><span>    9 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;141.101.64.0/18&#39;</span>,
+</span></span><span style="display:flex;"><span>    10 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;162.158.0.0/15&#39;</span>,
+</span></span><span style="display:flex;"><span>    11 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;172.64.0.0/13&#39;</span>,
+</span></span><span style="display:flex;"><span>    12 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;173.245.48.0/20&#39;</span>,
+</span></span><span style="display:flex;"><span>    13 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;188.114.96.0/20&#39;</span>,
+</span></span><span style="display:flex;"><span>    14 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;190.93.240.0/20&#39;</span>,
+</span></span><span style="display:flex;"><span>    15 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;197.234.240.0/22&#39;</span>,
+</span></span><span style="display:flex;"><span>    16 <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;198.41.128.0/17&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">)</span>,
+</span></span><span style="display:flex;"><span>// añadida según info de perplexity para que crowdsec funcione bien.
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;forwarded_for_headers&#39;</span> <span style="color:#f92672">=</span>&gt; 
+</span></span><span style="display:flex;"><span>  array <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;HTTP_CF_CONNECTING_IP&#39;</span>,    // ← IP real de Cloudflare
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;HTTP_X_FORWARDED_FOR&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;HTTP_X_FORWARDED&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;HTTP_X_CLUSTER_CLIENT_IP&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;HTTP_FORWARDED_FOR&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;HTTP_FORWARDED&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;REMOTE_ADDR&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">)</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;overwrite.cli.url&#39;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;https://nextcloud.mi_dominio.com&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;overwritehost&#39;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#39;nextcloud.mi_dominio.com&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[</span>......<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Y añadimos las siguientes etiquetas al docker-compose de Nextcloud:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Esta primera la editamos como sigue:</span>
+</span></span><span style="display:flex;"><span>traefik.http.routers.nextcloud.middlewares<span style="color:#f92672">=</span>crowdsec-bouncer@file,security-headers@file,nextcloud-headers@docker
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Estas se añaden nuevas:</span>
+</span></span><span style="display:flex;"><span>traefik.http.middlewares.nextcloud-headers.headers.customrequestheaders.X-Forwarded-Proto<span style="color:#f92672">=</span>https
+</span></span><span style="display:flex;"><span>traefik.http.middlewares.nextcloud-headers.headers.customrequestheaders.X-Forwarded-For<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>traefik.http.middlewares.nextcloud-headers.headers.customrequestheaders.X-Forwarded-Port<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>traefik.http.middlewares.nextcloud-headers.headers.customrequestheaders.X-Real-IP<span style="color:#f92672">={{</span>.ClientIP <span style="color:#f92672">}}</span>
+</span></span></code></pre></div><p>Y con esto nuestro Nextcloud ya detecta la IP verdadera para, si procede, banearla.</p>
+<h3 id="conexión-de-nuestro-contenedor-a-crowdsecnet">Conexión de nuestro contenedor a Crowdsec.net<a hidden class="anchor" aria-hidden="true" href="#conexión-de-nuestro-contenedor-a-crowdsecnet">#</a></h3>
+<p>Accedemos a nuestra cuenta en <a href="https://app.crowdsec.net/">https://app.crowdsec.net/</a>.</p>
+<p>En el dashboard → Security Engines → Add Instance (o &ldquo;Engines&rdquo;)</p>
+<p>Copia el Enrollment Token que genera (algo como cscli console enroll abc123&hellip;def456)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Registrar con el token</span>
+</span></span><span style="display:flex;"><span>docker exec -it crowdsec cscli console enroll TU_ENROLLMENT_TOKEN_AQUI
+</span></span></code></pre></div><p>Esto creará /etc/crowdsec/online_api_credentials.yaml con login y password válidos.<br>
+Reiniciamos nuestro contenedor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker restart crowdsec
+</span></span><span style="display:flex;"><span>docker logs crowdsec | grep -i capi
+</span></span></code></pre></div><p>Volvemos al dashboard de crowdsec.net y aceptamos el enrolado del equipo. Podemos cambiar el nombre para ser más visual al acceder. En mi caso le puse Unraid.<br>
+Ventajas de conectar a Console:<br>
+1.- Dashboard web con alertas en tiempo real<br>
+2.- Blocklist comunitaria (millones de IPs malas)<br>
+3.- Métricas globales y threat intel</p>
+<p>**En mi caso, al final no hice el enrolado del equipo por los siguientes motivos:</p>
+<h3 id="notificaciones-en-telegram-de-crowdsec">Notificaciones en Telegram de Crowdsec<a hidden class="anchor" aria-hidden="true" href="#notificaciones-en-telegram-de-crowdsec">#</a></h3>
+<p>Para añadir notificaciones realizamos la siguiente configuración:</p>
+<p><strong>IMPORTANTE: DETENEMOS EL COMPOSE</strong></p>
+<p>Fichero <strong>/mnt/user/appdata/crowdsec/config/notifications/http.yaml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>type: http                <span style="color:#75715e"># No cambiar</span>
+</span></span><span style="display:flex;"><span>name: telegram      <span style="color:#75715e"># Nombre que usaremos en el perfil</span>
+</span></span><span style="display:flex;"><span>log_level: info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># URL de la API de Telegram con tu TOKEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Mucho OJO en la url - Está bien escrita</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url: https://api.telegram.org/botXXXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXX_XXXXXXXXXXXXXXXX/sendMessage
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>method: POST
+</span></span><span style="display:flex;"><span>headers:
+</span></span><span style="display:flex;"><span>  Content-Type: application/json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Formato del mensaje (JSON)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Formato del mensaje (JSON)</span>
+</span></span><span style="display:flex;"><span>format: |
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;chat_id&#34;</span>: <span style="color:#e6db74">&#34;-5002897396&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;{{range .}}{{</span>$alert<span style="color:#e6db74"> := .}}{{range .Decisions}}IP {{.Value}} baneada {{.Duration}} por {{.Scenario}}{{end}}{{end}}&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;parse_mode&#34;</span>: <span style="color:#e6db74">&#34;HTML&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Fichero <strong>/mnt/user/appdata/crowdsec/config/profiles.yaml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>name: default_ip_remediation
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#debug: true</span>
+</span></span><span style="display:flex;"><span>filters:
+</span></span><span style="display:flex;"><span> - Alert.Remediation <span style="color:#f92672">==</span> true <span style="color:#f92672">&amp;&amp;</span> Alert.GetScope<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Ip&#34;</span>
+</span></span><span style="display:flex;"><span>decisions:
+</span></span><span style="display:flex;"><span> - type: ban
+</span></span><span style="display:flex;"><span>   duration: 4h
+</span></span><span style="display:flex;"><span>notifications:
+</span></span><span style="display:flex;"><span> - telegram
+</span></span></code></pre></div><p>Probamos a enviar una notificación de prueba:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec -it crowdsec cscli notifications test telegram
+</span></span></code></pre></div><p>Versión tuneada de notificaciones en Telegram. Tomando como ejemplo el modelo de <a href="https://docs.crowdsec.net/docs/local_api/notification_plugins/telegram">la documentación de crowdsec.net</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>type: http          # Don&#39;t change
+</span></span><span style="display:flex;"><span>name: telegram      # Must match the registered plugin in the profile
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span># One of <span style="color:#e6db74">&#34;trace&#34;</span>, <span style="color:#e6db74">&#34;debug&#34;</span>, <span style="color:#e6db74">&#34;info&#34;</span>, <span style="color:#e6db74">&#34;warn&#34;</span>, <span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#e6db74">&#34;off&#34;</span>
+</span></span><span style="display:flex;"><span>log_level: info
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>format: |
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>   &#34;chat_id&#34;: &#34;-5002897396&#34;, 
+</span></span><span style="display:flex;"><span>   &#34;text&#34;: &#34;
+</span></span><span style="display:flex;"><span>     {{range . -}}  
+</span></span><span style="display:flex;"><span>     {{$alert := . -}}  
+</span></span><span style="display:flex;"><span>     {{range .Decisions -}}
+</span></span><span style="display:flex;"><span>     🚨 CrowdSec Alert on MyServer! 🚨
+</span></span><span style="display:flex;"><span>  🆔 IP: {{.Value}}
+</span></span><span style="display:flex;"><span>  ⚠️  Scenario: {{ .Scenario }}
+</span></span><span style="display:flex;"><span>  🚧 Decision:  {{.Type}} for next {{.Duration}}
+</span></span><span style="display:flex;"><span>     {{end -}}
+</span></span><span style="display:flex;"><span>     {{end -}}
+</span></span><span style="display:flex;"><span>   &#34;,
+</span></span><span style="display:flex;"><span>   &#34;reply_markup&#34;: {
+</span></span><span style="display:flex;"><span>      &#34;inline_keyboard&#34;: [
+</span></span><span style="display:flex;"><span>          {{ $arrLength := len . -}}
+</span></span><span style="display:flex;"><span>          {{ range $i, $value := . -}}
+</span></span><span style="display:flex;"><span>          {{ $V := $value.Source.Value -}}
+</span></span><span style="display:flex;"><span>          [
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  &#34;text&#34;: &#34;See {{ $V }} on shodan.io&#34;,
+</span></span><span style="display:flex;"><span>                  &#34;url&#34;: &#34;https://www.shodan.io/host/{{ $V -}}&#34;
+</span></span><span style="display:flex;"><span>              },
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  &#34;text&#34;: &#34;See {{ $V }} on crowdsec.net&#34;,
+</span></span><span style="display:flex;"><span>                  &#34;url&#34;: &#34;https://app.crowdsec.net/cti/{{ $V -}}&#34;
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>          ]{{if lt $i ( sub $arrLength 1) }},{{end }}
+</span></span><span style="display:flex;"><span>      {{end -}}
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>url: https://api.telegram.org/botXXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/sendMessage
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>method: POST
+</span></span><span style="display:flex;"><span>headers:
+</span></span><span style="display:flex;"><span>  Content-Type: &#34;application/json&#34;
+</span></span></code></pre></div><hr>
+<p>Fuentes y enlaces de interés que ayudaran a complementar esta guía:</p>
+<p><a href="https://doc.traefik.io/traefik/getting-started/quick-start/">Traefik</a> <br>
+<a href="https://docs.crowdsec.net/docs/appsec/quickstart/traefik/">Crowdsec</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/unraid/">Unraid</a></li>
+      <li><a href="http://localhost:1313/tags/software/">Software</a></li>
+      <li><a href="http://localhost:1313/tags/config/">Config</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Mi Blog Personal</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
