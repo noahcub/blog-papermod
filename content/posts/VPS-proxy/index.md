@@ -129,11 +129,12 @@ services:
       - ./traefik/logs:/var/log/traefik
 
   crowdsec:
-    image: crowdsecurity/crowdsec
+    image: crowdsecurity/crowdsec:latest
     container_name: crowdsec
     restart: unless-stopped
     environment:
-      - COLLECTIONS=crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/appsec-generic-rules
+      - COLLECTIONS=crowdsecurity/traefik crowdsecurity/http-cve 
+      # ESTAS COLECCIONES LAS AÑADIREMOS LUEGO crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
       - DISABLE_CAPI=true  # Ignora CAPI completamente
     volumes:
       - ./traefik/logs:/var/log/traefik:ro   # comparte los logs
@@ -149,7 +150,7 @@ networks:
 
 ***IMPORTANTE***: Las colecciones de crowdsec que he incluido son las siguientes:
 ```bash
-- COLLECTIONS=crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/appsec-generic-rules
+- COLLECTIONS=crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
 # La coleccion appsec es para usar el WAF integrado que tiene crowdsec
 ```
 
@@ -236,7 +237,7 @@ experimental:
   plugins:
     crowdsec-bouncer:
       moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-      version: v1.3.5
+      version: v1.5.1 # Ultima versión en el momento de la configuración. IMPORTANTE VERIFICAR
 
     geoblock:
       moduleName: github.com/PascalMinder/geoblock
@@ -301,10 +302,13 @@ http:
           CrowdsecLapiUrl: "http://crowdsec:8080"
           CrowdsecLapiKey: "07F+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
-          # Configuración del WAF (AppSec)
-          appsecEnabled: true
-          appsecHost: "crowdsec:7422" # Puerto por defecto del WAF en el contenedor crowdsec
-          appsecFailureAction: "passthrough" # Si el WAF falla, deja pasar (o "block" para máxima seguridad)
+          # Configuración del WAF se añade luego junto con las colecciones (AppSec)
+          crowdsecAppsecEnabled: true
+          crowdsecAppsecHost: "crowdsec:7422" # Puerto por defecto del WAF en el contenedor crowdsec
+          crowdsecAppsecFailureBlock: true
+          crowdsecAppsecUnreachableBlock: true
+          #appsecFailureAction: "passthrough" # Si el WAF falla, deja pasar (o "block" para máxima seguridad)
+
           ForwardedHeadersCustomName: "X-Forwarded-For"
           ForwardedHeadersTrustedIps:
             - "103.21.244.0/22"
@@ -538,6 +542,127 @@ method: POST
 headers:
   Content-Type: "application/json"
 ```
+En este momento podemos arrancar nuestro compose y debería funcionar todo correctamente.
+
+### APPSEC para Crowdsec
+Según la web de [Crowdsec](https://docs.crowdsec.net/docs/appsec/intro/), Appsec es un WAF que ofrece las siguientes características:  
+1.- Aplicación de parches virtuales con bajo esfuerzo.
+2.- Compatibilidad con reglas heredadas de ModSecurity.
+3.- Protección WAF clásica más funciones de CrowdSec para detección avanzada de comportamiento.
+4.- Integración completa con la pila CrowdSec, incluidos la consola y los componentes de remediación.  
+
+Para integrarlo realizamos los siguientes pasos:
+
+```bash
+# Detenemos nuestro stack
+docker compose down
+```
+
+Añadimos a nuestro docker-compose las colecciones:
+```bash
+- COLLECTIONS=crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+
+```
+```bash
+# Arrancamos nuevamente la pila
+docker compose up -d
+```
+
+Tenemos que crear un fichero de adquisiciones para Appsec. Antes de eso debemos descargar las reglas de appsec porque sino el contenedor de crowdsec no arrancará (me dió este problema y estuvo volviendome loco hasta encontrar una solución por la red).   
+
+Descargamos las reglas:
+```bash
+docker exec crowdsec cscli collections install crowdsecurity/appsec-virtual-patching
+docker exec crowdsec cscli collections install crowdsecurity/appsec-generic-rule
+```
+
+Reiniciamos crowdsec:
+```bash
+docker compose restart crowdsec
+```
+
+Ahora podemos verificar que ha arrancado correctamente sin reinicios con 
+```bash
+docker stats
+```
+
+Creamos el fichero de adquisiciones:
+```bash
+sudo nano /crowdsec/config/acquis.d/appsec.yaml
+
+#Añadimos esto al fichero:
+appsec_config: crowdsecurity/appsec-default
+labels:
+  type: appsec
+listen_addr: 0.0.0.0:7422
+source: appsec
+```
+
+Y reiniciamos nuevamente crowdsec:
+```bash
+docker compose restart crowdsec
+```
+
+Verificaciones a realizar para comprobar que funciona correctamente:
+```bash
+docker exec crowdsec cscli appsec-rules list
+
+# Genera un listado de las reglas que están activas:
+------------------------------------------------------------------------------------------------------------------------------------------
+ APPSEC-RULES                                                                                                                             
+------------------------------------------------------------------------------------------------------------------------------------------
+ Name                                             📦 Status    Version  Local Path                                                        
+------------------------------------------------------------------------------------------------------------------------------------------
+ crowdsecurity/appsec-generic-test                ✔️  enabled  0.3      /etc/crowdsec/appsec-rules/appsec-generic-test.yaml               
+ crowdsecurity/base-config                        ✔️  enabled  0.1      /etc/crowdsec/appsec-rules/base-config.yaml                       
+ crowdsecurity/experimental-no-user-agent         ✔️  enabled  0.1      /etc/crowdsec/appsec-rules/experimental-no-user-agent.yaml        
+ crowdsecurity/generic-freemarker-ssti            ✔️  enabled  0.3      /etc/crowdsec/appsec-rules/generic-freemarker-ssti.yaml    
+```
+  
+```bash
+docker exec crowdsec cscli metrics show appsec
+#Metricas de Appsec
++-------------------------------------+
+| Appsec Metrics                      |
++---------------+-----------+---------+
+| Appsec Engine | Processed | Blocked |
++---------------+-----------+---------+
+| 0.0.0.0:7422/ | 361       | -       |
++---------------+-----------+---------+
+```
+   
+```bash
+╰─ docker exec crowdsec cscli appsec-configs list
+----------------------------------------------------------------------------------------------------------
+ APPSEC-CONFIGS                                                                                           
+----------------------------------------------------------------------------------------------------------
+ Name                            📦 Status    Version  Local Path                                         
+----------------------------------------------------------------------------------------------------------
+ crowdsecurity/appsec-default    ✔️  enabled  0.4      /etc/crowdsec/appsec-configs/appsec-default.yaml   
+ crowdsecurity/generic-rules     ✔️  enabled  0.4      /etc/crowdsec/appsec-configs/generic-rules.yaml    
+ crowdsecurity/virtual-patching  ✔️  enabled  0.4      /etc/crowdsec/appsec-configs/virtual-patching.yaml 
+----------------------------------------------------------------------------------------------------------
+```
+
+
+
+En teoría, siguiendo las ]instrucciones de crowdsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik) deberíamos mapear el fichero en el contenedor de docker, **pero yo no lo he hecho y funciona igual**:
+
+```bash
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    restart: unless-stopped
+
+    environment:
+      - COLLECTIONS=crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      - DISABLE_CAPI=true  # Ignora CAPI completamente
+
+    volumes:
+#      - ./crowdsec/config/acquis.d/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml
+      [......]
+```
+
 
 ### EXTRA: Ampliar la capacidad de RAM de nuestro VPS con swap
 
@@ -571,3 +696,4 @@ htop
 Fuentes y enlaces de interés que ayudaran a complementar esta guía:  
 
 [Instalación de traefik sin etiquetas](https://www.manelrodero.com/blog/instalacion-y-uso-de-traefik-en-docker-sin-etiquetas)    
+[Crowdsec WAF - Appsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik)
