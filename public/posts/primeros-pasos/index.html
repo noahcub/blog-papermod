@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Primeros pasos con Fedora Gnome | Las notas de Noah</title>
 <meta name="keywords" content="Admin">
 <meta name="description" content="Instalación y configuración de Fedora Workstation Gnome">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/primeros-pasos/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/primeros-pasos/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/primeros-pasos/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/primeros-pasos/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,78 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/primeros-pasos/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Primeros pasos con Fedora Gnome">
+  <meta property="og:description" content="Instalación y configuración de Fedora Workstation Gnome">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-02-02T18:00:00+02:00">
+    <meta property="article:modified_time" content="2023-02-02T18:00:00+02:00">
+    <meta property="article:tag" content="Admin">
+      <meta property="og:image" content="https://blog.lasnotasdenoah.com/posts/primeros-pasos/automatic-problem-reporting-feature.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.lasnotasdenoah.com/posts/primeros-pasos/automatic-problem-reporting-feature.png">
+<meta name="twitter:title" content="Primeros pasos con Fedora Gnome">
+<meta name="twitter:description" content="Instalación y configuración de Fedora Workstation Gnome">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Primeros pasos con Fedora Gnome",
+      "item": "https://blog.lasnotasdenoah.com/posts/primeros-pasos/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Primeros pasos con Fedora Gnome",
+  "name": "Primeros pasos con Fedora Gnome",
+  "description": "Instalación y configuración de Fedora Workstation Gnome",
+  "keywords": [
+    "Admin"
+  ],
+  "articleBody": "Primeros pasos después de instalar Fedora o Debian NOTA: Aunque la mayor parte de este post se centra en Fedora, debo decir que Debian para mí siempre será la mejor, por ese motivo he añadido unas notas sobre instalación en Debian. Configurar DNF para descargas más rápidas:\nsudo nano /etc/dnf/dnf.conf y añadimos la siguiente línea:\nmax_parallel_downloads=10 Realizamos una acutalización completa del sistema:\nsudo dnf upgrade -y Habilitamos los respostorios de RPM Fusion:\nsudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm Compatibilidad con ciertos formatos comprimidos, así como OpenSSL para usar la extensión GSConnect:\nsudo dnf install openssl unrar p7zip p7zip-plugins Principales codecs multimedia:\nsudo dnf install gstreamer1-plugins-bad-free-extras gstreamer1-plugin-openh264 gstreamer1-plugins-good-extras mozilla-openh264 gstreamer1-plugins-bad-free-fluidsynth gstreamer1-plugins-bad-free-wildmidi gstreamer1-svt-av1 sudo dnf install vlc ACTUALIZACIÓN 28/07/2025 He tenido problemas de reproducción de videos H.265 del sistema CCTV. Para solucionarlo he tenido que instalar los siguientes paquetes según este hilo de los foros de Fedora:\nEsto creo que no es necesario porque los repositorios rpmfusion ya deberían estar instalados de los pasos anteriores:\nsudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm sudo dnf install libavcodec-freeworld --allowerasing sudo dnf install intel-media-driver --allowerasing Por defecto Fedora ofrece la versión libre para el códec de vídeo H264, que resulta insuficiente. Con la anterior orden ampliamos el soporte, pero si usamos Firefox debemos efectuar un pequeño cambio: Menú \u003e Complementos y temas \u003e Plugins, y allí activaremos el códec Open H264 de Cisco. Esta información ha sido obtenida de la web thecheis.com.\nAñadimos el repositorio de Flathub:\nflatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo Solo para Debian Si queremos tener disponible el software de faltpak en el administrador de software de gnome debemos instalar el siguiente paquete:\nsudo apt install gnome-software-plugin-flatpak En la instalación Fedora no pregunta por el nombre del host. Ahora podemos modificarlo:\nsudo hostnamectl set-hostname \"New_Custom_Name\" Instalamos las aplicaciones esenciales para personalizar Gnome:\nsudo dnf install gnome-tweaks gnome-extensions-app Instalamos también Extension Manager desde el administrador de Software de Gnome (es una aplicación Flatpak).\nInstalamos Flatseal y Warehouse, que son aplicaciones de Flatpak para gestionar permisos y almacenamientos de estas aplicaciones. Extensiones instaladas: Habilitamos Maximizar y Minimizar en las ventanas:\nHabilitar/deshabilitar los informes de errores: Configuraciones de energía: Habilitamos luz nocturna para reducir la fatiga visual: Ordenación de directorios antes de los ficheros: Configuraciones de papelera de reciclaje: Nota: Lista de flatpak que he instalado a mayores de lo que había:\nWarp app.drey.Warp 0.6.1 stable flathub system teams-for-linux com.github.IsmaelMartinez.teams_for_linux 1.3.19 stable flathub system Flatseal com.github.tchx84.Flatseal 2.1.0 stable flathub system IntelliJ IDEA Community com.jetbrains.IntelliJ-IDEA-Community 2023.2.5 stable flathub system Extension Manager com.mattjakeman.ExtensionManager 0.4.3 stable flathub system Warehouse io.github.flattool.Warehouse 1.3.0 stable flathub system Kooha io.github.seadve.Kooha 2.2.4 stable flathub system SaveDesktop io.github.vikdevelop.SaveDesktop 2.9 stable flathub system Photoflare io.photoflare.photoflare 1.6.13 stable flathub system Joplin net.cozic.joplin_desktop 2.12.19 stable flathub system Geary org.gnome.Geary 44.1 stable fedora system Kasts org.kde.kasts 23.08.1 stable fedora system Nota: Lista de paquetes instalados por dnf:\n8 sudo dnf install vlc conky zsh 14 sudo dnf install teams 17 sudo dnf install gnome-tweaks gnome-extensions-app 19 sudo dnf install timeshift 20 sudo dnf install firewall-config firewall-applet 28 sudo dnf install translate-shell 31 sudo dnf install nvme-cli 38 sudo dnf install etherwake 39 sudo dnf install ether-wake 40 sudo dnf install net-tools 43 sudo dnf install thunderbird # Ya no lo uso, ahora uso Geary 55 sudo dnf install wireguard-tools 72 sudo dnf install code 149 sudo dnf install util-linux-user 456 sudo dnf install codium 794 sudo dnf install nextcloud-client-nautilus nextcloud-client 1013 sudo dnf install brave-browser 1016 sudo dnf install photoflare 1295 sudo dnf install telegram-desktop 1965 sudo dnf install steam 2291 sudo dnf install dconf-editor 2348 sudo dnf install htop 2351 sudo dnf install gstreamer1-plugins-bad-free-extras gstreamer1-plugin-openh264 gstreamer1-plugins-good-extras mozilla-openh264 gstreamer1-plugins-bad-free-fluidsynth gstreamer1-plugins-bad-free-wildmidi gstreamer1-svt-av1 2352 sudo dnf install openssl unrar p7zip p7zip-plugins Nota: Lista de paquetes instalados por apt:\nsudo apt install zram-tools sudo apt install flatpak sudo apt install gnome-software-plugin-flatpak sudo apt autoremove gnome-games sudo apt install nextcloud-desktop nautilus-nextcloud Fuentes:\nhttps://itsfoss.com/things-to-do-after-installing-fedora/\nhttps://thecheis.com/2023/08/09/puesta-a-punto-intel-nuc-fedora/\n",
+  "wordCount" : "652",
+  "inLanguage": "en",
+  "image": "https://blog.lasnotasdenoah.com/posts/primeros-pasos/automatic-problem-reporting-feature.png","datePublished": "2023-02-02T18:00:00+02:00",
+  "dateModified": "2023-02-02T18:00:00+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/primeros-pasos/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +167,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -261,14 +326,14 @@ Esto creo que no es necesario porque los repositorios rpmfusion ya deberían est
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

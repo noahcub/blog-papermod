@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>IntelliJ IDE | Las notas de Noah</title>
 <meta name="keywords" content="Programming">
 <meta name="description" content="Instalación de IDE IntelliJ">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/intellij/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/intellij/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/intellij/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/intellij/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/intellij/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="IntelliJ IDE">
+  <meta property="og:description" content="Instalación de IDE IntelliJ">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-06-16T22:00:00+01:00">
+    <meta property="article:modified_time" content="2023-06-16T22:00:00+01:00">
+    <meta property="article:tag" content="Programming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IntelliJ IDE">
+<meta name="twitter:description" content="Instalación de IDE IntelliJ">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "IntelliJ IDE",
+      "item": "https://blog.lasnotasdenoah.com/posts/intellij/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "IntelliJ IDE",
+  "name": "IntelliJ IDE",
+  "description": "Instalación de IDE IntelliJ",
+  "keywords": [
+    "Programming"
+  ],
+  "articleBody": " title: Instalación de IDE IntelliJ date: 2023-06-16 22:00:00 +0100 categories: [Programming] tags: [software, programming] # TAG names should always be lowercase img_path: /pictures/ author: Instalación del IDE de programación IntelliJ Instalación mediante Flatpak\nEs una buena opción a través del centro de software de Gnome pero a mi me dio problemas de bloqueos por lo que he decidido realizar la instalación desde la web de jetbrains.\nDescargamos la versión Comunity de la web\nhttps://www.jetbrains.com/idea/download/#section=linux\nDescomprimimos el paquete en /opt:\nsudo tar -xzf ideaIU-*.tar.gz -C /opt Accedemos al directorio descomprimido:\ncd /opt/idea-IC-231.9011.34/bin ejecutamos ./idea.sh Por último podemos crear un enlace simbolico al path del sistema:\nsudo ln -s /opt/idea-IC-231.9011.34/bin/idea.sh /usr/bin/ideaC Para crear un enlace en el escritorio tenemos dos opciones:\nPrimera opción y más complicada\nCopiamos el icono al directorio de iconos:\nsudo cp IntelliJ.svg /usr/share/icons/ y generamos el fichero IntelliJ.desktop en /usr/share/applications con el siguiente contenido:\n[Desktop Entry] Version=1.0 Type=Application Name=IntelliJ Comunity GenericName=IntelliJ Comment=Launch IntelliJ Icon=IntelliJ Categories=Development; Exec=ideaC TryExec=ideaC Terminal=false Segunda opción y más sencilla\nAbrimos la aplicación idea.sh y en el menú principal:\nTools | Create Desktop Entry Fuentes:\nhttps://www.jetbrains.com/help/idea/installation-guide.html#standalone\n",
+  "wordCount" : "181",
+  "inLanguage": "en",
+  "datePublished": "2023-06-16T22:00:00+01:00",
+  "dateModified": "2023-06-16T22:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/intellij/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -205,14 +268,14 @@ Abrimos la aplicación idea.sh y en el menú principal:</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/programming/">Programming</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/programming/">Programming</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

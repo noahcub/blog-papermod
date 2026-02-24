@@ -573,7 +573,7 @@ Tenemos que crear un fichero de adquisiciones para Appsec. Antes de eso debemos 
 Descargamos las reglas:
 ```bash
 docker exec crowdsec cscli collections install crowdsecurity/appsec-virtual-patching
-docker exec crowdsec cscli collections install crowdsecurity/appsec-generic-rule
+docker exec crowdsec cscli collections install crowdsecurity/appsec-generic-rules
 ```
 
 Reiniciamos crowdsec:
@@ -598,6 +598,31 @@ listen_addr: 0.0.0.0:7422
 source: appsec
 ```
 
+Añadimos la nueva configuración a nuestro middleware de crowdsec:
+```bash
+   crowdsec-bouncer:
+      plugin:
+        crowdsec-bouncer:
+          Enabled: true
+#          CrowdsecMode: live          # o streaming si prefieres
+          crowdsecMode: live          # o streaming si prefieres
+          # Identidad fija para evitar los "bouncers fantasmas"
+          bouncerName: "traefik-bouncer"
+
+          # Conexión a la LAPI (Local API)
+          CrowdsecLapiUrl: "http://crowdsec:8080"
+#          crowdsecLapiHost: "crowdsec:8080"
+          CrowdsecLapiKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+          # Configuración del WAF (AppSec)
+          crowdsecAppsecEnabled: true
+          crowdsecAppsecHost: "crowdsec:7422" # Puerto por defecto del WAF en>
+          crowdsecAppsecFailureBlock: true
+          crowdsecAppsecUnreachableBlock: true
+          #appsecFailureAction: "passthrough" # Si el WAF falla, deja pasar (>
+          ForwardedHeadersCustomName: "X-Forwarded-For"
+          [.................]
+```
 Y reiniciamos nuevamente crowdsec:
 ```bash
 docker compose restart crowdsec
@@ -644,8 +669,6 @@ docker exec crowdsec cscli metrics show appsec
 ----------------------------------------------------------------------------------------------------------
 ```
 
-
-
 En teoría, siguiendo las ]instrucciones de crowdsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik) deberíamos mapear el fichero en el contenedor de docker, **pero yo no lo he hecho y funciona igual**:
 
 ```bash
@@ -661,6 +684,30 @@ En teoría, siguiendo las ]instrucciones de crowdsec](https://docs.crowdsec.net/
     volumes:
 #      - ./crowdsec/config/acquis.d/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml
       [......]
+```
+
+**NOTA IMPORTANTE:** Por último, me he dado cuenta que si ya teníamos funcionando el stack con configuraciones anteriores, cuando añadimos Appsec por lo que sea el Appsec engine se queda en blanco:
+
+```bash
+╰─ docker exec crowdsec cscli metrics show appsec 
++-------------------------------------+
+| Appsec Metrics                      |
++---------------+-----------+---------+
+| Appsec Engine | Processed | Blocked |
++---------------+-----------+---------+
+|               |           | -       |
++---------------+-----------+---------+
+```
+y tengo que borrar toda la configuración de crowdsec y volver a empezar. Con eso ya funciona correctamente. Supongo que algo se queda en caché.
+```bash
+╰─ docker exec crowdsec cscli metrics show appsec 
++-------------------------------------+
+| Appsec Metrics                      |
++---------------+-----------+---------+
+| Appsec Engine | Processed | Blocked |
++---------------+-----------+---------+
+| 0.0.0.0:7422/ | 4         | -       |
++---------------+-----------+---------+
 ```
 
 

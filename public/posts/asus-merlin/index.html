@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Entware | Las notas de Noah</title>
 <meta name="keywords" content="Asus">
 <meta name="description" content="Instalación de Entware en firmware Merlin router Asus">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/asus-merlin/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/asus-merlin/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/asus-merlin/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/asus-merlin/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/asus-merlin/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Entware">
+  <meta property="og:description" content="Instalación de Entware en firmware Merlin router Asus">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-02-02T19:00:00+01:00">
+    <meta property="article:modified_time" content="2023-02-02T19:00:00+01:00">
+    <meta property="article:tag" content="Asus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Entware">
+<meta name="twitter:description" content="Instalación de Entware en firmware Merlin router Asus">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Entware",
+      "item": "https://blog.lasnotasdenoah.com/posts/asus-merlin/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Entware",
+  "name": "Entware",
+  "description": "Instalación de Entware en firmware Merlin router Asus",
+  "keywords": [
+    "Asus"
+  ],
+  "articleBody": "Instalación de Entware en firmware Merlin Entware es un repositorio de software que nos va a permitir la instalación de diferentes programas en nuestro router. Software disponible en Entware\nRequisitos\nEs necesario tener conectado un disco USB en el router formateado con ext2 o ext3 Si está instalado Download Manager, se debe desinstalar y reiniciar el router Instalación\nDescargar el script y añadirlo al usb. Nos conectamos por ssh al router. Ejecutar el script:\nusuario@RT-AC86U-3EB8:/tmp/home/root# entware-setup.sh Info: This script will guide you through the Entware installation. Info: Script modifies \"entware\" folder only on the chosen drive, Info: no other data will be changed. Existing installation will be Info: replaced with this one. Also some start scripts will be installed, Info: the old ones will be saved on Entware partition with name Info: like /tmp/mnt/sda1/jffs_scripts_backup.tgz Entware se instalará en el USB. Si tenemos varios nos preguntará donde instalarlo.\nUso\nopkg list - lista todos los paquetes disponibles para instalar opkg install nombre_software - instala el paquete nombre_software opkg remove software_name - borra el paquete nombre_software A partir de aquí podemos instalar software como Tailscale.\nFuentes:\nhttps://elblogdelazaro.org/posts/2019-01-02-instalacion-de-entware-en-firmware-merlin/\nhttps://github.com/RMerl/asuswrt-merlin/wiki/Entware\n",
+  "wordCount" : "186",
+  "inLanguage": "en",
+  "datePublished": "2023-02-02T19:00:00+01:00",
+  "dateModified": "2023-02-02T19:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/asus-merlin/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -192,14 +255,14 @@ Ejecutar el script:</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/asus/">Asus</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/asus/">Asus</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

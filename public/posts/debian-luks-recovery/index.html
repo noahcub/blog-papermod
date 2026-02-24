@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Reinstalar Debian con LVM | Las notas de Noah</title>
 <meta name="keywords" content="Admin">
 <meta name="description" content="Reinstalar Debian en particiones LVM ya existentes sin perder datos">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/debian-luks-recovery/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/debian-luks-recovery/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Reinstalar Debian con LVM">
+  <meta property="og:description" content="Reinstalar Debian en particiones LVM ya existentes sin perder datos">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-02-08T08:00:00+01:00">
+    <meta property="article:modified_time" content="2024-02-08T08:00:00+01:00">
+    <meta property="article:tag" content="Admin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Reinstalar Debian con LVM">
+<meta name="twitter:description" content="Reinstalar Debian en particiones LVM ya existentes sin perder datos">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Reinstalar Debian con LVM",
+      "item": "https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Reinstalar Debian con LVM",
+  "name": "Reinstalar Debian con LVM",
+  "description": "Reinstalar Debian en particiones LVM ya existentes sin perder datos",
+  "keywords": [
+    "Admin"
+  ],
+  "articleBody": "Instalar Debian en particiones LVM encriptadas ya existentes conservando datos Arrancamos con el médio de instalación de Debian y seleccionamos Opciones avanzadas - Instalación experta\nAvanzamos en el proceso de instalación normalmente y en Load Installer components from CD cargamos los siguientes:\ncrypto-dm-modules and rescue-mode\nContinuamos con la instalación y nos detenemos antes de Detect disks:\nAccedemos a una consola con ctrl+alt+f2 y realizamos la carga de nuestro LVM:\nCargamos los módulos necesarios (por motivo que desconozco este comando no funciona pero no es relevante para la instalación)\ndepmod -a Listamos las particiones del sistema:\nblkid Desbloqueamos nuestro volumen LVM con cryptsetup:\ncryptsetup luksOpen /dev/vda3 debian-encriptado Enter passphrase for /dev/vda3: Abrimos nuestro VG volume group y verificamos que esté disponible en dev/mapper/debian-encriptado:\nvgchange -ay ls /dev/mapper Presionamos ctrl+alt+f1 y continuamos con la instalación normalmente:\nAhora ya tenemos disponibles nuestros volúmenes para instalar nuevamente el sistema:\nEn mi caso, formateo todas las particiones excepto el volumen /home que es donde estan mis datos de usuario y efi que está compartido con Windows:\nComo se ve tengo el siguiente particionado:\nvda1 - uefi - 100MB /boot/efi\nvda2 - boot - 1GB /boot\nvda3 - luks - 20GB\nVG debian - LV home - 5GB /home\nVG debian - LV root - 15GB\t/root\nContinuamos con la instalación del sistema normal y nos detenemos antes de Install the GRUB bootloader to a hard disk.\nAccedemos nuevamente a la consola con ctrl+alt+f2 para configurar initramfs:\nNos interesa la partición TYPE=“crypto_LUKS”, que en mi caso es /dev/vda3:\nListamos las particiones del sistema:\nblkid cryptsetup luksDump /dev/vda3 |grep -F UUID Tenemos que modificar el fichero /target/etc/crypttab.\ncryptsetup luksDump /dev/vda3 |grep -F UUID \u003e\u003e /target/etc/crypttab Modificamos crypttab dejandolo así:\n# debian-encriptado UUID=3dfb977c-8368-4146-b7b9-5a2426aa4347 none luks,discard Volvemos a la instalación con ctrl+alt+f1 y procedemos a instalar Grub bootloader.\nSi algo ha ido mal en la generación de initramfs podemos iniciar nuevamente desde nuestro usb de debian y ejecutar un Rescue mode, seguimos los pasos de carga de nuestros volúmnes LUKS, etc y a la hora de generamos initramfs manualmente con el siguiente comando:\nupdate-initramfs -u -k all Si hay algún error nos lo dirá el comando y podemos corregir lo que sea neceario.\nInstalar Debian en particiones LVM NO encriptadas ya existentes conservando datos En este caso es todo muy sencillo. Seleccionamos particionado manual y el instalador de Debian nos detectará la estructura de particiones que tiene el disco y simplemente tenemos que indicar que volumenes queremos que se formateen y cuales no.\nDebemos dejar el sistema configurado como se muestra en la imangen y en ningún momento es preciso salir del instalador a una consola. (NOTA: esta imagen está aprovechada del apartado donde se hacía con encriptado, pero es exactamente lo mismo).\nFuentes:\nhttps://www.blakecarpenter.dev/installing-debian-on-existing-encrypted-lvm/\nhttps://consolematt.wordpress.com/2013/06/19/reinstalling-debian-on-existing-lukslvm-partition/\nhttps://www.reddit.com/r/debian/comments/1599rkt/how_to_reinstall_debian_12_with_existing/\n",
+  "wordCount" : "465",
+  "inLanguage": "en",
+  "datePublished": "2024-02-08T08:00:00+01:00",
+  "dateModified": "2024-02-08T08:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -224,14 +287,14 @@ Debemos dejar el sistema configurado como se muestra en la imangen y en ningún 
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

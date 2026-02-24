@@ -2,213 +2,213 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Las notas de Noah</title>
-    <link>http://localhost:1313/</link>
+    <link>https://blog.lasnotasdenoah.com/</link>
     <description>Recent content on Las notas de Noah</description>
     <generator>Hugo -- 0.155.3</generator>
     <language>es-es</language>
     <lastBuildDate>Mon, 23 Feb 2026 14:00:00 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.lasnotasdenoah.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Proxy Inverso en VPS</title>
-      <link>http://localhost:1313/posts/vps-proxy/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/vps-proxy/</link>
       <pubDate>Mon, 23 Feb 2026 14:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/vps-proxy/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/vps-proxy/</guid>
       <description>VPS como proxy inverso</description>
     </item>
     <item>
       <title>Traefik v3 y Crowdsec</title>
-      <link>http://localhost:1313/posts/traefik/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/traefik/</link>
       <pubDate>Fri, 23 Jan 2026 07:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/traefik/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/traefik/</guid>
       <description>Configuración de traefik v3 con crowdsec</description>
     </item>
     <item>
       <title>Borg Backups</title>
-      <link>http://localhost:1313/posts/borg-backups/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/borg-backups/</link>
       <pubDate>Thu, 21 Aug 2025 13:40:36 +0200</pubDate>
-      <guid>http://localhost:1313/posts/borg-backups/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/borg-backups/</guid>
       <description>Backups con borg en server y PC</description>
     </item>
     <item>
       <title>Reinstalar Debian con LVM</title>
-      <link>http://localhost:1313/posts/debian-luks-recovery/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/</link>
       <pubDate>Thu, 08 Feb 2024 08:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/debian-luks-recovery/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/</guid>
       <description>Reinstalar Debian en particiones LVM ya existentes sin perder datos</description>
     </item>
     <item>
       <title>Home Assistant y Telegram</title>
-      <link>http://localhost:1313/posts/home-assistant/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/home-assistant/</link>
       <pubDate>Fri, 02 Feb 2024 09:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/home-assistant/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/home-assistant/</guid>
       <description>Integrar Telegram en Home Assistant</description>
     </item>
     <item>
       <title>Backups a USB automático</title>
-      <link>http://localhost:1313/posts/backup-usb/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/backup-usb/</link>
       <pubDate>Sat, 13 Jan 2024 08:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/backup-usb/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/backup-usb/</guid>
       <description>Backup carpetas USB automaticamente al conectar al equipo</description>
     </item>
     <item>
       <title>Gsconnect (kdeconnect para Gnome)</title>
-      <link>http://localhost:1313/posts/gsconnect/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/gsconnect/</link>
       <pubDate>Thu, 21 Dec 2023 11:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/gsconnect/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/gsconnect/</guid>
       <description>Instalación y configuración de GSconnect</description>
     </item>
     <item>
       <title>Python</title>
-      <link>http://localhost:1313/posts/python/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/python/</link>
       <pubDate>Wed, 20 Dec 2023 18:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/python/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/python/</guid>
       <description>Notas sobre Python</description>
     </item>
     <item>
       <title>Firewalld configuración</title>
-      <link>http://localhost:1313/posts/firewalld-config/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/firewalld-config/</link>
       <pubDate>Mon, 18 Dec 2023 16:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/firewalld-config/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/firewalld-config/</guid>
       <description>Configuración de FirewallD</description>
     </item>
     <item>
       <title>Nextdns</title>
-      <link>http://localhost:1313/posts/nextdns/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/nextdns/</link>
       <pubDate>Fri, 20 Oct 2023 09:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/nextdns/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/nextdns/</guid>
       <description>Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager</description>
     </item>
     <item>
       <title>LineageOS y SafetyNet</title>
-      <link>http://localhost:1313/posts/lineageos/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/lineageos/</link>
       <pubDate>Mon, 25 Sep 2023 16:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/lineageos/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/lineageos/</guid>
       <description>Configurar SafetyNet en LineageOS para activar el pago por NFC</description>
     </item>
     <item>
       <title>KVM y VirtManager</title>
-      <link>http://localhost:1313/posts/kvm-virtmanager/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/</link>
       <pubDate>Wed, 19 Jul 2023 18:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/kvm-virtmanager/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/</guid>
       <description>Instalación de KVM y Virt Manager en Fedora</description>
     </item>
     <item>
       <title>IntelliJ IDE</title>
-      <link>http://localhost:1313/posts/intellij/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/intellij/</link>
       <pubDate>Fri, 16 Jun 2023 22:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/intellij/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/intellij/</guid>
       <description>Instalación de IDE IntelliJ</description>
     </item>
     <item>
       <title>Systemd</title>
-      <link>http://localhost:1313/posts/systemd/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/systemd/</link>
       <pubDate>Tue, 21 Feb 2023 22:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/systemd/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/systemd/</guid>
       <description>Crear un servicio con systemd</description>
     </item>
     <item>
       <title>Microsoft Office Online</title>
-      <link>http://localhost:1313/posts/office/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/office/</link>
       <pubDate>Sun, 19 Feb 2023 18:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/office/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/office/</guid>
       <description>Accesos director a Office Online</description>
     </item>
     <item>
       <title>Problemas con Nvidia</title>
-      <link>http://localhost:1313/posts/gpu-render/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/gpu-render/</link>
       <pubDate>Sun, 19 Feb 2023 08:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/gpu-render/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/gpu-render/</guid>
       <description>Problemas renderizado GPU Nvidia</description>
     </item>
     <item>
       <title>Comando &#34;screen&#34;</title>
-      <link>http://localhost:1313/posts/screen-command/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/screen-command/</link>
       <pubDate>Mon, 06 Feb 2023 08:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/screen-command/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/screen-command/</guid>
       <description>Uso del comando screen para ejecutar procesos en segundo plano</description>
     </item>
     <item>
       <title>Comando &#34;find&#34;</title>
-      <link>http://localhost:1313/posts/find-command/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/find-command/</link>
       <pubDate>Mon, 06 Feb 2023 08:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/find-command/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/find-command/</guid>
       <description>Buscar y eliminar archivos con find</description>
     </item>
     <item>
       <title>Entware</title>
-      <link>http://localhost:1313/posts/asus-merlin/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/asus-merlin/</link>
       <pubDate>Thu, 02 Feb 2023 19:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/asus-merlin/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/asus-merlin/</guid>
       <description>Instalación de Entware en firmware Merlin router Asus</description>
     </item>
     <item>
       <title>Web estática con Jekyll</title>
-      <link>http://localhost:1313/posts/jekyll/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/jekyll/</link>
       <pubDate>Thu, 02 Feb 2023 18:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/jekyll/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/jekyll/</guid>
       <description>Web estática con Jekyll y Bundle</description>
     </item>
     <item>
       <title>Drivers Nvidia</title>
-      <link>http://localhost:1313/posts/nvidia-fedora/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/nvidia-fedora/</link>
       <pubDate>Thu, 02 Feb 2023 18:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/nvidia-fedora/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/nvidia-fedora/</guid>
       <description>Configuración gráfica Nvidia en Fedora</description>
     </item>
     <item>
       <title>Firewalld Instalación</title>
-      <link>http://localhost:1313/posts/firewalld/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/firewalld/</link>
       <pubDate>Thu, 02 Feb 2023 17:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/firewalld/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/firewalld/</guid>
       <description>Instalación de FirewallD</description>
     </item>
     <item>
       <title>Primeros pasos con Fedora Gnome</title>
-      <link>http://localhost:1313/posts/primeros-pasos/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/primeros-pasos/</link>
       <pubDate>Thu, 02 Feb 2023 18:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/primeros-pasos/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/primeros-pasos/</guid>
       <description>Instalación y configuración de Fedora Workstation Gnome</description>
     </item>
     <item>
       <title>Software imprescindible</title>
-      <link>http://localhost:1313/posts/mis-imprescindibles/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/mis-imprescindibles/</link>
       <pubDate>Thu, 02 Feb 2023 14:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/mis-imprescindibles/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/mis-imprescindibles/</guid>
       <description>Mi software imprescindible</description>
     </item>
     <item>
       <title>Locales Debian</title>
-      <link>http://localhost:1313/posts/locales-debian/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/locales-debian/</link>
       <pubDate>Thu, 02 Feb 2023 14:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/locales-debian/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/locales-debian/</guid>
       <description>Instalación y configuración idiomas Debian</description>
     </item>
     <item>
       <title>Flatpak</title>
-      <link>http://localhost:1313/posts/flatpak/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/flatpak/</link>
       <pubDate>Wed, 01 Feb 2023 14:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/flatpak/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/flatpak/</guid>
       <description>Instalación y uso básico de flatpak</description>
     </item>
     <item>
       <title>DNS Over TLS</title>
-      <link>http://localhost:1313/posts/dns-over-tls/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/dns-over-tls/</link>
       <pubDate>Fri, 18 Oct 2024 16:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/dns-over-tls/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/dns-over-tls/</guid>
       <description>DNS Over TLS con systemd-resolved y NextDNS. Nuestro firewall online</description>
     </item>
     <item>
       <title>Wake On Lan WAN</title>
-      <link>http://localhost:1313/posts/wol-wan/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/wol-wan/</link>
       <pubDate>Thu, 02 Feb 2023 19:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/wol-wan/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/wol-wan/</guid>
       <description>Configurar WOL desde Internet</description>
     </item>
     <item>
       <title>Zsh</title>
-      <link>http://localhost:1313/posts/zsh/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/zsh/</link>
       <pubDate>Wed, 01 Feb 2023 16:00:00 +0200</pubDate>
-      <guid>http://localhost:1313/posts/zsh/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/zsh/</guid>
       <description>Instalación y configuración de zsh</description>
     </item>
   </channel>

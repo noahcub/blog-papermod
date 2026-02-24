@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Asus on Las notas de Noah</title>
-    <link>http://localhost:1313/tags/asus/</link>
+    <link>https://blog.lasnotasdenoah.com/tags/asus/</link>
     <description>Recent content in Asus on Las notas de Noah</description>
     <generator>Hugo -- 0.155.3</generator>
     <language>es-es</language>
     <lastBuildDate>Fri, 20 Oct 2023 09:00:00 +0100</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/asus/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.lasnotasdenoah.com/tags/asus/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Nextdns</title>
-      <link>http://localhost:1313/posts/nextdns/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/nextdns/</link>
       <pubDate>Fri, 20 Oct 2023 09:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/nextdns/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/nextdns/</guid>
       <description>Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager</description>
     </item>
     <item>
       <title>Entware</title>
-      <link>http://localhost:1313/posts/asus-merlin/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/asus-merlin/</link>
       <pubDate>Thu, 02 Feb 2023 19:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/asus-merlin/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/asus-merlin/</guid>
       <description>Instalación de Entware en firmware Merlin router Asus</description>
     </item>
     <item>
       <title>Wake On Lan WAN</title>
-      <link>http://localhost:1313/posts/wol-wan/</link>
+      <link>https://blog.lasnotasdenoah.com/posts/wol-wan/</link>
       <pubDate>Thu, 02 Feb 2023 19:00:00 +0100</pubDate>
-      <guid>http://localhost:1313/posts/wol-wan/</guid>
+      <guid>https://blog.lasnotasdenoah.com/posts/wol-wan/</guid>
       <description>Configurar WOL desde Internet</description>
     </item>
   </channel>

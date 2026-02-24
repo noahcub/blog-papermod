@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>LineageOS y SafetyNet | Las notas de Noah</title>
 <meta name="keywords" content="Smartphone">
 <meta name="description" content="Configurar SafetyNet en LineageOS para activar el pago por NFC">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/lineageos/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/lineageos/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/lineageos/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/lineageos/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/lineageos/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="LineageOS y SafetyNet">
+  <meta property="og:description" content="Configurar SafetyNet en LineageOS para activar el pago por NFC">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-09-25T16:00:00+01:00">
+    <meta property="article:modified_time" content="2023-09-25T16:00:00+01:00">
+    <meta property="article:tag" content="Smartphone">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LineageOS y SafetyNet">
+<meta name="twitter:description" content="Configurar SafetyNet en LineageOS para activar el pago por NFC">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "LineageOS y SafetyNet",
+      "item": "https://blog.lasnotasdenoah.com/posts/lineageos/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "LineageOS y SafetyNet",
+  "name": "LineageOS y SafetyNet",
+  "description": "Configurar SafetyNet en LineageOS para activar el pago por NFC",
+  "keywords": [
+    "Smartphone"
+  ],
+  "articleBody": "Habilitar el safetynet en el móvil con ROM personalizada ROM personalizada LINEAGEOS\nCuando nuestro teléfono ha llegado al fin de su vida útil en lo que se refiere a actualizaciones de seguridad, he decidido emplear una ROM personalizada que nos permite tener nuestro sistema actualizado y operativo. Entre las que he probado están Pixel Experience y LineageOS entre otras.\nAl final me he decido por LineageOS ya que me da mucha confianza.\nAl usar estas ROM se genera un problema secundario, mi aplicación de pagos a través de NFC dice que el sistema tiene una ROM personalizada y por seguridad no permite realizar el pago.\nTenemos varias soluciones:\n1.- Instalar MAGISK con un módulo de safetynet. Tal vez, si probara hoy me funcione, pero la segunda opción han sido 5 minutos y me ha funcionado a la primera.\n2.- Modificar el fichero /system/build.prop del teléfono móvil.\nHe optado por esta segunda opción porque en su día lo intenté con MAGISK y no lo hice funcionar, desconociendo el por qué.\nLa esencia consiste en modificar las siguientes líneas del fichero /system/build.prop y cambiar el valor:\nro.secure=0 sustituirlos por ro.secure=1 ro.debuggable=1 sustituirlos por ro.debuggable=0 Para hacer este cambio tenemos que acceder al móvil por adb, que debe estar correctamente instalado en nuestro ordenador.\nHabilitamos las opciones de desarrollador en el móvil:\nAccedemos a Información del teléfono —\u003e Número de compilación (pulsamos 5 veces)\nDespués:\nSistema —\u003e Opciones de desarrollador\nActivamos Depuración por USB y Depuración como Superusuario.\nConectamos el teléfono al ordenador y activamos Transferencia de Archivos en lugar de Solo carga.\nAhora nos vamos a la terminal de nuestro ordenador y testeamos que detecta el teléfono:\n[noah@envy ~]$ ╰─ adb devices * daemon not running; starting now at tcp:5037 * daemon started successfully List of devices attached 967fd02\tdevice Vemos que detectamos el teléfono, procedemos con el cambio:\n[noah@envy ~]$ ╰─ adb root restarting adbd as root [noah@envy ~]$ ╰─ adb remount remount succeeded [noah@envy ~]$ ╰─ adb pull /system/build.prop . /system/build.prop: 1 file pulled, 0 skipped. 0.9 MB/s (7671 bytes in 0.008s) [noah@envy ~]$ ╰─ Ya tenemos el fichero build.prop y ahora vamos a modificar las dos líneas que nos interesan. El comando sed nos permite sustituir una cadena de texto por otra:\nsed -i \"s/ro.secure=0/ro.secure=1/\" build.prop sed -i \"s/ro.debuggable=1/ro.debuggable=0/\" build.prop Volvemos a subir el fichero al teléfono móvil:\nadb push build.prop /system/build.prop Y listo, reiniciamos el teléfono móvil y ya podemos instalar nuestra aplicación de pagos a través del NFC y debería funcionar.\nPara simplificar el trabajo podemos hacer un pequeño script que lo haga todo a la primera:\n#!/bin/bash adb root adb remount adb pull /system/build.prop . sed -i \"s/ro.secure=0/ro.secure=1/\" build.prop sed -i \"s/ro.debuggable=1/ro.debuggable=0/\" build.prop adb push build.prop /system/build.prop rm build.prop LineageOS hace actualizaciones semanales de la ROM. Cada vez que actualicemos tenemos que ejecutar nuestro pequeño script, activando las opciones de desarrollador, etc. por eso he decidido hacer actualizaciones mensuales mas o menos para no tener que estar pendiente de esto.\nFuentes:\nModificar fichero build.prop\nhttps://github.com/OmarAhmed-A/MakeLineageOSSecure\nhttps://forum.xda-developers.com/t/safetynet-on-lineageos-20-microg.4558065/\nMagisk\nhttps://topjohnwu.github.io/Magisk/install.html\nhttps://community.fxtec.com/topic/2537-magisk-install-step-by-step-root/\nhttps://telegra.ph/Instalar-Magisk-v24-en-nuestra-ROM–Install-Magisk-on-our-ROM-03-11\n",
+  "wordCount" : "504",
+  "inLanguage": "en",
+  "datePublished": "2023-09-25T16:00:00+01:00",
+  "dateModified": "2023-09-25T16:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/lineageos/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -228,14 +291,14 @@ Sistema &mdash;&gt; <strong>Opciones de desarrollador</strong></p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/smartphone/">Smartphone</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/smartphone/">Smartphone</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

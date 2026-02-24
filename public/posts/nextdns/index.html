@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Nextdns | Las notas de Noah</title>
 <meta name="keywords" content="Admin, Network, Asus">
 <meta name="description" content="Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/nextdns/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/nextdns/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/nextdns/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/nextdns/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,78 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/nextdns/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Nextdns">
+  <meta property="og:description" content="Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-10-20T09:00:00+01:00">
+    <meta property="article:modified_time" content="2023-10-20T09:00:00+01:00">
+    <meta property="article:tag" content="Admin">
+    <meta property="article:tag" content="Network">
+    <meta property="article:tag" content="Asus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nextdns">
+<meta name="twitter:description" content="Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Nextdns",
+      "item": "https://blog.lasnotasdenoah.com/posts/nextdns/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Nextdns",
+  "name": "Nextdns",
+  "description": "Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager",
+  "keywords": [
+    "Admin", "Network", "Asus"
+  ],
+  "articleBody": " title: Configuración NextDNS en router Asus con firmware Merlin y en equipos Debian con NetworkManager date: 2023-10-20 09:00:00 +0100 categories: [Network] tags: [config, network] # TAG names should always be lowercase img_path: /assets/pictures/ author: Instalación de Nextdns firmware Merlin router ASUS En el github de Nextdns tenemos toda la información para la instalación del NextDNS CLI Client en nuestro router. Este cliente emplea DNS-over-HTTPS.\nInstalación\nNos conectamos por ssh al router y ejecutamos el script de instalación:\nsh -c 'sh -c \"$(curl -sL https://nextdns.io/install)\"' Tenemos otra opción para realizar la configuración de NextDNS en nuestro router, esta vez empleando DNS-over-TLS:\nEN el reddit de nextdns se explica perfectamente.\nSi queremos saber la diferencia entre DNS-over-HTTPS y DNS-over-TLS en el siguiente enlace se explica muy bien.\nInstalación de Nextdns en Debian Según la web de NextDNS se recomienda la siguiente instalación:\nEditar el fichero /etc/systemd/resolved.conf:\n[Resolve] DNS=45.90.28.0#user_id.dns.nextdns.io DNS=2a07:a8c0::#user_id.dns.nextdns.io DNS=45.90.30.0#user_id.dns.nextdns.io DNS=2a07:a8c1::#user_id.dns.nextdns.io DNSOverTLS=yes En Debian no venía preinstalado el servicio systemd-resolved y tuve que instalarlo. Pero surgió un problema: NextDNS no se lleva bien con NetworkManager cuando activamos alguna de las VPN de pago que tengo configuradas a través del protocolo OpenVPN. En esta entrada del blog NextDNS explican el mismo problema que yo tengo y con la solución que aportan a mi no me ha funcionado.\nEn mi caso he optado por instalar NextDNS a través del cliente en línea de comando y cuando activo la VPN tengo que tener la precaución de parar NextDNS.\nRevisamos que esté correctamente configurado el fichero /etc/resolv.conf:\nDebería tener líneas similares a esta:\nnameserver 9.9.9.9 nameserver 8.8.8.8 nameserver 1.1.1.1 nameserver 192.168.1.1 Es importante revisar esto si hemos tenido instalado systemd-resolved o si viene instalado por defecto. En ese caso es importante desinstalarlo si vamos a trabajar con VPN hasta que se resuelva el bug.\nGuía de desintalación de systemd-resolved.\nInstalación de cliente NextDNS\nsh -c 'sh -c \"$(curl -sL https://nextdns.io/install)\"' Seguimos las instrucciones y ya debería funcionar.\nComandos básicos:\nnextdns start nextdns stop nextdns restart nextdns status nextdns log nextdns help Desinstalar\nEjecutamos el mismo comando y elegimos la opción Uninstall en el menú.\nsh -c 'sh -c \"$(curl -sL https://nextdns.io/install)\"' Uso de la VPN a través de NetworkManager\nMi operativa ahora es sencilla, NextDNS se inicia al arrancar el sistema.\nSi tengo que hacer uso de la VPN los pasos son los siguientes:\nsudo nextdns stop 2.- Activo la VPN a través del NetworkManager de Gnome\n3.- Hago el trabajo que sea.\n4.- Activo la VPN a través del NetworkManager de Gnome\nsudo nextdns start Fuentes:\nAsus\nhttps://github.com/nextdns/nextdns/wiki/AsusWRT-Merlin\nhttps://www.reddit.com/r/nextdns/comments/x2k8f3/asus_merlin_noncli_configuration_guide/\nhttps://www.cloudflare.com/es-es/learning/dns/dns-over-tls/.\nDebian\nhttps://help.nextdns.io/t/h7yhxk1/setting-up-nextdns-on-ubuntu-in-resolved-conf-doesnt-work-with-vpns-dns\nhttps://github.com/nextdns/nextdns/wiki\nhttps://gist.github.com/zoilomora/f7d264cefbb589f3f1b1fc2cea2c844c\n",
+  "wordCount" : "429",
+  "inLanguage": "en",
+  "datePublished": "2023-10-20T09:00:00+01:00",
+  "dateModified": "2023-10-20T09:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/nextdns/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +167,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -231,16 +296,16 @@ Mi operativa ahora es sencilla, NextDNS se inicia al arrancar el sistema.</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
-      <li><a href="http://localhost:1313/tags/network/">Network</a></li>
-      <li><a href="http://localhost:1313/tags/asus/">Asus</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/network/">Network</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/asus/">Asus</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by
