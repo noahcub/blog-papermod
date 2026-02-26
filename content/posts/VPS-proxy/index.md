@@ -710,6 +710,83 @@ y tengo que borrar toda la configuración de crowdsec y volver a empezar. Con es
 +---------------+-----------+---------+
 ```
 
+### Actualización de escenarios Crowdsec
+
+Mantener los escenarios y parsers actualizados es vital, ya que los atacantes cambian sus tácticas constantemente. En Docker, esto es sencillo de verificar.  
+```bash
+docker exec -it crowdsec cscli hub update
+
+# Este comando te mostrará una tabla con todo tu software de seguridad (escenarios, parsers, colecciones). Fíjate en la columna que indica si hay versiones nuevas:
+docker exec -it crowdsec cscli hub list
+
+# Si tenemos actualizaciones disponibles:
+docker exec -it crowdsec cscli hub upgrade
+```
+
+Para que los cambios surtan efecto, reiniciamos el motor de Crowdsec:
+```bash
+docker exec -it crowdsec kill -SIGHUP 1
+
+# o simplemente reiniciamos el contenedor con:
+docker restart crowdsec
+```
+
+
+### Limpieza de logs de traefik
+
+Hay que tener cuidado con los logs de traefik. Revisando un par de dias después de la configuración vi que tenía casi 100MB de logs. Vamos a configurar la limpieza.  
+**El trabajo de limpieza lo hacemos en el host ya que tenemos un volumen donde montamos los logs según nuestro docker compose.**   
+
+Instalación de logrotate:
+```bash
+# En caso de no estar instalado:
+sudo apt install logrotate
+```
+
+Archivo de configuración:
+```bash
+sudo nano /etc/logrotate.d/traefik
+
+#Pegamos lo siguiente:
+/home/MI_USUARIO/traefik-crowdsec/traefik/logs/*.log {
+    daily
+    rotate 7
+    size 50M
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}
+```
+```bash
+#Explicación:
+daily: rota los logs cada día.
+rotate 7: conserva 7 días de logs antes de eliminarlos.
+size 50M: si superamos los 50M se hace la rotación
+compress / delaycompress: comprime los logs antiguos (en .gz) al siguiente ciclo.
+missingok: ignora si el archivo no existe.
+notifempty: no rota si está vacío.
+copytruncate: copia el log y limpia el original sin interrumpir Traefik (importante para contenedores).
+```
+
+Prueba de funcionamiento:
+```bash
+sudo logrotate -f /etc/logrotate.d/traefik
+
+error: skipping "/home/noe/traefik-crowdsec/traefik/logs/access.log" because parent directory has insecure permissions (It's world writable or writable by group which is not "root") Set "su" directive in config file to tell logrotate which user/group should be used for rotation.
+```
+
+Este error se produce porque logrotate es muy tiquismikis con los permisos. Yo lo he solucionado de la siguiente forma:
+```bash
+# Dentro del directorio traefik ejecutamos
+
+sudo chown root:root logs
+```
+
+Y ya funciona correctamente.
+
+
 
 ### EXTRA: Ampliar la capacidad de RAM de nuestro VPS con swap
 
