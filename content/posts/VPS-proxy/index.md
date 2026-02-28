@@ -787,6 +787,105 @@ sudo chown root:root logs
 Y ya funciona correctamente.
 
 
+### EXTRA: Instalación y configuración de Wireguard
+
+Vamos a instalar un servidor Wireguard en nuestro VPS.  
+```bash
+# Instalamos wireguard y generador de qr para escanear desde app movil
+sudo apt install wireguard qrencode -y
+
+# Cambiamos a nuestro directorio de wireguard
+sudo su
+cd /etc/wireguard/
+umask 077
+
+# Generamos claves de servidor
+wg genkey | tee /etc/wireguard/server.key | wg pubkey > /etc/wireguard/server.pub
+```
+
+Creamos nuestro fichero wg0.conf:
+```bash
+nano wg0.conf
+
+[Interface]
+# IP que tendrá el VPS dentro de la VPN
+Address = 10.8.0.1/24
+# Puerto de escucha (OJO - abrir el puerto en ufw y panel de nuestro vps si es necesario)
+ListenPort = 51820
+# Clave privada del servidor
+PrivateKey = # GENERADA EN EL APARTADO ANTERIOR - FICHERO server.key
+
+# Reglas para permitir que el tráfico fluya y salga a internet
+#PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ens6 -j MASQUERADE
+#PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ens6 -j MASQUERADE
+
+# Reglas combinadas: Acceso a Internet (ens6) + Acceso a Tailscale (tailscale0)
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ens6 -j MASQUERADE; iptables -A FORWARD -i %i -o tailscale0 -j ACCEPT; iptables -A FORWARD -i tailscale0 -o %i -m state --state RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -A POSTROUTING -o tailscale0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ens6 -j MASQUERADE; iptables -D FORWARD -i %i -o tailscale0 -j ACCEPT; iptables -D FORWARD -i tailscale0 -o %i -m state --state RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -D POSTROUTING -o tailscale0 -j MASQUERADE
+
+
+# CLIENTES
+
+# s24
+[Peer]
+PublicKey = # CLAVE PUBLICA DE NUESTRO CLIENTE S24
+AllowedIPs = 10.8.0.2/32
+
+# envy
+[Peer]
+PublicKey = # CLAVE PUBLICA DE NUESTRO CLIENTE ENVY
+AllowedIPs = 10.8.0.3/32
+```
+
+Generamos las claves de nuestro primer cliente:
+```bash
+wg genkey | tee /etc/wireguard/s24.key | wg pubkey > /etc/wireguard/s24.pub
+```
+
+Fichero de configuracion del cliente:
+```bash
+nano s24.conf
+
+[Interface]
+# Clave privada del cliente s24
+PrivateKey = # CLAVE PRIVADA DE s24 GENERADA EN EL PASO ANTERIOR FICHERO s24.key
+Address = 10.8.0.2/24
+DNS = 1.1.1.1
+
+[Peer]
+# Public key del servidor
+PublicKey = # CLAVE PUBLICA DEL SERVIDOR FICHERO server.pub
+Endpoint = IP_PUBLICA_VPS:51820
+AllowedIPs = 0.0.0.0/0
+```
+
+Generamos el codigo qr para escanear con el movil:
+```bash
+qrencode -t ansiutf8 < s24.conf
+```
+
+![vps-5.png](vps-5.png)
+
+Y listo. Con esto ya está configurado nuestro servidor y nuestro.  
+
+Arrancamos el servicio y lo habilitamos:
+```bash
+systemctl start wg-quick@wg0
+systemctl enable wg-quick@wg0
+
+#Vemos el estado del servidor
+wg show
+```
+
+![vps-4.png](vps-4.png)
+
+Cuando actualicemos algún peer reiniciamos el servidor wireguard:
+```bash
+systemctl restart wg-quick@wg0
+```
+
+**IMPORTANTE: Fichero wg0.conf no se puede borrar**. Los ficheros .conf de los clientes no es necesarios conservarlos.Simplemente los creamos para generar luego el qr o para importarlos desde nuestro gestor de red de Gnome. RECORDAR actualizar nuestro fichero wg0.conf con cada cliente que añadimos.
+
 
 ### EXTRA: Ampliar la capacidad de RAM de nuestro VPS con swap
 
