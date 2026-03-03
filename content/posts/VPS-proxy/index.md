@@ -787,7 +787,7 @@ sudo chown root:root logs
 Y ya funciona correctamente.
 
 
-### EXTRA: Instalación y configuración de Wireguard
+### EXTRA 1: Instalación y configuración de Wireguard
 
 Vamos a instalar un servidor Wireguard en nuestro VPS.  
 ```bash
@@ -887,7 +887,7 @@ systemctl restart wg-quick@wg0
 **IMPORTANTE: Fichero wg0.conf no se puede borrar**. Los ficheros .conf de los clientes no es necesarios conservarlos.Simplemente los creamos para generar luego el qr o para importarlos desde nuestro gestor de red de Gnome. RECORDAR actualizar nuestro fichero wg0.conf con cada cliente que añadimos.
 
 
-### EXTRA: Ampliar la capacidad de RAM de nuestro VPS con swap
+### EXTRA 2: Ampliar la capacidad de RAM de nuestro VPS con swap
 
 Nuestro VPS está muy escaso de RAM. Vamos a darle algo de margen aprovechando nuestro nvme y creando una swap de 1GB de tamaño.  
 
@@ -914,9 +914,164 @@ htop
 
 ![vps-3.png](/vps-3.png)
 
+
+### EXTRA 3: Backups remotos con Borgmatic
+
+En este mismo blog, tengo [una entrada](https://blog.lasnotasdenoah.com/posts/borg-backups/) con la configuración de borgmatic en mi NAS secundario de backups.  
+Vamos a hacer una mejora en la programación de los backups.  
+Debian 13 ya no usa cron para las tareas. Ahora usa systemd.
+
+Instalación de borgmatic
+```bash
+# Instalación
+sudo apt install borgmatic
+
+# Generamos fichero de configuración
+sudo generate-borgmatic-config
+```
+
+Editamos nuestro fichero de borgmatic:
+```bash 
+sudo nano /etc/borgmatic/config.yaml
+
+# Añadimos lo siguiente:
+source_directories:
+  - /home/usuario
+
+repositories:
+  # USAMOS NUESTRA IP DE TAILSCALE
+  - path: ssh://borg@100.105.100.10:2222/./piensa
+    label: piensa
+
+exclude_caches: true
+exclude_patterns:
+  - '*.pyc'
+  - /home/*/.cache
+
+
+compression: auto,zstd
+encryption_passphrase: PASS_SUPER_SECRETA
+archive_name_format: "{hostname}-{now}"
+
+# Usamos root porque hay directorios que solo tienen permisos de root (pe. en crowdsec)
+ssh_command: ssh -i /root/.ssh/piensa
+retries: 5
+retry_wait: 5
+
+keep_daily: 3
+keep_weekly: 4
+keep_monthly: 12
+
+checks:
+  - name: repository
+    frequency: 4 weeks
+  - name: archives
+    frequency: 8 weeks
+
+check_last: 3
+
+apprise:
+  states:
+    - start
+    - finish
+    - fail
+
+  services:
+    - url: mailtos://smtp.gmail.com:587?user=SUPERUSUARIO@gmail.com&pass=SUPERSECRETA_PASS&from=SUPERUSUARIO@gmail.com&to=DESTINATARIO@gmail.com
+      label: mail
+    - url: tgram://BOT_TOKEN:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/-ID_GRUPO_TELEGRAM/
+      label: telegram
+
+  start:
+    title: ⚙️ Starrted Backup Piensa
+    body: Starting backup process
+
+  finish:
+    title: ✅ SUCCESS Backup Piensa
+    body: Backup Piensa success
+
+  fail:
+    title: ❌ FAILED Backup Piensa
+    body: Backups Piensa failed
+```
+
+Con esto ya está configurado el backup de nuestros datos.  
+
+Vamos a programar los backups. En [la web de borgmatic](https://torsion.org/borgmatic/how-to/set-up-backups/) nos explica como hacerlo con tareas de systemd.
+
+```bash
+
+wget https://projects.torsion.org/borgmatic-collective/borgmatic/raw/branch/main/sample/systemd/borgmatic.service
+wget https://projects.torsion.org/borgmatic-collective/borgmatic/raw/branch/main/sample/systemd/borgmatic.timer
+sudo mv borgmatic.service borgmatic.timer /etc/systemd/system/
+```
+
+```bash
+# Connfiguración de horario:
+cd /etc/systemd/system
+sudo nano borgmatic.timer
+
+# Añadimos lo siguiente:
+[Unit]
+Description=Run borgmatic backup every day at 22:25:00
+
+[Timer]
+#OnCalendar=daily
+OnCalendar=*-*-* 22:25:00
+Persistent=true
+RandomizedDelaySec=10m
+
+[Install]
+WantedBy=timers.target
+```
+
+Por último, solo queda habilitar el nuevo servicio:
+```bash
+sudo systemctl enable --now borgmatic.timer
+```
+
+Con esto debería estar correctamente configurados los backus a nuestro servidor borg a través del cliente borgmatic.  
+
+Para verificar nuestros backups:
+```bash
+sudo borgmatic list                   
+piensa: Listing archives
+my-vps-2026-02-23T12:23:46           Mon, 2026-02-23 12:23:46 [f6508163e6c277ea7cbaf33db275ba2052d430d4538e4ca12161a9fec5ee5a06]
+my-vps-2026-02-28T08:10:03           Sat, 2026-02-28 08:10:04 [c0fe77d566cc1db569e05c5ff9d7fc5d845e93b667373de24d86445891645945]
+my-vps-2026-03-01T08:10:04           Sun, 2026-03-01 08:10:05 [87a15d7677e28c62fe143e28117652dc8ca9f08b230083a01047147eb0cea948]
+my-vps-2026-03-02T23:25:04           Mon, 2026-03-02 23:25:05 [e4209a633f6a2f67cba38e3f4d6c481e6212cbcf76d0d2f79d22cc2c52d754e6]
+my-vps-2026-03-03T00:51:39           Tue, 2026-03-03 00:51:40 [f1c31249f7c8ded0e7d289a593c78e146606934cd5a913fec9959e7268e88cea]
+```
+
+### EXTRA 4: Restaurar el backup  
+  
+Esta la parte más importante de los backups. He realizado varias pruebas y todo ha funcionado correctamente. Para restaurar el backup primero hacemos un listado de los que tenemos y después montamos el backup en la ubicación deseada para restaurar los ficheros:
+
+Primero listamos los ficheros creados con borgmatic:
+```bash
+sudo borgmatic list
+```
+
+Una vez sabemos el fichero que nos interesa podemos ver el contenido:
+```bash
+sudo borgmatic list --archive server-2020-04-01
+```
+
+Extracción completa de ficheros:
+```bash
+sudo borgmatic extract --archive my_server-2025-07-30T04:24:04 --destination /mnt/new-directory
+```
+
+Extracción de una parte solamente:
+```bash
+sudo borgmatic extract --archive my_server-2020-04-01 --path mnt/catpics --destination /mnt/new-directory
+```
+
+
 ***   
 
 Fuentes y enlaces de interés que ayudaran a complementar esta guía:  
 
 [Instalación de traefik sin etiquetas](https://www.manelrodero.com/blog/instalacion-y-uso-de-traefik-en-docker-sin-etiquetas)    
-[Crowdsec WAF - Appsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik)
+[Crowdsec WAF - Appsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik)  
+[Web oficial de borgmatic](https://torsion.org/borgmatic/how-to/set-up-backups/)
