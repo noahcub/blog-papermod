@@ -1013,11 +1013,11 @@ sudo nano borgmatic.timer
 
 # Añadimos lo siguiente:
 [Unit]
-Description=Run borgmatic backup every day at 22:25:00
+Description=Run borgmatic backup every day at 23:25:00
 
 [Timer]
 #OnCalendar=daily
-OnCalendar=*-*-* 22:25:00
+OnCalendar=*-*-* 23:25:00
 Persistent=true
 RandomizedDelaySec=10m
 
@@ -1025,9 +1025,85 @@ RandomizedDelaySec=10m
 WantedBy=timers.target
 ```
 
+Retocamos un par de cosas en nuestro fichero borgmatic.service
+```bash
+# Connfiguración de horario:
+cd /etc/systemd/system
+sudo nano borgmatic.service
+
+[Unit]
+Description=borgmatic backup
+Wants=network-online.target
+After=network-online.target
+# Prevent borgmatic from running unless the machine is plugged into power. Remove this line if you
+# want to allow borgmatic to run anytime.
+#ConditionACPower=true
+Documentation=https://torsion.org/borgmatic/
+
+[Service]
+Type=oneshot
+RuntimeDirectory=borgmatic
+StateDirectory=borgmatic
+
+# Comentamos para que borgmatic no vaya al fichero borgmatic.pw a buscar las contraseñas
+# Load single encrypted credential.
+# LoadCredentialEncrypted=borgmatic.pw
+
+LockPersonality=true
+MemoryDenyWriteExecute=no
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service @mount
+SystemCallErrorNumber=EPERM
+ProtectSystem=full
+
+CapabilityBoundingSet=CAP_DAC_READ_SEARCH CAP_NET_RAW
+
+# Lower CPU and I/O priority.
+Nice=19
+CPUSchedulingPolicy=batch
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+IOWeight=100
+
+Restart=no
+LogRateLimitIntervalSec=0
+
+# Delay start to prevent backups running during boot. Note that systemd-inhibit requires dbus and
+# dbus-user-session to be installed.
+ExecStartPre=sleep 1m
+
+# En esta linea es importante indicar la ruta de nuestro borgmatic
+# which borgmatic
+ExecStart=systemd-inhibit --who="borgmatic" --what="sleep:shutdown" --why="Prevent interrupting scheduled backup" /usr/bin/borgmatic --verbosity -2 --syslog-verbosity 1
+```
+
 Por último, solo queda habilitar el nuevo servicio:
 ```bash
 sudo systemctl enable --now borgmatic.timer
+```
+
+Verificamos la proxima ejecución:
+```bash
+systemctl list-timers borgmatic.timer
+
+NEXT                        LEFT LAST                        PASSED UNIT            ACTIVATES        
+Fri 2026-03-06 23:30:33 UTC   7h Fri 2026-03-06 07:18:33 UTC 8h ago borgmatic.timer borgmatic.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
 ```
 
 Con esto debería estar correctamente configurados los backus a nuestro servidor borg a través del cliente borgmatic.  
