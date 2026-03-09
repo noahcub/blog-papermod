@@ -1466,7 +1466,7 @@ Prevención: Te avisa si se está quedando sin espacio en disco.
 
 Fuentes y enlaces de interés que ayudaran a complementar esta guía:  
 
-**Debo decir que en esta guía he tirado mucho de IA.**
+**Debo decir que en esta guía he tirado mucho de IA.**  
 [Instalación de traefik sin etiquetas](https://www.manelrodero.com/blog/instalacion-y-uso-de-traefik-en-docker-sin-etiquetas)    
 [Crowdsec WAF - Appsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik)  
 [Web oficial de borgmatic](https://torsion.org/borgmatic/how-to/set-up-backups/)
