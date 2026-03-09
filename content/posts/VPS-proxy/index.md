@@ -1143,11 +1143,330 @@ Extracción de una parte solamente:
 sudo borgmatic extract --archive my_server-2020-04-01 --path mnt/catpics --destination /mnt/new-directory
 ```
 
+### EXTRA 5: Actualizaciones de seguridad automaticas
+
+Instalamos paquetes necesarios:
+```bash
+sudo apt update && sudo apt upgrade
+sudo apt install unattended-upgrades apt-listchanges -y
+```
+
+Configuración:
+```bash
+sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
+
+# Nos aseguramos que las lineas siguientes están descomentadas:
+
+Unattended-Upgrade::Origins-Pattern {
+        // Codename based matching:
+        // This will follow the migration of a release through different
+        // archives (e.g. from testing to stable and later oldstable).
+        // Software will be the latest available for the named release,
+        // but the Debian release itself will not be automatically upgraded.
+//      "origin=Debian,codename=${distro_codename}-updates";
+//      "origin=Debian,codename=${distro_codename}-proposed-updates";
+        "origin=Debian,codename=${distro_codename},label=Debian";
+        "origin=Debian,codename=${distro_codename},label=Debian-Security";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+//      "o=Debian Backports,n=${distro_codename}-backports,l=Debian Backports";
+
+# Limpieza de dependencias no usadas
+// Do automatic removal of unused packages after the upgrade
+// (equivalent to apt-get autoremove)
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+
+# Podríamos configurar reinicio automático, pero prefiero hacerlo después tras una notificación:
+# Descomentaríamos esto:
+// Unattended-Upgrade::Automatic-Reboot "true";
+
+// Automatically reboot even if there are users currently logged in
+// when Unattended-Upgrade::Automatic-Reboot is set to true
+//Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
+
+// If automatic reboot is enabled and needed, reboot at the specific
+// time instead of immediately
+//  Default: "now"
+
+# Aquí configuraríamos la hora del reinicio:
+// Unattended-Upgrade::Automatic-Reboot-Time "02:00";
+```
+
+Configuramos el lanzador:
+```bash
+sudo nano /etc/apt/apt.conf.d/20auto-upgrades
+
+# Añadimos lo siguiente:
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Unattended-Upgrade "1";
+```
+
+Verificamos el correcto funcionamiento:
+```bash
+sudo unattended-upgrade --dry-run --debug
+sudo cat /var/log/unattended-upgrades/unattended-upgrades.log
+
+systemctl status unattended-upgrades
+```
+
+### EXTRA 6: Notificaciones de actualizaciones
+
+Notificaciones con las actualizaciones automáticas. Creamos los scripts de notificación.  
+
+Como unattended-upgrades envía correos electrónicos de forma nativa, pero no notificaciones Webhook/Push directamente, usaremos un script de "Post-Invoke".
+```bash
+sudo nano /usr/local/bin/notify-updates.sh
+
+# Añadimos lo siguiente:
+#!/bin/bash
+
+# Configuración
+APPRISE_URL="tgram://11111111111111:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/-5002897396/"
+HOSTNAME=$(hostname)
+REBOOT_FILE="/var/run/reboot-required"
+REBOOT_PKGS="/var/run/reboot-required.pkgs"
+
+# 1. Obtener paquetes (usamos una variable limpia)
+LAST_UPGRADES=$(grep "Packages that were upgraded:" /var/log/unattended-upgrades/unattended-upgrades.log | tail -n 1 | cut -d: -f2)
+[ -z "$LAST_UPGRADES" ] && LAST_UPGRADES="Ninguno (solo ajustes de seguridad)"
+
+# 2. Lógica de reinicio
+if [ -f "$REBOOT_FILE" ]; then
+    ICON="⚠️"
+    SUBJECT="REINICIO REQUERIDO - Piensa: $HOSTNAME"
+    MSG_REBOOT="ATENCIÓN: Se requiere reiniciar el sistema."
+else
+    ICON="✅"
+    SUBJECT="Actualización Exitosa - Piensa: $HOSTNAME"
+    MSG_REBOOT="No es necesario reiniciar."
+fi
+
+# 3. Construir el cuerpo CON SALTOS DE LÍNEA REALES
+# Importante: Las líneas vacías entre el texto mantienen el formato en Telegram
+FINAL_BODY="$ICON Actualizaciones completadas en Piensa: $HOSTNAME.
+
+Paquetes: $LAST_UPGRADES
+
+$MSG_REBOOT"
+
+# 4. Enviar (Apprise detectará los saltos de línea del shell)
+apprise --title "$SUBJECT" --body "$FINAL_BODY" "$APPRISE_URL"
+```
+Como vemos en nuestro script el sistema nos avisa si es necesario reiniciar. En Debian, cuando apt instala un nuevo kernel, crea dos archivos temporales. El script simplemente mira si están ahí:
+```bash
+/var/run/reboot-required	#Su presencia indica que el sistema debe reiniciarse.
+/var/run/reboot-required.pkgs	#Contiene la lista de paquetes que forzaron el reinicio (ej. linux-image-6.1...).
+```
+
+Hacemos el script ejecutable:
+```bash
+sudo chmod +x /usr/local/bin/notify-updates.sh
+```
+
+Creamos un nuevo archivo de configuración en APT para que ejecute el script justo después de que unattended-upgrades termine su tarea:
+```bash
+sudo nano /etc/apt/apt.conf.d/99apprise-notifications
+
+# Añadimos lo siguiente:
+Unattended-Upgrade::Post-Invoke { "/usr/local/bin/notify-updates.sh"; };
+```
+
+Pruebas:
+```bash
+sudo touch /var/run/reboot-required
+/usr/local/bin/notify-updates.sh
+sudo rm /var/run/reboot-required
+```
+
+En este punto nuestro sistema hace lo siguiente:
+1.- Actualización diaria: unattended-upgrades hace el trabajo sucio.
+
+2.- Post-Update: Recibimos un mensaje con los paquetes instalados y un aviso si hace falta reiniciar.  
+**Ahora ya es decisión nuestra realizar el reinicio del sistema**
+
+
+### EXTRA 7: Notificaciones de Servidor Online y espacio de almacenamiento
+
+Ya que nos hemos puesto con las notificaciones, vamos a configurar las notificaciones para que una vez reiniciemos el sistema no informe que está operativo y otra para informar de poco espacio de almacenamiento. Mi VPS es muy modesto y esta última me vendrá muy bien en caso de problemas con el llenado del disco.
+
+Creamos nuestro script:
+```bash
+sudo nano /usr/local/bin/notify-boot.sh
+
+# Contenido:
+
+#!/bin/bash
+# Configuración
+APPRISE_URL="tgram://2222222222:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/-5002897396/"
+HOSTNAME=$(hostname)
+UPTIME=$(uptime -p)
+
+# Mensaje de sistema iniciado
+SUBJECT="🚀 Servidor Online - Piensa: $HOSTNAME"
+BODY="El sistema se ha iniciado correctamente.
+Estado: $UPTIME
+Fecha: $(date '+%Y-%m-%d %H:%M:%S')"
+
+# Enviar notificación
+/usr/bin/apprise --title "$SUBJECT" --body "$BODY" "$APPRISE_URL"
+```
+
+Permisos de ejecución:
+```bash
+sudo chmod +x notify-boot.sh
+```
+
+```bash
+sudo nano /etc/systemd/system/notify-boot.service
+
+# Contenido:
+[Unit]
+Description=Notificación de inicio por Apprise
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/notify-boot.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Cargamos el nuevo servicio y lo habilitamos:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable notify-boot.service
+```
+
+Prueba:
+```bash
+sudo systemctl start notify-boot.service
+```
+
+
+Vamos con la notificación de disco muy lleno:
+```bash
+sudo nano /usr/local/bin/check-disk.sh
+
+# Contenido:
+
+#!/bin/bash
+# Configuración
+APPRISE_URL="tgram://2222222222:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/-5002897396/"
+THRESHOLD=10  # Porcentaje mínimo de espacio libre antes de avisar
+HOSTNAME=$(hostname)
+
+# Obtener el uso actual de la partición raíz (/)
+CURRENT_FREE=$(df / --output=pcent | tail -1 | tr -dc '0-9')
+FREE_SPACE_PERCENT=$((100 - CURRENT_FREE))
+
+if [ "$FREE_SPACE_PERCENT" -le "$THRESHOLD" ]; then
+    ICON="🚨"
+    SUBJECT="ALERTA DE DISCO - $HOSTNAME"
+    BODY="¡Poco espacio en disco detectado!
+
+Espacio libre: $FREE_SPACE_PERCENT%
+Uso actual: $CURRENT_FREE%
+
+Se recomienda limpiar logs o paquetes antiguos antes de la próxima actualización."
+
+    # Enviar notificación
+    /usr/bin/apprise --title "$SUBJECT" --body "$BODY" "$APPRISE_URL"
+fi
+```
+
+Permisos de ejecución:
+```bash
+sudo chmod +x check-disk.sh
+```
+
+Programación diaria con systemd timers:
+```bash
+sudo nano /etc/systemd/system/check-disk.service
+
+# Contenido:
+[Unit]
+Description=Chequeo de espacio en disco para alertas Apprise
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/check-disk.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Creamos la Unidad de timer. Este archivo le dice a systemd cuando ejecutarlo:
+```bash
+sudo nano /etc/systemd/system/check-disk.timer
+
+# Contenido:
+[Unit]
+Description=Ejecutar chequeo de disco diariamente
+
+[Timer]
+# Se ejecuta todos los días a las 08:30 AM
+OnCalendar=*-*-* 08:30:00
+# Añade un margen aleatorio de 5 min para no saturar si tienes muchos VPS
+RandomizedDelaySec=300
+Persistent=true # Si el VPS estaba apagado a las 08:30, el script se ejecutará inmediatamente en cuanto se encienda
+
+[Install]
+WantedBy=timers.target
+```
+
+Activamos el nuevo timer:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now check-disk.timer
+```
+
+Listado de timers activos en el sistema:
+```bash
+sudo systemctl list-timers
+```
+
+Logs de la última vez que se ejecutó el checkeo del disco:
+```bash
+sudo journalctl -u check-disk.service
+```
+
+Prueba para que nos avise por Telegram:
+```bash
+sudo nano /usr/local/bin/check-disk.sh
+# Editamos nuestro script y modificamos la siguiente linea:
+# Si nuestro disco está mas de un 10% lleno que nos avise:
+THRESHOLD=90  # Porcentaje mínimo de espacio libre antes de avisar
+
+# Y lanzamos nuestro script.
+/usr/local/bin/check-disk.sh
+```
+
+Nos debería llegar una notificación a Telegram con el aviso.  
+
+
+Ejecución manual del checkeo del disco:
+```bash
+sudo systemctl start check-disk.service
+```
+
+Con todo esto, nuestro VPS nos notificará de los siguientes eventos:  
+
+Actualizaciones: Te avisa qué instaló.  
+Mantenimiento: Te avisa si el kernel cambió y toca reiniciar.  
+Supervivencia: Te avisa si el VPS arrancó tras un corte o reboot.  
+Prevención: Te avisa si se está quedando sin espacio en disco.  
 
 ***   
 
 Fuentes y enlaces de interés que ayudaran a complementar esta guía:  
 
+**Debo decir que en esta guía he tirado mucho de IA.**
 [Instalación de traefik sin etiquetas](https://www.manelrodero.com/blog/instalacion-y-uso-de-traefik-en-docker-sin-etiquetas)    
 [Crowdsec WAF - Appsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik)  
 [Web oficial de borgmatic](https://torsion.org/borgmatic/how-to/set-up-backups/)
