@@ -462,13 +462,28 @@ labels:
 
 Fichero definir baneos y tipo de notificaciones /traefik-crowdsec/crowdsec/config/profiles.yaml:
 ```bash
+# 1. PERFIL PARA REINCIDENTES (Primero en la lista)
+name: reincident_remediation
+filters:
+# Usamos la función correcta para contar decisiones previas de esa IP
+ - Alert.Remediation == true && Alert.GetScope() == "Ip" && GetDecisionsCount(Alert.GetValue()) > 0
+decisions:
+ - type: ban
+   duration: 168h # 1 semana de "nevera"
+notifications:
+ - telegram
+on_success: break # Si entra aquí, no sigue leyendo hacia abajo
+
+---
+
+# 2. PERFIL POR DEFECTO PARA IPs
 name: default_ip_remediation
 #debug: true
 filters:
- - Alert.Remediation == true && Alert.GetScope() == "Ip"
+  - Alert.Remediation == true && Alert.GetScope() == "Ip"
 decisions:
  - type: ban
-   duration: 4h
+   duration: 48h
 notifications:
  - telegram
 #duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
@@ -478,14 +493,17 @@ notifications:
 #   - http_default   # Set the required http parameters in /etc/crowdsec/noti>
 #   - email_default  # Set the required email parameters in /etc/crowdsec/not>
 on_success: break
+
 ---
+
+# 3. PERFIL PARA RANGOS
 name: default_range_remediation
 #debug: true
 filters:
  - Alert.Remediation == true && Alert.GetScope() == "Range"
 decisions:
  - type: ban
-   duration: 4h
+   duration: 48h
 #duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
 # notifications:
 #   - slack_default  # Set the webhook in /etc/crowdsec/notifications/slack.y>
@@ -493,6 +511,7 @@ decisions:
 #   - http_default   # Set the required http parameters in /etc/crowdsec/noti>
 #   - email_default  # Set the required email parameters in /etc/crowdsec/not>
 on_success: break
+
 ```
 
 Fichero notificaciones traefik-crowdsec/crowdsec/config/notifications/http.yaml:

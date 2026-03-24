@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>KVM y VirtManager | Las notas de Noah</title>
 <meta name="keywords" content="Admin">
 <meta name="description" content="Instalación de KVM y Virt Manager en Fedora">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/kvm-virtmanager/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/kvm-virtmanager/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="KVM y VirtManager">
+  <meta property="og:description" content="Instalación de KVM y Virt Manager en Fedora">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-07-19T18:00:00+01:00">
+    <meta property="article:modified_time" content="2023-07-19T18:00:00+01:00">
+    <meta property="article:tag" content="Admin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KVM y VirtManager">
+<meta name="twitter:description" content="Instalación de KVM y Virt Manager en Fedora">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "KVM y VirtManager",
+      "item": "https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "KVM y VirtManager",
+  "name": "KVM y VirtManager",
+  "description": "Instalación de KVM y Virt Manager en Fedora",
+  "keywords": [
+    "Admin"
+  ],
+  "articleBody": "Instalación de Entware en firmware Merlin Fedora con Gnome trae instalado por defecto Gnome-Boxes. La verdad es que está genial pero tiene algunas carencias, como por ejemplo la conectividad de red.\nCon Gnome Boxes solo podemos acceder a nuestra máquina virtual desde el host pero no podemos acceder desde la red local o contactar con la red local desde la máquina virtual. Para eso vamos a instalar y configurar KVM Y Virt Manger.\nRequisitos\nVerificamos si tenemos la virtualización activa. Si no lo estuviera debemos acceder a la UEFI (BIOS) y activarla. grep -E --color '(vmx|svm)' /proc/cpuinfo Verificamos que el módulo KVM del kernel esté cargado:\nlsmod | grep -i kvm Instalación de los paquetes:\nsudo dnf install -y qemu-kvm libvirt virt-install bridge-utils Instalamos Virt-manager que es un gestor gráfico que facilita mucho el trabajo:\nsudo dnf install -y virt-manager Módulos de virtualización adicionales:\nsudo dnf install -y libvirt-devel virt-top libguestfs-tools guestfs-tools Iniciamos y habilitamos el daemon de virtualización:\nsudo systemctl start libvirtd sudo systemctl enable libvirtd sudo systemctl status libvirtd Ahora crearemos una red puente a nuestro sistema para poder acceder a la red local:\nAccedemos a la configuración de redes de QEMU/KVM:\nY configuramos el nombre. Forward to: Physical device… Device: En mi caso he puesto la interfaz wifi: wlo1\nEl resto se configura según gustos del usuario:\nSi tenemos máquinas virtuales creadas con Gnome Boxes podemos usarlas a través de Virt Manager y adaptar las conexiones de red a nuestras necesidades. Gnome Boxes guarda sus máquinas en: ~/.local/share/gnome-boxes/images\nPodemos importar el disco de almacenamiento de estas máquinas a Virt Manager Y configuramos la red eligiendo el bridge network que hemos creado:\ny ya deberíamos poder acceder con nuestra máquina virtual a los equipos de la red local o viceversa.\nFuentes:\nhttps://www.linuxtechi.com/how-to-install-kvm-on-fedora-step-by-step/\nhttps://computingforgeeks.com/how-to-create-and-configure-bridge-networking-for-kvm-in-linux/?expand_article=1\n",
+  "wordCount" : "295",
+  "inLanguage": "en",
+  "datePublished": "2023-07-19T18:00:00+01:00",
+  "dateModified": "2023-07-19T18:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -208,14 +271,14 @@ Gnome Boxes guarda sus máquinas en: ~/.local/share/gnome-boxes/images</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

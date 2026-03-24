@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Problemas con Nvidia | Las notas de Noah</title>
 <meta name="keywords" content="Admin">
 <meta name="description" content="Problemas renderizado GPU Nvidia">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/gpu-render/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/gpu-render/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/gpu-render/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/gpu-render/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/gpu-render/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Problemas con Nvidia">
+  <meta property="og:description" content="Problemas renderizado GPU Nvidia">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-02-19T08:00:00+01:00">
+    <meta property="article:modified_time" content="2023-02-19T08:00:00+01:00">
+    <meta property="article:tag" content="Admin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Problemas con Nvidia">
+<meta name="twitter:description" content="Problemas renderizado GPU Nvidia">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Problemas con Nvidia",
+      "item": "https://blog.lasnotasdenoah.com/posts/gpu-render/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Problemas con Nvidia",
+  "name": "Problemas con Nvidia",
+  "description": "Problemas renderizado GPU Nvidia",
+  "keywords": [
+    "Admin"
+  ],
+  "articleBody": "Problemas al ejecutar algunos programas con renderizado gpu Algunos programas generan errores de visualización debido al renderizado de GPU con drivers Nvidia. En la mayoría lo podemos deshabilitar:\nVISUAL STUDIO CODE\nPrimera opción\nDentro de Visual Studio abrimos la paleta (Ctrl+Shift+P). Ejecutamos: Preferences: Configure Runtime Arguments Este comando abre el fichero de configuración “argv.json” y añadimos el siguiente texto \"disable-hardware-acceleration\": true y reiniciamos Visual Studio Code\nSegunda Opción\nModificar el fichero “argv.json” de Visual Studio desde la terminal: nano ~/.vscode/argv.json Añadimos el mismo texto que decíamos antes\n\"disable-hardware-acceleration\": true Tercera Opción\nModificar el lanzador de la aplicación de escritorio en Gnome: Editamos el fichero /usr/share/applications/code.desktop. Cambiamos\n`Exec=/usr/share/code/code --unity-launch %F` por `Exec=/usr/share/code/code --disable-gpu --unity-launch %F` TEAMS\nModificar el fichero\n~/.config/Microsoft/Microsoft Teams/desktop-config.json\nCambiamos\n\"disableGpu\":false (por defecto la opción es FALSE) por \"disableGpu\":true THUNDERBIRD\nEn la configuración hay que deshabilitar la aceleración por hardware:\nFuentes:\n",
+  "wordCount" : "142",
+  "inLanguage": "en",
+  "datePublished": "2023-02-19T08:00:00+01:00",
+  "dateModified": "2023-02-19T08:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/gpu-render/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -207,14 +270,14 @@ En la configuración hay que deshabilitar la aceleración por hardware:<br>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

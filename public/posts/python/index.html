@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Python | Las notas de Noah</title>
 <meta name="keywords" content="Programming">
 <meta name="description" content="Notas sobre Python">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/python/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/python/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/python/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/python/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/python/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Python">
+  <meta property="og:description" content="Notas sobre Python">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-12-20T18:00:00+01:00">
+    <meta property="article:modified_time" content="2023-12-20T18:00:00+01:00">
+    <meta property="article:tag" content="Programming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python">
+<meta name="twitter:description" content="Notas sobre Python">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Python",
+      "item": "https://blog.lasnotasdenoah.com/posts/python/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Python",
+  "name": "Python",
+  "description": "Notas sobre Python",
+  "keywords": [
+    "Programming"
+  ],
+  "articleBody": "Notas sobre configuraciones para uso de Python Instalación de Pip\nPip es un sistema de gestión de paquetes utilizado para instalar y administrar paquetes de software escritos en Python.\nAdemás de instalar pip aprovechamos para instalar software de desarrollo de python muy util.\nsudo apt install python3-pip python-dev build-essential python3-venv El módulo venv proporciona soporte para crear «entornos virtuales» ligeros con sus propios directorios de ubicación, aislados opcionalmente de los directorios de ubicación del sistema.\nCada entorno virtual tiene su propio binario Python (que coincide con la versión del binario que se utilizó para crear este entorno) y puede tener su propio conjunto independiente de paquetes Python instalados en sus directorios de ubicación.\nEn resumen, los entornos virtuales nos permiten tener un entorno de desarrollo en cada proyecto sin llenar el sistema de dependencias y paquetes instalados.\nPara crear un entorno virtual dentro del proyecto que estemos:\npython3 -m venv entorno_virtual De esta forma creamos una carpeta llamada entorno_virtual dentro del proyecto donde se almacenaran todos los archivos de python para ese entorno.\nAl abrir un proyecto con un entorno virtual, VSCode nos lo detecta automáticamente lo activa directamente.\nSi no se activa directamente, o vamos a trabajar fuera de VSCode lo activamos nosotros:\nsource ruta/al/entorno/virtual/bin/activate Para desactivarlo:\ndeactivate Si queremos eliminar un entorno virtual:\nrm -rf ruta/al/entorno/virtual Nota SUPERIMPORTANTE\nSi vamos a usar el entorno virtual dentro de un proyecto en github tenemos que excluir esa carpeta de git. Para ello creamos un fichero .gitignore dentro de la carpeta entorno_virtual y excluimos todo con ‘*’:\nnano .gitignore * Una vez tengamos pip instalado podemos instalar los paquetes que necesitemos para nuestros proyectos:\npip install jupyter pandas request numpy etc..... Para actulizar pip:\npip install --upgrade pip Fuentes:\n[]https://code.tutsplus.com/es/tutorials/understanding-virtual-environments-in-python–cms-28272](https://code.tutsplus.com/es/tutorials/understanding-virtual-environments-in-python--cms-28272)\nhttps://gee.es/2023/05/17/como-creo-un-entorno-de-desarrollo-con-env-en-vscode/\n",
+  "wordCount" : "290",
+  "inLanguage": "en",
+  "datePublished": "2023-12-20T18:00:00+01:00",
+  "dateModified": "2023-12-20T18:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/python/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -195,14 +258,14 @@ Si vamos a usar el entorno virtual dentro de un proyecto en github tenemos que e
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/programming/">Programming</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/programming/">Programming</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by
