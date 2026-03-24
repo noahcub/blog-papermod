@@ -731,6 +731,88 @@ docker exec -it crowdsec kill -SIGHUP 1
 docker restart crowdsec
 ```
 
+### Configuración de CAPI en Crowdsec
+
+CAPI significa Central API. Es la red de inteligencia colectiva de CrowdSec.  
+
+Con CAPI activado: El servidor recibe una lista de miles de IPs que ya han sido reportadas como maliciosas por otros usuarios de CrowdSec en el mundo. Las bloqueas antes de que  toquen nuestro servidor.  
+
+Con CAPI desactivado: El servidor está en modo "isla". Solo bloquea lo que él mismo detecta. Es mucho menos eficiente.   
+
+Modificamos el docker-compose:
+```bash
+services:
+  crowdsec:
+    # ...
+    environment:
+      - DISABLE_CAPI=false  # Permitir inteligencia colectiva y Consola
+```
+A veces se desactiva por privacidad extrema (para no enviar señales de ataque a los servidores de CrowdSec) o para ahorrar un mínimo de ancho de banda. Pero para un VPS estándar con Traefik, tenerlo en false es lo recomendado para estar protegido por la "inmunidad de grupo".  
+
+Reiniciamos docker compose:
+```bash
+docker compose restart
+```
+
+Accedemos a nuestra consola de crowdsec [app.crowdsec.net](https://app.crowdsec.net/) y vamos a **Engines** y **Enroll** y nos dará la key para hacer el enrolado:
+```bash
+docker exec crowdsec cscli console enroll XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+Verificamos:
+```bash
+docker exec crowdsec cscli console status
++--------------------+-----------+------------------------------------------------------+
+| Option Name        | Activated | Description                                          |
++--------------------+-----------+------------------------------------------------------+
+| custom             | ✅        | Forward alerts from custom scenarios to the console  |
+| manual             | ✅        | Forward manual decisions to the console              |
+| tainted            | ✅        | Forward alerts from tainted scenarios to the console |
+| context            | ✅        | Forward context with alerts to the console           |
+| console_management | ❌        | Receive decisions from console                       |
++--------------------+-----------+------------------------------------------------------+
+```
+Ahora mismo la comunicación es unidireccional: el VPS le cuenta cosas a la consola. Si activamos la última opción, la comunicación será bidireccional:  
+1.- Bloqueo remoto: Si ves una IP atacándote desde el móvil en la web de la consola, podrás darle a "Ban" y la consola le dirá a tu VPS que la bloquee inmediatamente.  
+2.- Suscripción a listas: Podrás suscribirte a listas de bloqueo de terceros (por ejemplo, "IPs de nodos de salida Tor" o "Bad Bots") desde la web y se aplicarán solas en tu Traefik.
+
+Vamos a activarla:
+```bash
+docker exec crowdsec cscli console enable console_management
+docker compose restart crowdsec
+
+docker exec crowdsec cscli console status  
+
+# Salida:                 
++--------------------+-----------+------------------------------------------------------+
+| Option Name        | Activated | Description                                          |
++--------------------+-----------+------------------------------------------------------+
+| custom             | ✅        | Forward alerts from custom scenarios to the console  |
+| manual             | ✅        | Forward manual decisions to the console              |
+| tainted            | ✅        | Forward alerts from tainted scenarios to the console |
+| context            | ✅        | Forward context with alerts to the console           |
+| console_management | ✅        | Receive decisions from console                       |
++--------------------+-----------+------------------------------------------------------+
+```
+
+Verificamos el estado:
+```bash
+docker exec crowdsec cscli capi status
+
+# Salida:
+Loaded credentials from /etc/crowdsec//online_api_credentials.yaml
+You can successfully interact with Central API (CAPI)
+Your instance is enrolled in the console
+Subscription type: COMMUNITY
+Sharing signals is enabled
+Pulling community blocklist is enabled
+Pulling blocklists from the console is enabled
+```
+
+Con esto, obtenemos una protección muy superior a la que ya teníamos.  
+
+Para ver los ataques accedemos a [app.crowdsec.net](https://app.crowdsec.net/) y en la sección **Alerts** tenemos los datos por IP, paises, tipo ataque, motivo baneo, etc.
+
 
 ### Limpieza de logs de traefik
 
