@@ -228,10 +228,10 @@ entryPoints:
       tls:
         certResolver: letsencrypt
 #        certResolver: letsencrypt_staging
-      middlewares:
-        - geoblock-es
-        - crowdsec-bouncer
-        - security-headers
+      # Aquí podemos añadir los middleware que queramos de forma general. En mi caso no tengo ninguno porque prefiero añadirlos de forma manual a cada fichero en conf.d:
+#      middlewares:
+#        - crowdsec-bouncer
+#        - security-headers
 
 accessLog:
   filePath: "/var/log/traefik/access.log"
@@ -265,6 +265,7 @@ Vamos a modificarla para generar un solo certificado por dominio, lo que se llam
 
 ```bash
 # Modificaciones en fichero traefik.yml
+[.......]
 # EntryPoints configuration
 entryPoints:
   web:
@@ -287,6 +288,9 @@ entryPoints:
           - main: "midominio2.com"
             sans:
               - "*.midominio2.com"
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+[.......]
 ```
 
 Ahora tenemos que hacer una pequeña modificación en cada fichero de traefik/conf.d. Ahora vemos un ejemplo con certificado individual y otro con certificado Wildcard.  
@@ -526,7 +530,7 @@ http:
 EOF
 ```
 
-**NOTA**: En el fichero traefik.yml ya le indicamos a traefik que todo el tráfico que entre por 443 pase por los siguientes middlewares:
+**NOTA**: En el fichero traefik.yml le podemos indicar a traefik que todo el tráfico que entre por 443 pase por los siguientes middlewares:
 ```bash
   websecure:
     address: ":443"
@@ -539,7 +543,7 @@ EOF
         - crowdsec-bouncer
         - security-headers
 ```
-En nuestro script de creación de servicios no es necesario añadir los middlewares porque traefik se lo añade a todos de forma general, por eso está comentado en el script.
+En nuestro script de creación de servicios hemos comentado los middleware para añadir cado uno según nuestras necesidades.  
 
 
 ### Ficheros de configuración de crowdsec
