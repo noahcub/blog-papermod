@@ -478,7 +478,7 @@ karakeep.yml:
 http:
   routers:
     karakeep:
-      rule: "Host(`karakeep.lafinquina.com`)"
+      rule: "Host(`karakeep.midominio.com`)"
       service: karakeep
       entryPoints:
         - websecure
