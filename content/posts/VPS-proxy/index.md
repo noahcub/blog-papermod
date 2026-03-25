@@ -98,6 +98,7 @@ Creamos directorios:
 mkdir -p /home/noah/traefik-crowdsec
 mkdir -p /home/noah/traefik-crowdsec/traefik/{conf.d,logs,ssl}
 mkdir -p /home/noah/traefik-crowdsec/crowdsec/{config,data}
+mkdir -p /home/noah/traefik-crowdsec/redis-data
 ```
 
 Dentro de /home/noah/traefik-crowdsec creamos nuestro docker-compose.yml:
@@ -110,23 +111,20 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-
     environment:
       TZ: ${TZ:-Europe/Madrid}
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
-
-    networks:
-      - traefik
     ports:
       - "80:80"
       - "443:443"
-
     volumes:
       - /usr/share/zoneinfo/${TZ:-Europe/Madrid}:/etc/localtime:ro
       - ./traefik/traefik.yml:/traefik.yml:ro
       - ./traefik/conf.d:/conf.d:ro
       - ./traefik/ssl:/ssl
       - ./traefik/logs:/var/log/traefik
+    networks:
+      - infra_network
 
   crowdsec:
     image: crowdsecurity/crowdsec:latest
@@ -135,17 +133,27 @@ services:
     environment:
       - COLLECTIONS=crowdsecurity/traefik crowdsecurity/http-cve 
       # ESTAS COLECCIONES LAS AÑADIREMOS LUEGO crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
-      - DISABLE_CAPI=true  # Ignora CAPI completamente
+      - DISABLE_CAPI=true  # Ignora CAPI completamente. Esto es para iniciar el contenedor sin avisos de error. Posteriormente habilitamos CAPI.
     volumes:
       - ./traefik/logs:/var/log/traefik:ro   # comparte los logs
       - ./crowdsec/data:/var/lib/crowdsec/data
       - ./crowdsec/config:/etc/crowdsec
     networks:
-      - traefik
+      - infra_network
+  
+  # Usaremos redis como caché para quitar trabajo a nuestro crowdsec  
+  redis:
+    image: redis:alpine
+    container_name: crowdsec-redis
+    restart: unless-stopped
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - infra_network
 
 networks:
-  traefik:
-    name: traefik
+  infra_network:
+    name: infra_network
 ```
 
 ***IMPORTANTE***: Las colecciones de crowdsec que he incluido son las siguientes:
@@ -161,6 +169,7 @@ CF_DNS_API_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 ### Ficheros de configuración de traefik
+**NOTA: Esta configuración es para emitir certificados individuales por cada servicio. Unas líneas más abajo modificamos nuestro traefik.yml para usar certificados Wildcard.**   
 Fichero traefik.yml:
 ```bash
 # Global configuration
@@ -251,9 +260,40 @@ Dentro de ssl creamos nuestro fichero acme.json para los certificados:
   touch acme.json
   chmod 600 acme.json
 ```
+**NOTA: Con esta configuración de traefik.yml se genera un certificado para cada servicio**.  
+Vamos a modificarla para generar un solo certificado por dominio, lo que se llama **Certificados Wildcard** y de esta forma me facilitará un poco otra parte de la configuración que será hacer una servidor DNS privado con [Adguard Home](https://adguard.com/es/adguard-home/overview.html).
 
-Dentro de conf.d crearemos nuestros ficheros para dashboard, middlewares y distintos servicios.
-Fichero dashboard.yml:
+```bash
+# Modificaciones en fichero traefik.yml
+# EntryPoints configuration
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+#        certResolver: letsencrypt_staging
+        domains:
+          - main: "midominio1.com"
+            sans:
+              - "*.midominio1.com"
+          - main: "midominio2.com"
+            sans:
+              - "*.midominio2.com"
+```
+
+Ahora tenemos que hacer una pequeña modificación en cada fichero de traefik/conf.d. Ahora vemos un ejemplo con certificado individual y otro con certificado Wildcard.  
+
+
+Dentro de conf.d crearemos nuestros ficheros para dashboard, middlewares y distintos servicios.  
+**Fichero dashboard.yml con certificado individual:**
 ```bash
 http:
   routers:
@@ -267,6 +307,24 @@ http:
       middlewares:
         - auth
 ```
+
+**Fichero dashboard.yml con certificado Wildcard:**
+```bash
+http:
+  routers:
+    dashboard:
+      rule: "Host(`traefik.midominio.com`)"
+      service: api@internal
+      entryPoints:
+        - websecure
+      tls: {}   # o simplemente ‘tls: true’ en v3
+      middlewares:
+        - geoblock-es
+        - crowdsec-bouncer
+        - security-headers
+        - auth
+```
+
 Fichero middelwares.yml:
 ```bash
 http:
@@ -294,21 +352,29 @@ http:
       plugin:
         crowdsec-bouncer:
           Enabled: true
-          CrowdsecMode: live          # o streaming si prefieres
+          CrowdsecMode: live          # o streaming 
           # Identidad fija para evitar los "bouncers fantasmas"
+          # No funciona bien. De vez en cuando tengo un bouncer traefik-bouncer@172.18.0.X
           bouncerName: "traefik-bouncer"
 
           # Conexión a la LAPI (Local API)
-          CrowdsecLapiUrl: "http://crowdsec:8080"
-          CrowdsecLapiKey: "07F+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          #CrowdsecLapiUrl: "http://crowdsec:8080" Nomenclatura antigua
+          CrowdsecLapiScheme: "http"
+          CrowdsecLapiHost: "crowdsec:8080"
+          CrowdsecLapiKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+          # Cache Redis
+          RedisCacheEnabled: true
+          RedisCacheHost: "crowdsec-redis:6379"
+          # LogLevel: "DEBUG"
 
           # Configuración del WAF se añade luego junto con las colecciones (AppSec)
-          crowdsecAppsecEnabled: true
-          crowdsecAppsecHost: "crowdsec:7422" # Puerto por defecto del WAF en el contenedor crowdsec
-          crowdsecAppsecFailureBlock: true
-          crowdsecAppsecUnreachableBlock: true
-          #appsecFailureAction: "passthrough" # Si el WAF falla, deja pasar (o "block" para máxima seguridad)
+          CrowdsecAppsecEnabled: true
+          CrowdsecAppsecHost: "crowdsec:7422" # Puerto por defecto del WAF en el contenedor crowdsec
+          CrowdsecAppsecFailureBlock: true
+          CrowdsecAppsecUnreachableBlock: true
 
+          # Trusted IPs
           ForwardedHeadersCustomName: "X-Forwarded-For"
           ForwardedHeadersTrustedIps:
             - "103.21.244.0/22"
@@ -358,6 +424,7 @@ http:
             - "197.234.240.0/22"
             - "198.41.128.0/17"
 ```
+
 Cuando arranquemos por primera vez el stack crowdsec no funcionará porque no hemos creado el bouncer de traefik:
 ```bash
 docker exec -it crowdsec cscli bouncers add traefik-bouncer
@@ -379,12 +446,13 @@ Este comando nos genera una API Key que tenemos que copiar en el fichero middlew
           # Configuración del WAF (AppSec)
           appsecEnabled: true
 ```
+
 Reiniciamos nuestro compose:
 ```bash
 docker compose restart
 ```
 
-Fichero de ejemplo de un servicio:
+Fichero de ejemplo de un servicio con certificado individual:
 karakeep.yml:
 ```bash
 http:
@@ -396,6 +464,29 @@ http:
         - websecure
       tls:
         certResolver: letsencrypt
+
+  services:
+    karakeep:
+      loadBalancer:
+        servers:
+          - url: "http://100.105.100.10:3333"
+```
+
+Fichero de ejemplo de un servicio con certificado Wildcard:
+karakeep.yml:
+```bash
+http:
+  routers:
+    karakeep:
+      rule: "Host(`karakeep.lafinquina.com`)"
+      service: karakeep
+      entryPoints:
+        - websecure
+      tls: {}   # o simplemente ‘tls: true’ en v3
+      middlewares:
+        - geoblock-es
+        - crowdsec-bouncer
+        - security-headers
 
   services:
     karakeep:
@@ -417,8 +508,11 @@ http:
       service: ${service}
       entryPoints:
         - websecure
-      tls:
-        certResolver: letsencrypt
+      # Opción para certificado individual
+      #tls:
+      #  certResolver: letsencrypt
+      # Opción para certificado Wildcard
+      tls: {}
 #      middlewares:
 #        - crowdsec-bouncer
 #        - security-headers
@@ -469,7 +563,7 @@ filters:
  - Alert.Remediation == true && Alert.GetScope() == "Ip" && GetDecisionsCount(Alert.GetValue()) > 0
 decisions:
  - type: ban
-   duration: 168h # 1 semana de "nevera"
+   duration: 168h # 1 semana de "nevera" VAMOS A SER MUY EXTRICTOS CON LOS REINCIDENTES
 notifications:
  - telegram
 on_success: break # Si entra aquí, no sigue leyendo hacia abajo
