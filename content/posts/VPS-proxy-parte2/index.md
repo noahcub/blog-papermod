@@ -366,7 +366,7 @@ Extracción de una parte solamente:
 sudo borgmatic extract --archive my_server-2020-04-01 --path mnt/catpics --destination /mnt/new-directory
 ```
 
-### EXTRA 5: Actualizaciones de seguridad automaticas
+### Actualizaciones de seguridad automaticas
 
 Instalamos paquetes necesarios:
 ```bash

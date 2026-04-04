@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=39903&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>AdguardHome como servidor DNS | Las notas de Noah</title>
+<meta name="keywords" content="Admin">
+<meta name="description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:39903/posts/adguard-home-dns/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:39903/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:39903/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:39903/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:39903/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:39903/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:39903/posts/adguard-home-dns/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:39903/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:39903/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:39903/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:39903/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:39903/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:39903/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      AdguardHome como servidor DNS
+    </h1>
+    <div class="post-description">
+      Configuración de AdguardHome como servidor DNS en nuestro VPS
+    </div>
+    <div class="post-meta"><span title='2026-04-04 07:00:00 +0200 CEST'>April 4, 2026</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#adguard-home" aria-label="Adguard Home">Adguard Home</a><ul>
+                        
+                <li>
+                    <a href="#instalaci%c3%b3n-en-el-vps" aria-label="Instalación en el VPS">Instalación en el VPS</a></li>
+                <li>
+                    <a href="#configuraciones-en-traefik" aria-label="Configuraciones en traefik">Configuraciones en traefik</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-panel-adguard-home" aria-label="Configuración panel Adguard Home">Configuración panel Adguard Home</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-de-clientes-en-adguard-home" aria-label="Configuración de clientes en Adguard Home">Configuración de clientes en Adguard Home</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-de-clientes-en-linux" aria-label="Configuración de clientes en Linux">Configuración de clientes en Linux</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-de-clientes-en-android" aria-label="Configuración de clientes en Android">Configuración de clientes en Android</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="adguard-home">Adguard Home<a hidden class="anchor" aria-hidden="true" href="#adguard-home">#</a></h2>
+<p>Según su web, <a href="https://adguard.com/es/welcome.html">Adguard Home</a> es el primer bloqueador de anuncios para Linux a nivel de sistema en el mundo. Bloquea anuncios y rastreadores en el dispositivo, selecciona de los filtros preinstalados o añade los tuyos propios, todo a través de la interfaz de línea de comandos.</p>
+<p>Características:<br>
+1.- loqueo de anuncios: El bloqueador de anuncios AdGuard elimina los molestos banners, ventanas emergentes y anuncios de vídeo
+2.- Protección de privacidad: El bloqueador de anuncios AdGuard protege tus datos de web analytics y los rastreadores online
+3.- Seguridad de navegación: El bloqueador de anuncios AdGuard protege contra el phishing y los sitios maliciosos
+4.- Control parental: El bloqueador de anuncios AdGuard protege a los niños del contenido adulto e inapropiado</p>
+<h3 id="instalación-en-el-vps">Instalación en el VPS<a hidden class="anchor" aria-hidden="true" href="#instalación-en-el-vps">#</a></h3>
+<p>Usaremos docker como es habitual.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  adguardhome:
+</span></span><span style="display:flex;"><span>    image: adguard/adguardhome:latest
+</span></span><span style="display:flex;"><span>    container_name: adguardhome
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># DNS (imprescindible)</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;53:53/tcp&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;53:53/udp&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Web UI - Solo para el primer arranque del contenedor - Luego lo comentamos</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#      - &#34;3000:3000/tcp&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># DoT (DNS over TLS) nosotros vamos a usarlo</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;853:853/tcp&#34;</span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - ./conf:/opt/adguardhome/conf
+</span></span><span style="display:flex;"><span>      - ./data:/opt/adguardhome/work
+</span></span><span style="display:flex;"><span>      - ./certs:/opt/adguardhome/certs:ro
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - infra_network <span style="color:#75715e"># &lt;--- Nuestra red de traefik</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  certs-extractor:
+</span></span><span style="display:flex;"><span>    image: ldez/traefik-certs-dumper:v2.8.1
+</span></span><span style="display:flex;"><span>    container_name: certs-extractor
+</span></span><span style="display:flex;"><span>    entrypoint: sh -c <span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      traefik-certs-dumper file --watch --version v2 --source /data/acme.json --dest /output --domain-subdir &amp;&amp;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      chmod -R 600 /output/*&#34;</span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /home/noe/traefik-crowdsec/traefik/ssl/acme.json:/data/acme.json:ro  <span style="color:#75715e"># Ruta a TU archivo acme.json</span>
+</span></span><span style="display:flex;"><span>      - ./certs:/output                         <span style="color:#75715e"># Donde se guardarán los .pem</span>
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - infra_network <span style="color:#75715e"># &lt;--- Nuestra red de traefik</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  infra_network:
+</span></span><span style="display:flex;"><span>    external: true 
+</span></span></code></pre></div><p>Nuestro stack consta de dos contenedores.
+1.- Adguardhome. Configuración sencilla. Solo es destacable que para el primer arranque mapeamos el puerto 3000 y una vez hecha la configuración inicial podemos comentarlo, ya que accederemos al panel a través de adguard.midominio.com. Aunque miestras escribo igual vuelvo a mapearlo para que solo sea accesible desde tailscale.<br>
+2.- Certs-extractor. Este contenedor se encarga de extraer los certificados de traefik para usar el DNS over TLS. Esta parte es muy importante porque traefik guarda los certificados juntos en el mismo fichero <strong>acme.json</strong>. Este docker se encarga de extraer los certificados que contiene acme.json en dos ficheros: <strong>certificate.crt y privatekey.key</strong></p>
+<p><strong>En la configuración inicial se dejan todos los valores por defecto</strong>. Lo único que tenemos que modificar es el usuario y la contraseña.</p>
+<h3 id="configuraciones-en-traefik">Configuraciones en traefik<a hidden class="anchor" aria-hidden="true" href="#configuraciones-en-traefik">#</a></h3>
+<p>Nos vamos a traefik para adaptarlo a nuestro Adguard Home.</p>
+<p>Editamos nuestro fichero traefik.yml y añadimos un nuevo entrypoint para los DNS over TLS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>entryPoints:
+</span></span><span style="display:flex;"><span>  web:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:80&#34;</span>
+</span></span><span style="display:flex;"><span>    http:
+</span></span><span style="display:flex;"><span>      redirections:
+</span></span><span style="display:flex;"><span>        entryPoint:
+</span></span><span style="display:flex;"><span>          to: websecure
+</span></span><span style="display:flex;"><span>          scheme: https
+</span></span><span style="display:flex;"><span>  websecure:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:443&#34;</span>
+</span></span><span style="display:flex;"><span>    http:
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: letsencrypt
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        certResolver: letsencrypt_staging</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Primer dominio</span>
+</span></span><span style="display:flex;"><span>        domains:
+</span></span><span style="display:flex;"><span>          - main: <span style="color:#e6db74">&#34;midominio.com&#34;</span>
+</span></span><span style="display:flex;"><span>            sans:
+</span></span><span style="display:flex;"><span>              - <span style="color:#e6db74">&#34;*.midominio.com&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Segundo dominio</span>
+</span></span><span style="display:flex;"><span>          - main: <span style="color:#e6db74">&#34;lasnotasdenoah.com&#34;</span>
+</span></span><span style="display:flex;"><span>            sans:
+</span></span><span style="display:flex;"><span>              - <span style="color:#e6db74">&#34;*.lasnotasdenoah.com&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Entrypoint para dns adguard-home</span>
+</span></span><span style="display:flex;"><span>  dot:
+</span></span><span style="display:flex;"><span>    address: <span style="color:#e6db74">&#34;:853&#34;</span>
+</span></span></code></pre></div><p>En nuestro directorio conf.d creamos el fichero dns.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Esta primera parte de http simplemente es el acceso al panel de adguard como cualquier otro servicio.</span>
+</span></span><span style="display:flex;"><span>http:
+</span></span><span style="display:flex;"><span>  routers:
+</span></span><span style="display:flex;"><span>    adguard-ui:
+</span></span><span style="display:flex;"><span>      rule: <span style="color:#e6db74">&#34;Host(`adguard.midominio.com`)&#34;</span>
+</span></span><span style="display:flex;"><span>      service: adguard-ui
+</span></span><span style="display:flex;"><span>      entryPoints:
+</span></span><span style="display:flex;"><span>        - websecure
+</span></span><span style="display:flex;"><span>      tls: <span style="color:#f92672">{}</span>   <span style="color:#75715e"># o simplemente ‘tls: true’ en v3</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Protegemos nuestro panel con los middleware</span>
+</span></span><span style="display:flex;"><span>      middlewares:
+</span></span><span style="display:flex;"><span>        - geoblock-es
+</span></span><span style="display:flex;"><span>        - crowdsec-bouncer
+</span></span><span style="display:flex;"><span>        - security-headers
+</span></span><span style="display:flex;"><span>  services:
+</span></span><span style="display:flex;"><span>    adguard-ui:
+</span></span><span style="display:flex;"><span>      loadBalancer:
+</span></span><span style="display:flex;"><span>        servers:
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># Como estamos en la misma red docker, no hace falta poner dirección IP. Usamos el nombre del contenedor y traefik lo entiene perfectamente.</span>
+</span></span><span style="display:flex;"><span>          - url: <span style="color:#e6db74">&#34;http://adguardhome:80&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Aquí configuramos la conexión DNS</span>
+</span></span><span style="display:flex;"><span>tcp:
+</span></span><span style="display:flex;"><span>  routers:
+</span></span><span style="display:flex;"><span>    adguard-dot:
+</span></span><span style="display:flex;"><span>      rule: <span style="color:#e6db74">&#34;HostSNI(`dns.midomnio.com`)&#34;</span>
+</span></span><span style="display:flex;"><span>      service: adguard-dot
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Usamos el nuevo entryPoint que configuramos en traefik.yml por el puerto 853 que es el que usa DNS over TLS</span>
+</span></span><span style="display:flex;"><span>      entryPoints:
+</span></span><span style="display:flex;"><span>        - dot
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># IMPORTANTÍSIMO: Tenemos que forzar a ACME a generar este dominio. MOTIVO: identificar de forma individual los equipos que se pueden conectar y de rebote vemos las estadísticas de uso de cada uno</span>
+</span></span><span style="display:flex;"><span>      tls:
+</span></span><span style="display:flex;"><span>        certResolver: letsencrypt
+</span></span><span style="display:flex;"><span>        domains:  <span style="color:#75715e"># ← Esto fuerza ACME para este dominio específico</span>
+</span></span><span style="display:flex;"><span>          - main: <span style="color:#e6db74">&#34;dns.midominio.com&#34;</span>
+</span></span><span style="display:flex;"><span>            sans:
+</span></span><span style="display:flex;"><span>              - <span style="color:#e6db74">&#34;*.dns.midominio.com&#34;</span>
+</span></span><span style="display:flex;"><span>  services:
+</span></span><span style="display:flex;"><span>    adguard-dot:
+</span></span><span style="display:flex;"><span>      loadBalancer:
+</span></span><span style="display:flex;"><span>        servers:
+</span></span><span style="display:flex;"><span>          - address: <span style="color:#e6db74">&#34;adguardhome:853&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Reiniciamos traefik</span>
+</span></span><span style="display:flex;"><span>docker compose restart traefik    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Verificamos los logs:</span>
+</span></span><span style="display:flex;"><span>docker logs traefik | grep -i acme                        
+</span></span></code></pre></div><p>Y vemos la respuesta de traefik:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>2026-04-03T16:32:09+02:00 ERR Unable to obtain ACME certificate <span style="color:#66d9ef">for</span> domains error<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;unable to generate a certificate for the domains [*.dns.midominio.com]: error: one or more domains had a problem:\n[dns.midominio.com] [dns.midominio.com] acme: error presenting token: cloudflare: failed to create TXT record: An identical record already exists. (81058)\n&#34;</span> ACME CA<span style="color:#f92672">=</span>https://acme-v02.api.letsencrypt.org/directory acmeCA<span style="color:#f92672">=</span>https://acme-v02.api.letsencrypt.org/directory domains<span style="color:#f92672">=[</span><span style="color:#e6db74">&#34;dns.midominio.com&#34;</span>,<span style="color:#e6db74">&#34;*.dns.midominio.com&#34;</span><span style="color:#f92672">]</span> providerName<span style="color:#f92672">=</span>letsencrypt.acme routerName<span style="color:#f92672">=</span>adguard-certs-helper@file rule<span style="color:#f92672">=</span>Host<span style="color:#f92672">(</span><span style="color:#e6db74">`</span>dns.midominio.com<span style="color:#e6db74">`</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>ERROR: CrowdsecBouncerTraefikPlugin: 2026/04/04 11:02:04 ServeHTTP:Get ip:83.53.76.48 cache:unreachable
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p><strong>Pasos para solucionar el error:</strong><br>
+Según Perplexity el error &ldquo;An identical record already exists. (81058)&rdquo; de Cloudflare DNS-01 es inofensivo (cert se genera igual), pero ensucia logs. Se soluciona borrando el TXT challenge persistente en Cloudflare.</p>
+<p>1.- Entramos en nuestro panel de administración de cloudflare y borramos los txt de los registros DNS
+<img alt="adguard-1.png" loading="lazy" src="/posts/adguard-home-dns/adguard-1.png"></p>
+<p>2.- Limpieza de logs de traefik:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec traefik truncate -s <span style="color:#ae81ff">0</span> /var/log/traefik/access.log
+</span></span><span style="display:flex;"><span>docker exec traefik truncate -s <span style="color:#ae81ff">0</span> /var/log/traefik/traefik.log
+</span></span></code></pre></div><p>3.- Añadimos a certificatesResolvers.letsencrypt.acme.dnsChallenge de traefik.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dnsChallenge:
+</span></span><span style="display:flex;"><span>  provider: cloudflare
+</span></span><span style="display:flex;"><span>  delayBeforeCheck: <span style="color:#ae81ff">60</span>      <span style="color:#75715e"># Espera propagación</span>
+</span></span><span style="display:flex;"><span>  resolvers:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#34;1.1.1.1:53&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#34;8.8.8.8:53&#34;</span>
+</span></span></code></pre></div><p>4.- Verificamos con:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker logs traefik | grep acme
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Debería dar un resultado sin errores acme</span>
+</span></span></code></pre></div><p>En <a href="https://blog.lasnotasdenoah.com/posts/vps-proxy/">la parte 1 de configurar el VPS</a> tenía comentados los resolvers de traefik.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>        provider: cloudflare
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        resolvers:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          - &#34;1.1.1.1:53&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          - &#34;1.0.0.1:53&#34;</span>
+</span></span></code></pre></div><p>Consulté nuevamente a Perplexity sobre ese comentario y su respuesta fue que <strong>es MUY importante descomentarlo para DNS-01 con Cloudflare. Esos resolvers le dicen a Traefik qué DNS públicos consultar para verificar que el TXT challenge se propagó antes de pedir el certificado.</strong><br>
+Beneficios inmediatos:<br>
+1.- Renovaciones ACME 2x más rápidas<br>
+2.- Cero errores &ldquo;propagation timeout&rdquo;<br>
+3.- Logs de Traefik impecables<br>
+4.- Rate limits Let’s Encrypt respetados</p>
+<p>Así que toca descomentarlo para mejorar la estabilidad con certificados wildcards:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>        provider: cloudflare
+</span></span><span style="display:flex;"><span>        resolvers:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;1.1.1.1:53&#34;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#34;1.0.0.1:53&#34;</span>
+</span></span></code></pre></div><h3 id="configuración-panel-adguard-home">Configuración panel Adguard Home<a hidden class="anchor" aria-hidden="true" href="#configuración-panel-adguard-home">#</a></h3>
+<p>En la siguiente imagen vemos el panel funcionando.
+<img alt="adguard-2.png" loading="lazy" src="/posts/adguard-home-dns/adguard-2.png"></p>
+<p>Configuración de cifrado:<br>
+1.- Marcamos el Check de Habilitar cifrado (DNS over TLS)<br>
+2.- Nombre del servidor: dns.midominio.com</p>
+<p><img alt="adguard-3.png" loading="lazy" src="/posts/adguard-home-dns/adguard-3.png"></p>
+<p>Establecemos la ruta de los certificados. En mi caso:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Archivo del certificado</span>
+</span></span><span style="display:flex;"><span>/opt/adguardhome//certs/*.dns.midominio.com/certificate.crt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Archivo de clave privada</span>
+</span></span><span style="display:flex;"><span>/opt/adguardhome//certs/*.dns.midominio.com/privatekey.key
+</span></span></code></pre></div><p>Nos saldrá una confirmación en verde para decir que se han cargado correctamente:
+<img alt="adguard-4.png" loading="lazy" src="/posts/adguard-home-dns/adguard-4.png"></p>
+<h3 id="configuración-de-clientes-en-adguard-home">Configuración de clientes en Adguard Home<a hidden class="anchor" aria-hidden="true" href="#configuración-de-clientes-en-adguard-home">#</a></h3>
+<p>En esta parte vamos a configurar los clientes que pueden realizar consultas DNS por nuestro servicio.</p>
+<p>Esta es mi configuración
+<img alt="adguard-5.png" loading="lazy" src="/posts/adguard-home-dns/adguard-5.png"></p>
+<p>Importante:<br>
+1.- Nombre del cliente: nombre que nos guste para ver las estadísticas.<br>
+2.- Etiqueta: se puede seleccionar la que sea mas acorde al dispositivo.<br>
+3.- Identificador: esta es la parte mas importante. Identificador único por ejemplo: S24-XXXXXXXXXXX</p>
+<p>Una vez configurados los clientes, tenemos que autorizarles el uso del DNS en Configuración DNS. <strong>IMPORTANTE: En clientes permitidos ponemos el Identificador del cliente (NO el nombre)</strong>
+<img alt="adguard-6.png" loading="lazy" src="/posts/adguard-home-dns/adguard-6.png"></p>
+<h3 id="configuración-de-clientes-en-linux">Configuración de clientes en Linux<a hidden class="anchor" aria-hidden="true" href="#configuración-de-clientes-en-linux">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano /etc/systemd/resolved.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Añadimos lo siguiente:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Resolve<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>DNS<span style="color:#f92672">=</span>IP_PUBLICA_VPS#debian13-XXXXXXXXXXXX.dns.midominio.com
+</span></span><span style="display:flex;"><span>FallbackDNS<span style="color:#f92672">=</span>9.9.9.9#dns.quad9.net
+</span></span><span style="display:flex;"><span>Domains<span style="color:#f92672">=</span>~.
+</span></span><span style="display:flex;"><span>DNSOverTLS<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Reiniciamos systemd-resolved</span>
+</span></span><span style="display:flex;"><span>sudo systemctl restart systemd-resolved.service
+</span></span></code></pre></div><h3 id="configuración-de-clientes-en-android">Configuración de clientes en Android<a hidden class="anchor" aria-hidden="true" href="#configuración-de-clientes-en-android">#</a></h3>
+<p>Vamos a Ajustes -&gt; Conexiones -&gt; Mas ajustes de conexión -&gt; DNS privado:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>s24-XXXXXXXXX.dns.midominio.com
+</span></span></code></pre></div><p><img alt="adguard-7.jpg" loading="lazy" src="/posts/adguard-home-dns/adguard-7.jpg"></p>
+<hr>
+<p>Fuentes:<br>
+<strong>Debo decir que en esta guía he tirado mucho de IA.</strong><br>
+<a href="https://adguard.com/es/welcome.html">Adguard Home</a><br>
+<a href="https://blog.lasnotasdenoah.com/posts/vps-proxy/">Configurar VPS parte 1</a><br>
+<a href="https://blog.lasnotasdenoah.com/posts/vps-proxy-parte2/">Configurar VPS parte 2</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:39903/tags/admin/">Admin</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:39903/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
