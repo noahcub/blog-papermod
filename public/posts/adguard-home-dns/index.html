@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=39903&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>AdguardHome como servidor DNS | Las notas de Noah</title>
 <meta name="keywords" content="Admin">
 <meta name="description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:39903/posts/adguard-home-dns/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/adguard-home-dns/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:39903/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:39903/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:39903/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:39903/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:39903/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:39903/posts/adguard-home-dns/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/adguard-home-dns/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/adguard-home-dns/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="AdguardHome como servidor DNS">
+  <meta property="og:description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-04-04T07:00:00+02:00">
+    <meta property="article:modified_time" content="2026-04-04T07:00:00+02:00">
+    <meta property="article:tag" content="Admin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AdguardHome como servidor DNS">
+<meta name="twitter:description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "AdguardHome como servidor DNS",
+      "item": "https://blog.lasnotasdenoah.com/posts/adguard-home-dns/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AdguardHome como servidor DNS",
+  "name": "AdguardHome como servidor DNS",
+  "description": "Configuración de AdguardHome como servidor DNS en nuestro VPS",
+  "keywords": [
+    "Admin"
+  ],
+  "articleBody": "Adguard Home Según su web, Adguard Home es el primer bloqueador de anuncios para Linux a nivel de sistema en el mundo. Bloquea anuncios y rastreadores en el dispositivo, selecciona de los filtros preinstalados o añade los tuyos propios, todo a través de la interfaz de línea de comandos.\nCaracterísticas:\n1.- loqueo de anuncios: El bloqueador de anuncios AdGuard elimina los molestos banners, ventanas emergentes y anuncios de vídeo 2.- Protección de privacidad: El bloqueador de anuncios AdGuard protege tus datos de web analytics y los rastreadores online 3.- Seguridad de navegación: El bloqueador de anuncios AdGuard protege contra el phishing y los sitios maliciosos 4.- Control parental: El bloqueador de anuncios AdGuard protege a los niños del contenido adulto e inapropiado\nInstalación en el VPS Usaremos docker como es habitual.\nservices: adguardhome: image: adguard/adguardhome:latest container_name: adguardhome restart: unless-stopped ports: # DNS (imprescindible) - \"53:53/tcp\" - \"53:53/udp\" # Web UI - Solo para el primer arranque del contenedor - Luego lo comentamos # - \"3000:3000/tcp\" # DoT (DNS over TLS) nosotros vamos a usarlo - \"853:853/tcp\" volumes: - ./conf:/opt/adguardhome/conf - ./data:/opt/adguardhome/work - ./certs:/opt/adguardhome/certs:ro networks: - infra_network # \u003c--- Nuestra red de traefik certs-extractor: image: ldez/traefik-certs-dumper:v2.8.1 container_name: certs-extractor entrypoint: sh -c \" traefik-certs-dumper file --watch --version v2 --source /data/acme.json --dest /output --domain-subdir \u0026\u0026 chmod -R 600 /output/*\" volumes: - /home/noe/traefik-crowdsec/traefik/ssl/acme.json:/data/acme.json:ro # Ruta a TU archivo acme.json - ./certs:/output # Donde se guardarán los .pem networks: - infra_network # \u003c--- Nuestra red de traefik networks: infra_network: external: true Nuestro stack consta de dos contenedores. 1.- Adguardhome. Configuración sencilla. Solo es destacable que para el primer arranque mapeamos el puerto 3000 y una vez hecha la configuración inicial podemos comentarlo, ya que accederemos al panel a través de adguard.midominio.com. Aunque miestras escribo igual vuelvo a mapearlo para que solo sea accesible desde tailscale.\n2.- Certs-extractor. Este contenedor se encarga de extraer los certificados de traefik para usar el DNS over TLS. Esta parte es muy importante porque traefik guarda los certificados juntos en el mismo fichero acme.json. Este docker se encarga de extraer los certificados que contiene acme.json en dos ficheros: certificate.crt y privatekey.key\nEn la configuración inicial se dejan todos los valores por defecto. Lo único que tenemos que modificar es el usuario y la contraseña.\nConfiguraciones en traefik Nos vamos a traefik para adaptarlo a nuestro Adguard Home.\nEditamos nuestro fichero traefik.yml y añadimos un nuevo entrypoint para los DNS over TLS:\nentryPoints: web: address: \":80\" http: redirections: entryPoint: to: websecure scheme: https websecure: address: \":443\" http: tls: certResolver: letsencrypt # certResolver: letsencrypt_staging # Primer dominio domains: - main: \"midominio.com\" sans: - \"*.midominio.com\" # Segundo dominio - main: \"lasnotasdenoah.com\" sans: - \"*.lasnotasdenoah.com\" # Entrypoint para dns adguard-home dot: address: \":853\" En nuestro directorio conf.d creamos el fichero dns.yml:\n# Esta primera parte de http simplemente es el acceso al panel de adguard como cualquier otro servicio. http: routers: adguard-ui: rule: \"Host(`adguard.midominio.com`)\" service: adguard-ui entryPoints: - websecure tls: {} # o simplemente ‘tls: true’ en v3 # Protegemos nuestro panel con los middleware middlewares: - geoblock-es - crowdsec-bouncer - security-headers services: adguard-ui: loadBalancer: servers: # Como estamos en la misma red docker, no hace falta poner dirección IP. Usamos el nombre del contenedor y traefik lo entiene perfectamente. - url: \"http://adguardhome:80\" # Aquí configuramos la conexión DNS tcp: routers: adguard-dot: rule: \"HostSNI(`dns.midomnio.com`)\" service: adguard-dot # Usamos el nuevo entryPoint que configuramos en traefik.yml por el puerto 853 que es el que usa DNS over TLS entryPoints: - dot # IMPORTANTÍSIMO: Tenemos que forzar a ACME a generar este dominio. MOTIVO: identificar de forma individual los equipos que se pueden conectar y de rebote vemos las estadísticas de uso de cada uno tls: certResolver: letsencrypt domains: # ← Esto fuerza ACME para este dominio específico - main: \"dns.midominio.com\" sans: - \"*.dns.midominio.com\" services: adguard-dot: loadBalancer: servers: - address: \"adguardhome:853\" # Reiniciamos traefik docker compose restart traefik # Verificamos los logs: docker logs traefik | grep -i acme Y vemos la respuesta de traefik:\n[...] 2026-04-03T16:32:09+02:00 ERR Unable to obtain ACME certificate for domains error=\"unable to generate a certificate for the domains [*.dns.midominio.com]: error: one or more domains had a problem:\\n[dns.midominio.com] [dns.midominio.com] acme: error presenting token: cloudflare: failed to create TXT record: An identical record already exists. (81058)\\n\" ACME CA=https://acme-v02.api.letsencrypt.org/directory acmeCA=https://acme-v02.api.letsencrypt.org/directory domains=[\"dns.midominio.com\",\"*.dns.midominio.com\"] providerName=letsencrypt.acme routerName=adguard-certs-helper@file rule=Host(`dns.midominio.com`) ERROR: CrowdsecBouncerTraefikPlugin: 2026/04/04 11:02:04 ServeHTTP:Get ip:83.53.76.48 cache:unreachable [...] Pasos para solucionar el error:\nSegún Perplexity el error “An identical record already exists. (81058)” de Cloudflare DNS-01 es inofensivo (cert se genera igual), pero ensucia logs. Se soluciona borrando el TXT challenge persistente en Cloudflare.\n1.- Entramos en nuestro panel de administración de cloudflare y borramos los txt de los registros DNS 2.- Limpieza de logs de traefik:\ndocker exec traefik truncate -s 0 /var/log/traefik/access.log docker exec traefik truncate -s 0 /var/log/traefik/traefik.log 3.- Añadimos a certificatesResolvers.letsencrypt.acme.dnsChallenge de traefik.yml:\ndnsChallenge: provider: cloudflare delayBeforeCheck: 60 # Espera propagación resolvers: - \"1.1.1.1:53\" - \"8.8.8.8:53\" 4.- Verificamos con:\ndocker logs traefik | grep acme # Debería dar un resultado sin errores acme En la parte 1 de configurar el VPS tenía comentados los resolvers de traefik.yml:\nprovider: cloudflare # resolvers: # - \"1.1.1.1:53\" # - \"1.0.0.1:53\" Consulté nuevamente a Perplexity sobre ese comentario y su respuesta fue que es MUY importante descomentarlo para DNS-01 con Cloudflare. Esos resolvers le dicen a Traefik qué DNS públicos consultar para verificar que el TXT challenge se propagó antes de pedir el certificado.\nBeneficios inmediatos:\n1.- Renovaciones ACME 2x más rápidas\n2.- Cero errores “propagation timeout”\n3.- Logs de Traefik impecables\n4.- Rate limits Let’s Encrypt respetados\nAsí que toca descomentarlo para mejorar la estabilidad con certificados wildcards:\nprovider: cloudflare resolvers: - \"1.1.1.1:53\" - \"1.0.0.1:53\" Configuración panel Adguard Home En la siguiente imagen vemos el panel funcionando. Configuración de cifrado:\n1.- Marcamos el Check de Habilitar cifrado (DNS over TLS)\n2.- Nombre del servidor: dns.midominio.com\nEstablecemos la ruta de los certificados. En mi caso:\n# Archivo del certificado /opt/adguardhome//certs/*.dns.midominio.com/certificate.crt # Archivo de clave privada /opt/adguardhome//certs/*.dns.midominio.com/privatekey.key Nos saldrá una confirmación en verde para decir que se han cargado correctamente: Configuración de clientes en Adguard Home En esta parte vamos a configurar los clientes que pueden realizar consultas DNS por nuestro servicio.\nEsta es mi configuración Importante:\n1.- Nombre del cliente: nombre que nos guste para ver las estadísticas.\n2.- Etiqueta: se puede seleccionar la que sea mas acorde al dispositivo.\n3.- Identificador: esta es la parte mas importante. Identificador único por ejemplo: S24-XXXXXXXXXXX\nUna vez configurados los clientes, tenemos que autorizarles el uso del DNS en Configuración DNS. IMPORTANTE: En clientes permitidos ponemos el Identificador del cliente (NO el nombre) Configuración de clientes en Linux sudo nano /etc/systemd/resolved.conf # Añadimos lo siguiente: [Resolve] DNS=IP_PUBLICA_VPS#debian13-XXXXXXXXXXXX.dns.midominio.com FallbackDNS=9.9.9.9#dns.quad9.net Domains=~. DNSOverTLS=yes # Reiniciamos systemd-resolved sudo systemctl restart systemd-resolved.service Configuración de clientes en Android Vamos a Ajustes -\u003e Conexiones -\u003e Mas ajustes de conexión -\u003e DNS privado:\ns24-XXXXXXXXX.dns.midominio.com Fuentes:\nDebo decir que en esta guía he tirado mucho de IA.\nAdguard Home\nConfigurar VPS parte 1\nConfigurar VPS parte 2\n",
+  "wordCount" : "1155",
+  "inLanguage": "en",
+  "datePublished": "2026-04-04T07:00:00+02:00",
+  "dateModified": "2026-04-04T07:00:00+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/adguard-home-dns/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:39903/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:39903/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:39903/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:39903/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:39903/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:39903/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -392,14 +455,14 @@ Beneficios inmediatos:<br>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:39903/tags/admin/">Admin</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:39903/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by

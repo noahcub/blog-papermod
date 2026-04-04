@@ -15,10 +15,10 @@ weight: 1
 Según su web, [Adguard Home](https://adguard.com/es/welcome.html) es el primer bloqueador de anuncios para Linux a nivel de sistema en el mundo. Bloquea anuncios y rastreadores en el dispositivo, selecciona de los filtros preinstalados o añade los tuyos propios, todo a través de la interfaz de línea de comandos.  
 
 Características:  
-1.- loqueo de anuncios: El bloqueador de anuncios AdGuard elimina los molestos banners, ventanas emergentes y anuncios de vídeo
-2.- Protección de privacidad: El bloqueador de anuncios AdGuard protege tus datos de web analytics y los rastreadores online
-3.- Seguridad de navegación: El bloqueador de anuncios AdGuard protege contra el phishing y los sitios maliciosos
-4.- Control parental: El bloqueador de anuncios AdGuard protege a los niños del contenido adulto e inapropiado  
+1.- Bloqueo de anuncios: El bloqueador de anuncios AdGuard elimina los molestos banners, ventanas emergentes y anuncios de vídeo.  
+2.- Protección de privacidad: El bloqueador de anuncios AdGuard protege tus datos de web analytics y los rastreadores online.  
+3.- Seguridad de navegación: El bloqueador de anuncios AdGuard protege contra el phishing y los sitios maliciosos.  
+4.- Control parental: El bloqueador de anuncios AdGuard protege a los niños del contenido adulto e inapropiado.  
 
 ### Instalación en el VPS
 
@@ -160,7 +160,7 @@ Y vemos la respuesta de traefik:
 ```bash
 [...]
 2026-04-03T16:32:09+02:00 ERR Unable to obtain ACME certificate for domains error="unable to generate a certificate for the domains [*.dns.midominio.com]: error: one or more domains had a problem:\n[dns.midominio.com] [dns.midominio.com] acme: error presenting token: cloudflare: failed to create TXT record: An identical record already exists. (81058)\n" ACME CA=https://acme-v02.api.letsencrypt.org/directory acmeCA=https://acme-v02.api.letsencrypt.org/directory domains=["dns.midominio.com","*.dns.midominio.com"] providerName=letsencrypt.acme routerName=adguard-certs-helper@file rule=Host(`dns.midominio.com`)
-ERROR: CrowdsecBouncerTraefikPlugin: 2026/04/04 11:02:04 ServeHTTP:Get ip:83.53.76.48 cache:unreachable
+ERROR: CrowdsecBouncerTraefikPlugin: 2026/04/04 11:02:04 ServeHTTP:Get ip:88.58.78.148 cache:unreachable
 [...]
 ```
 
