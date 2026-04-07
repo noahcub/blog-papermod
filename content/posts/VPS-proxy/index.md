@@ -985,8 +985,267 @@ sudo chown root:root logs
 
 Y ya funciona correctamente.
 
+### Mejoras en sistema de actualizaciones de crowdsec
+
+Vamos a mejorar nuestro sistema, poniendo las actualizaciones de Telegram más chulas y añadiendo un pulsador de unban para IPs que se baneen por error.  
+
+Modificamos nuestro docker compose:  
+**Este servicio es el encargado de interaccionar con crowdsec para desbanear IPs**
+```bash
+# Añadimos un nuevo servicio:
+  crowdsec-decisions-bot:
+    image: lluisd/crowdsec-decisions-bot:latest
+    container_name: crowdsec-decisions-bot
+    restart: unless-stopped
+    ports:
+      - "3005:3000"
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN} # Token de BotFather
+      - LAPI_URL=http://crowdsec:8080  # URL de tu contenedor CrowdSec
+      - LAPI_LOGIN=${LAPI_LOGIN}
+      - LAPI_PASSWORD=${LAPI_PASSWORD}
+    networks:
+      - infra_network
+```
+
+Nuestro fichero .env:
+```bash
+TZ=Europe/Madrid
+
+# Cloudflare API_TOKEN
+CF_DNS_API_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# Telegram_TOKEN
+TELEGRAM_TOKEN=555555555555:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# LAPI Credentials
+LAPI_LOGIN=bot-watcher
+LAPI_PASSWORD=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+TELEGRAM_TOKEN es el token de nuestro bot telegram.  
+Para obtener los datos LAPI tenemos que crear una nueva machine en crowdsec:
+```bash
+docker exec crowdsec cscli machines add bot-watcher --force -a
+# Si no usamos la opción --force nos dirá crowdsec que ya existe un fichero crowdsec/config/local_api_credentials.yaml y no hará nada.
+# La opción -a es para que cree el password de forma automática
+```
+```bash
+sudo cat crowdsec/config/local_api_credentials.yaml
+
+# Aquí ya tenemos los datos que necesitamos, los copiamos a nuestro fichero .env:
+url: http://0.0.0.0:8080
+login: bot-watcher
+password: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+Verificamos las machines que tenemos:
+```bash
+docker exec crowdsec cscli machines list
+----------------------------------------------------------------------------------------------------------------------------------
+ Name         IP Address  Last Update           Status  Version                 OS                      Auth Type  Last Heartbeat 
+----------------------------------------------------------------------------------------------------------------------------------
+ localhost    127.0.0.1   2026-04-07T21:55:13Z  ✔️      v1.7.6-eacc8192-docker  alpine (docker)/3.21.5  password   27s            
+ bot-watcher  127.0.0.1   2026-04-07T21:42:11Z  ✔️      v1.7.6-eacc8192-docker  ?                       password   ⚠️ -           
+----------------------------------------------------------------------------------------------------------------------------------
+```
+
+Arrancamos el servicio y verificamos que esté operativo:
+```bash
+# Levantamos el servicio:
+docker compose up -d crowdsec-decisions-bot
+
+# Verificamos los logs:
+docker logs -f crowdsec-decisions-bot
+
+> crowdsec-decisions-bot@1.0.0 start
+> node ./app.js
+
+Listening on port  3000
+Telegram bot on Polling mode
+[....]
+```
+
+**Ahora vamos a crear un nuevo modelo de notificaciones en crowdsec.**   
+
+Creamos nuestro fichero **crowdsec/config/notifications/telegram_default.yaml**
+```bash
+# CUMPLIMENTAR LOS SIGUIENTES DATOS:
+# chat_id
+# apiKey de geoapify.com
+# url de Telegram con datos de nuestro bot
+type: http
+name: telegram
+log_level: info
+
+format: |
+    {
+      "chat_id": "XXXXXXXXX",
+      "photo": "https://maps.geoapify.com/v1/staticmap?style=osm-bright-grey&width=600&height=400&center=lonlat:{{(index . 0).Source.Longitude}},{{(index . 0).Source.Latitude}}&zoom=8&marker=lonlat:{{(index . 0).Source.Longitude}},{{(index . 0).Source.Latitude}};type:material;color:%23ff3421;size:large&scaleFactor=2&apiKey=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "caption": "{{range . -}}{{$alert := . -}}{{range .Decisions -}}{{- $cti := $alert.Source.Value | CrowdsecCTI -}}{{- $flags := dict "US" "🇺🇸" "FR" "🇫🇷" "DE" "🇩🇪" "MX" "🇲🇽" "GB" "🇬🇧" "HK" "🇭🇰" "ES" "🇪🇸" "NL" "🇳🇱" "JP" "🇯🇵" "AR" "🇦🇷" "BR" "🇧🇷" "CA" "🇨🇦" "AU" "🇦🇺" "IN" "🇮🇳" "IT" "🇮🇹" "RU" "🇷🇺" "CN" "🇨🇳" "SA" "🇸🇦" "ZA" "🇿🇦" "KR" "🇰🇷" "ID" "🇮🇩" "NG" "🇳🇬" "EG" "🇪🇬" "TR" "🇹🇷" "SE" "🇸🇪" "NO" "🇳🇴" "DK" "🇩🇰" "FI" "🇫🇮" "PL" "🇵🇱" "PT" "🇵🇹" "CH" "🇨🇭" "BE" "🇧🇪" "AT" "🇦🇹" "SG" "🇸🇬" "MY" "🇲🇾" "TH" "🇹🇭" "PH" "🇵🇭" "VN" "🇻🇳" "PK" "🇵🇰" "BD" "🇧🇩" "UA" "🇺🇦" "RO" "🇷🇴" "HU" "🇭🇺" "BG" "🇧🇬" "SK" "🇸🇰" "HR" "🇭🇷" "SI" "🇸🇮" "EE" "🇪🇪" "LV" "🇱🇻" "LT" "🇱🇹" "CZ" "🇨🇿" "IS" "🇮🇸" "GR" "🇬🇷" "AE" "🇦🇪" "KW" "🇰🇼" "OM" "🇴🇲" "QA" "🇶🇦" "BH" "🇧🇭" "MA" "🇲🇦" "TN" "🇹🇳" "DZ" "🇩🇿" "LY" "🇱🇾" "JO" "🇯🇴" "LB" "🇱🇧" "SY" "🇸🇾" "IQ" "🇮🇶" "YE" "🇾🇪" "IR" "🇮🇷" "MN" "🇲🇳" "KP" "🇰🇵" "TW" "🇹🇼" "MO" "🇲🇴" "LC" "🇱🇨" "TT" "🇹🇹" "VC" "🇻🇨" "BB" "🇧🇧" "JM" "JJAM" "BS" "🇧🇸" "GD" "🇬🇩" "HT" "🇭🇹" "DO" "🇩🇴" "CR" "🇨🇷" "PY" "🇵🇾" "PE" "🇵🇪" "EC" "🇪🇨" "CO" "🇨🇴" "VE" "🇻🇪" "CL" "🇨🇱" "BO" "🇧🇴" "GT" "🇬🇹" "HN" "🇭🇳" "SV" "🇸🇻" "NI" "🇳🇮" "PA" "🇵🇦" "CU" "🇨🇺" -}}{{- $countryCode := upper $alert.Source.Cn -}}{{- $flag := index $flags $countryCode | default $countryCode -}}🚨 *Alerta CrowdSec* \n\n🔴 *IP:* [{{.Value}}](https://www.whois.com/whois/{{.Value}}) \n⚠️ *Escenario:* `{{.Scenario}}` \n⏱️ *Ban:* `{{.Duration}}` \n🌍 *Ubicación:* {{ $flag }} {{ $alert.Source.Cn }} {{if $cti.Location.City}}- {{ $cti.Location.City | replace "\"" "" }}{{end}} \n💀 *Malicia:* {{mulf $cti.GetMaliciousnessScore 100 | floor}}% \n🔊 *Ruido:* {{ $cti.GetBackgroundNoiseScore }}/10 \n\n{{range $alert.Meta -}}{{if not (or (eq .Key "source_ip") (eq .Key "remediation") (eq .Key "scenario")) -}}🔹 *{{.Key}}*: `{{ (splitList "," (.Value | replace "\"" "" | replace "[" "" | replace "]" "")) | join " " }}` \n{{end}}{{end}}{{- end -}}{{- end -}}",
+      "parse_mode": "Markdown",
+      "reply_markup": {
+        "inline_keyboard": [
+          {{- $arrLength := len . -}}
+          {{- range $i, $value := . -}}
+          {{- $V := (index $value.Decisions 0).Value -}}
+          [
+            {
+              "text": "🛡️ Ver en CrowdSec CTI",
+              "url": "https://app.crowdsec.net/cti/{{ $V }}"
+            }
+          ],
+          [
+            {
+              "text": "🔎 Shodan",
+              "url": "https://www.shodan.io/host/{{ $V }}"
+            }
+          ],
+          [
+            {
+              "text": "🔓 UNBAN IP",
+              "callback_data": "deleteDecisions~{{ $V }}"
+            }
+          ]{{if lt $i (sub $arrLength 1)}},{{end}}
+          {{- end -}}
+        ]
+      }
+    }
+
+url: https://api.telegram.org/bot111111111:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX/sendPhoto
+method: POST
+headers:
+  Content-Type: "application/json"
+```
+Para configurar correctamente nuestro fichero tenemos que abrir una cuenta en [Geoapify](https://www.geoapify.com/). Una vez lo tenemos creamos un nuevo proyecto:
+![vps-3.png](vps-3.png)
+
+Y creamos una nueva API Key de tipo Map Tiles:
+![vps-4.png](vps-4.png)
+
+Y copiamos la APIKey al fichero de notificaciones:
+```bash
+  "photo": "https://maps.geoapify.com/v1/staticmap?style=osm-bright-grey&width=600&height=400&center=lonlat:{{(index . 0).Source.Longitude}},{{(index . 0).Source.Latitude}}&zoom=8&marker=lonlat:{{(index . 0).Source.Longitude}},{{(index . 0).Source.Latitude}};type:material;color:%23ff3421;size:large&scaleFactor=2&apiKey=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+```
+
+Por último, solo nos queda modificar nuestro fichero **crowdsec/config/profiles.yaml**:
+```bash
+# 0. PERFIL PARA MEGA-REINCIDENTES (Primero en la lista)
+name: mega_reincident_remediation
+filters:
+# Usamos la función correcta para contar decisiones previas de esa IP
+ - Alert.Remediation == true && Alert.GetScope() == "Ip" && GetDecisionsCount(Alert.GetValue()) > 1
+decisions:
+ - type: ban
+   duration: 720h # 1 mes de "nevera"
+#notifications:
+# - telegram_default
+on_success: break # Si entra aquí, no sigue leyendo hacia abajo
+
+---
+
+# 1. PERFIL PARA REINCIDENTES (Primero en la lista)
+name: reincident_remediation
+filters:
+# Usamos la función correcta para contar decisiones previas de esa IP
+ - Alert.Remediation == true && Alert.GetScope() == "Ip" && GetDecisionsCount(Alert.GetValue()) == 1
+decisions:
+ - type: ban
+   duration: 168h # 1 semana de "nevera"
+notifications:
+ - telegram_default
+on_success: break # Si entra aquí, no sigue leyendo hacia abajo
+
+---
+
+# 2. PERFIL POR DEFECTO PARA IPs
+name: default_ip_remediation
+#debug: true
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip"
+decisions:
+ - type: ban
+   duration: 48h
+notifications:
+ - telegram_default
+#duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
+# notifications:
+#   - slack_default  # Set the webhook in /etc/crowdsec/notifications/slack.y>
+#   - splunk_default # Set the splunk url and token in /etc/crowdsec/notifica>
+#   - http_default   # Set the required http parameters in /etc/crowdsec/noti>
+#   - email_default  # Set the required email parameters in /etc/crowdsec/not>
+on_success: break
+
+---
+
+# 3. PERFIL PARA RANGOS
+name: default_range_remediation
+#debug: true
+filters:
+ - Alert.Remediation == true && Alert.GetScope() == "Range"
+decisions:
+ - type: ban
+   duration: 48h
+#duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
+# notifications:
+#   - slack_default  # Set the webhook in /etc/crowdsec/notifications/slack.y>
+#   - splunk_default # Set the splunk url and token in /etc/crowdsec/notifica>
+#   - http_default   # Set the required http parameters in /etc/crowdsec/noti>
+#   - email_default  # Set the required email parameters in /etc/crowdsec/not>
+on_success: break
+```
+
+Esta nueva versión hace lo siguiente:
+```bash
+# 2. PERFIL POR DEFECTO PARA IPs
+  - Alert.Remediation == true && Alert.GetScope() == "Ip"
+# Si detecta una IP la banea 48 horas y envía notificación
+
+# 1. PERFIL PARA REINCIDENTES (Primero en la lista)
+ - Alert.Remediation == true && Alert.GetScope() == "Ip" && GetDecisionsCount(Alert.GetValue()) == 1
+# Si detecta un reincidente lo banea 1 semana y envía notificación
+
+# 0. PERFIL PARA MEGA-REINCIDENTES (Primero en la lista)
+ - Alert.Remediation == true && Alert.GetScope() == "Ip" && GetDecisionsCount(Alert.GetValue()) > 1
+# Si detecta un super-reincidente lo banea 1 mes y NO envía notificación
+# NO QUIERO EL GRUPO DE TELEGRAM LLENO DE MENSAJES
+
+# El perfil para rangos no lo he tocado.
+```
+
+
+
+**Prueba**. Baneamos una IP
+```bash
+docker exec crowdsec cscli decisions add --ip 1.2.3.4 --reason "Prueba de Bot"
+
+# Verificamos en la lista
+docker exec crowdsec cscli decisions list
+
+# Arrancamos los logs de nuestro crowdsec-decisions-bot:
+docker logs -f crowdsec-decisions-bot
+
+# Pulsamos en unban de Telegram y deberíamos ver lo siguiente:
+docker logs -f crowdsec-decisions-bot
+
+> crowdsec-decisions-bot@1.0.0 start
+> node ./app.js
+
+Listening on port  3000
+Telegram bot on Polling mode
+Calling /v1/decisions?ip=1.2.3.4
+Calling /v1/watchers/login
+1 decision deleted for IP: 1.2.3.4
+
+# Verificamos en la lista nuevamente que ya no esté la IP
+docker exec crowdsec cscli decisions list
+```
+
+***   
+Fuentes y enlaces de interés que ayudaran a complementar esta guía:  
 
 **Debo decir que en esta guía he tirado mucho de IA.**  
+
 [Instalación de traefik sin etiquetas](https://www.manelrodero.com/blog/instalacion-y-uso-de-traefik-en-docker-sin-etiquetas)    
 [Crowdsec WAF - Appsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik)  
-[Web oficial de borgmatic](https://torsion.org/borgmatic/how-to/set-up-backups/)
+[Web oficial de borgmatic](https://torsion.org/borgmatic/how-to/set-up-backups/)  
+Agradecimientos en Telegram para @joled y @lluis2k del Grupo [Detras del mostraddor](https://t.me/detrasdelmostrador) que me ayudaron en las mejoras del sistema de actualizaciones de Crowdsec.
