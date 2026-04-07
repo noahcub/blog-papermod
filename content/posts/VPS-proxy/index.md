@@ -1223,7 +1223,11 @@ docker exec crowdsec cscli decisions list
 
 # Arrancamos los logs de nuestro crowdsec-decisions-bot:
 docker logs -f crowdsec-decisions-bot
+```
+Ejemplo notificación:
+![vps-5.png](vps-5.png)
 
+```bash
 # Pulsamos en unban de Telegram y deberíamos ver lo siguiente:
 docker logs -f crowdsec-decisions-bot
 
