@@ -356,7 +356,7 @@ http:
       plugin:
         crowdsec-bouncer:
           Enabled: true
-          CrowdsecMode: live          # o streaming 
+          CrowdsecMode: stream          # live o stream
           # Identidad fija para evitar los "bouncers fantasmas"
           # No funciona bien. De vez en cuando tengo un bouncer traefik-bouncer@172.18.0.X
           bouncerName: "traefik-bouncer"
@@ -439,7 +439,7 @@ Este comando nos genera una API Key que tenemos que copiar en el fichero middlew
       plugin:
         crowdsec-bouncer:
           Enabled: true
-          CrowdsecMode: live          # o streaming si prefieres
+          CrowdsecMode: strem          # live o stream
           # Identidad fija para evitar los "bouncers fantasmas"
           bouncerName: "traefik-bouncer"
 
@@ -721,8 +721,8 @@ Añadimos la nueva configuración a nuestro middleware de crowdsec:
       plugin:
         crowdsec-bouncer:
           Enabled: true
-#          CrowdsecMode: live          # o streaming si prefieres
-          crowdsecMode: live          # o streaming si prefieres
+#          CrowdsecMode: stream          # live o stream
+          crowdsecMode: stream          # live o stream
           # Identidad fija para evitar los "bouncers fantasmas"
           bouncerName: "traefik-bouncer"
 
@@ -786,7 +786,7 @@ docker exec crowdsec cscli metrics show appsec
 ----------------------------------------------------------------------------------------------------------
 ```
 
-En teoría, siguiendo las ]instrucciones de crowdsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik) deberíamos mapear el fichero en el contenedor de docker, **pero yo no lo he hecho y funciona igual**:
+En teoría, siguiendo las [instrucciones de crowdsec](https://docs.crowdsec.net/docs/appsec/quickstart/traefik) deberíamos mapear el fichero en el contenedor de docker, **pero yo no lo he hecho y funciona igual**:
 
 ```bash
   crowdsec:
@@ -826,6 +826,261 @@ y tengo que borrar toda la configuración de crowdsec y volver a empezar. Con es
 | 0.0.0.0:7422/ | 4         | -       |
 +---------------+-----------+---------+
 ```
+Llegados a este punto, parece que Appsec funciona correctamente, pero no es cierto. Con el tiempo veremos que procesa muchas peticiones pero no bloquea ninguna. Vamos a ponerle remedio.
+
+### Mejoras en la configuración de Appsec
+
+Verificamos las colecciones de Appsec:
+```bash
+docker exec crowdsec cscli collections list -a | grep appsec
+```
+
+Salida:
+```bash
+ crowdsecurity/appsec-crs                              ✔️  enabled                    0.8      /etc/crowdsec/collections/appsec-crs.yaml              
+ crowdsecurity/appsec-crs-exclusion-plugin-cpanel      🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-exclusion-plugin-dokuwiki    🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-exclusion-plugin-drupal      🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-exclusion-plugin-nextcloud   🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-exclusion-plugin-phpbb       🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-exclusion-plugin-phpmyadmin  🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-exclusion-plugin-wordpress   🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-exclusion-plugin-xenforo     🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-crs-inband                       🚫  disabled,update-available                                                                  
+ crowdsecurity/appsec-generic-rules                    ✔️  enabled                    1.1      /etc/crowdsec/collections/appsec-generic-rules.yaml    
+ crowdsecurity/appsec-virtual-patching                 ✔️  enabled                    14.7     /etc/crowdsec/collections/appsec-virtual-patching.yaml 
+ crowdsecurity/appsec-wordpress                        🚫  disabled,update-available                                                                  
+ openappsec/openappsec                                 🚫  disabled,update-available  
+```
+
+Modificamos nuestro fichero **appsec-default.yaml**
+```bash
+sudo nano ~/traefik-crowdsec/crowdsec/config/hub/appsec-configs/crowdsecurity/appsec-default.yaml
+
+# Contenido:
+name: crowdsecurity/appsec-default
+default_remediation: ban
+
+inband_rules:
+ - crowdsecurity/base-config
+ - crowdsecurity/vpatch-*
+ - crowdsecurity/generic-*
+ - crowdsecurity/crs            <---- AÑADIMOS ESTO
+
+outofband_rules:
+ - crowdsecurity/experimental-*
+ - crowdsecurity/appsec-generic-test
+```
+
+Reiniciamos crowdsec. Es posible que en el reinicio nos cree un nuevo bouncer. Ya sabemos lo que hay que hacer.
+```bash
+docker restart crowdsec
+```
+
+Prueba de funcionamiento:
+```bash
+prueba:
+# Terminal 1 en VPS Dejamos los logs visualizando
+docker logs crowdsec -f 2>&1
+
+# Terminal 2 en mi pc - SIMULAMOS UNA PETICIÓN QUE APPSEC DEBERÍA BLOQUEAR
+curl -v "https://lasnotasdenoah.com/?id=1+UNION+SELECT+1,2,3--"
+```
+
+Esta vez deberías recibir un 403.  
+⚠️ Aviso importante: este archivo es del hub y cscli hub update podría sobreescribirlo en el futuro. Para hacerlo permanente sin que se pierda, lo ideal sería crear un appsec-config personalizado en /etc/crowdsec/appsec-configs/ con otro nombre que no gestione el hub.   
+
+Vamos a hacer permanente el cambio:
+```bash
+sudo cp ~/traefik-crowdsec/crowdsec/config/hub/appsec-configs/crowdsecurity/appsec-default.yaml \
+        ~/traefik-crowdsec/crowdsec/config/appsec-configs/myconfig-appsec-default.yaml
+```
+
+Editamos nuestro fichero **acquis.d/appsec.yaml**:
+```bash
+appsec_config: myconfig-appsec-default
+labels:
+  type: appsec
+listen_addr: 0.0.0.0:7422
+source: appsec
+```
+
+Reiniciamos crowdsec
+```bash
+docker compose restart crowdsec                             
+```
+
+**Y vemos que no arranca**.  
+El motivo es el siguiente: El problema es que cuando usas appsec_config: myconfig-appsec-default CrowdSec busca ese nombre dentro del hub, no por nombre de archivo. El nombre que registra CrowdSec es el campo name: dentro del yaml, no el nombre del fichero.   
+
+Vamos a editar nuevamente nuestro fichero **myconfig-appsec-default.yaml**:
+```bash
+sudo nano ~/traefik-crowdsec/crowdsec/config/appsec-configs/myconfig-appsec-default.yaml
+
+# Contenido: 
+name: custom/appsec-default  # <--- MODIFICAMOS EL NOMBRE
+default_remediation: ban
+
+inband_rules:
+ - crowdsecurity/base-config
+ - crowdsecurity/vpatch-*
+ - crowdsecurity/generic-*
+ - crowdsecurity/crs
+
+outofband_rules:
+ - crowdsecurity/experimental-*
+ - crowdsecurity/appsec-generic-test
+
+
+```bash
+sudo nano ~/traefik-crowdsec/crowdsec/config/acquis.d/appsec.yaml
+
+# Contenido:
+appsec_configs:
+  - custom/appsec-default
+labels:
+  type: appsec
+listen_addr: 0.0.0.0:7422
+source: appsec
+```
+
+Verificamos que funciona:
+```bash
+docker restart crowdsec
+docker logs crowdsec 2>&1 | grep -E "fatal|error|inband" | head -10
+```
+
+Llegados a este punto, todos mis servicios deberían funcionar correctamente excepto Nextcloud. Nos vamos al siguiente punto del tutorial.
+
+### Correcciones de Nextcloud para funcionar con Appsec
+Las reglas crowdsecurity/crs (Core Rule Set de OWASP) son muy agresivas y bloquean muchas peticiones legítimas de Nextcloud, especialmente las subidas de archivos, WebDAV, y las llamadas a la API.   
+Tenemos varias opciones:  
+
+**OPCION 1.- Configuración reglas acceso de Appsec para Nextcloud**
+```bash
+sudo nano ~/traefik-crowdsec/crowdsec/config/appsec-configs/myconfig-appsec-default.yaml
+
+# Contenido:
+name: custom/appsec-default
+default_remediation: ban
+
+inband_rules:
+  - crowdsecurity/base-config
+  - crowdsecurity/vpatch-*
+  - crowdsecurity/generic-*
+  - crowdsecurity/crs
+
+# OPCION 1
+inband_options:
+  request_exclusions:
+    - rules_ids:
+        - crowdsecurity/crs
+      zone: URI
+      zone_filter: "^/(remote\\.php|ocs|index\\.php|apps|core|status\\.php|login|logout|cron\\.php|public\\.php|dav|caldav|carddav|webdav)"
+
+outofband_rules:
+  - crowdsecurity/experimental-*
+  - crowdsecurity/appsec-generic-test
+
+
+# OPCION 2
+inband_options:
+  request_exclusions:
+    - rules_ids:
+        - crowdsecurity/crs
+      zone: URI
+      zone_filter: "^/(remote\\.php|ocs|index\\.php|apps|core|status\\.php|login|logout|cron\\.php|public\\.php|dav)"
+
+# Buscando información: Request_exclusions no existe en esta versión de CrowdSec. La estructura inband_options solo acepta disable_rules. La solución correcta para esta versión es usar on_match con un filtro de URI:
+
+# OPCION 3
+on_match:
+  - filter: "match(req.URI, '^/(remote\\.php|ocs|index\\.php|apps|core|status\\.php|login|logout|cron\\.php|public\\.php|dav)') && evt.Rules_matched contains 'crowdsecurity/crs'"
+    apply:
+      - SetRemediation("allow")
+
+# OPCION 4
+on_match:
+  - filter: "evt.Rules_matched contains 'crowdsecurity/crs' && (contains(req.URI, '/remote.php') || contains(req.URI, '/ocs/') || contains(req.URI, '/index.php') || contains(req.URI, '/apps/') || contains(req.URI, '/dav') || contains(req.URI, '/status.php') || contains(req.URI, '/cron.php') || contains(req.URI, '/public.php'))"
+    apply:
+      - SetRemediation("allow")
+
+# OPCION 5
+on_match:
+  - filter: "'crowdsecurity/crs' in evt.Rules_matched && (req.URI startsWith '/remote.php' || req.URI startsWith '/ocs/' || req.URI startsWith '/index.php' || req.URI startsWith '/apps/' || req.URI startsWith '/dav' || req.URI startsWith '/status.php' || req.URI startsWith '/cron.php' || req.URI startsWith '/public.php')"
+    apply:
+      - SetRemediation("allow")
+```
+**FALLAN TODAS LAS OPCIONES DE MODIFICAR NUESTRO FICHERO myconfig-appsec-default.yaml. No conseguí hacerlo funcionar**  
+
+**OPCION 2.- Configurar un middleware de crowdsec sin Appsec para Nextcloud**  
+Vamos a actuar sobre traefik. El plan es sencillo y a la vez potente. Añadiremos un nuevo middleware llamado crowdsec-bouncer-noappsec en middlewares.yml y lo usaremos en el router de Nextcloud.  
+Nuestro Nextcloud no tendrá la protección del WAF Appsec pero nos protege igualmente Crowdsec.  
+
+```bash
+nano ~/traefik-crowdsec/traefik/conf.d/middlewares.yml
+
+# Añadimos el siguiente middleware después del middleware crowdsec-bouncer:
+crowdsec-bouncer-noappsec:
+      plugin:
+        crowdsec-bouncer:
+          Enabled: true
+          CrowdsecMode: stream
+          bouncerName: "traefik-bouncer"
+          CrowdsecLapiScheme: "http"
+          CrowdsecLapiHost: "crowdsec:8080"
+          CrowdsecLapiKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          RedisCacheEnabled: true
+          RedisCacheHost: "crowdsec-redis:6379"
+          CrowdsecAppsecEnabled: false
+          ForwardedHeadersCustomName: "X-Forwarded-For"
+          ForwardedHeadersTrustedIps:
+            - "103.21.244.0/22"
+            - "103.22.200.0/22"
+            - "103.31.4.0/22"
+            - "104.16.0.0/13"
+            - "104.24.0.0/14"
+            - "108.162.192.0/18"
+            - "131.0.72.0/22"
+            - "141.101.64.0/18"
+            - "162.158.0.0/15"
+            - "172.64.0.0/13"
+            - "173.245.48.0/20"
+            - "188.114.96.0/20"
+            - "190.93.240.0/20"
+            - "197.234.240.0/22"
+            - "198.41.128.0/17"
+```
+**NOTAS IMPORTANTES: Podemos usar el mismo CrowdsecLapiKey para los dos middleware**   
+
+Modificamos nuestro fichero estático de Nextcloud:
+```bash
+nano ~/traefik-crowdsec/traefik/conf.d/nextcloud.yml  
+
+# Contenido:
+http:
+  routers:
+    nextcloud:
+      rule: "Host(`nextcloud.lafinquina.com`)"
+      service: nextcloud
+      entryPoints:
+        - websecure
+      tls: {}   # o simplemente ‘tls: true’ en v3
+      middlewares:
+        - geoblock-es
+        - crowdsec-bouncer-noappsec        # <----- Este es el nuevo middleware
+        - security-headers
+
+  services:
+    nextcloud:
+      loadBalancer:
+        servers:
+          - url: "http://100.105.100.10:8666"
+```
+
+En este caso no es necesario reiniciar, ya que traefik cargará la nueva configuración de forma automática. Esperamos unos segundos y ya debería estar cargada la nueva configuración:
+![vps-6.png](vps-6.png)
+
 
 ### Actualización de escenarios Crowdsec
 
@@ -847,6 +1102,88 @@ docker exec -it crowdsec kill -SIGHUP 1
 # o simplemente reiniciamos el contenedor con:
 docker restart crowdsec
 ```
+   
+**Vamos a automatizarlo con timers de systemd.**  
+
+Script de actualización:
+```bash
+sudo nano /usr/local/bin/crowdsec-update.sh
+# Contenido:
+
+#!/bin/bash
+set -e
+
+COMPOSE_DIR="/home/noe/traefik-crowdsec"
+
+echo "Actualizando CrowdSec hub..."
+docker exec crowdsec cscli hub update
+docker exec crowdsec cscli hub upgrade --force
+
+echo "Reiniciando CrowdSec..."
+cd "$COMPOSE_DIR" && docker compose restart crowdsec
+
+echo "Actualización completada."
+```
+
+Lo hacemos ejecutable:
+```bash
+sudo chmod +x /usr/local/bin/crowdsec-update.sh
+```
+
+Creamos el servicio systemd:
+```bash
+sudo nano /etc/systemd/system/crowdsec-update.service
+
+# Contenido:
+[Unit]
+Description=CrowdSec hub update
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/crowdsec-update.sh
+StandardOutput=journal
+StandardError=journal
+```
+
+Timer Unit:
+```bash
+sudo nano /etc/systemd/system/crowdsec-update.timer
+
+# Contenido:
+[Unit]
+Description=CrowdSec hub update semanal
+
+[Timer]
+OnCalendar=Sun *-*-* 03:00:00
+Persistent=true
+# El Persistent=true garantiza que si el servidor estaba apagado el domingo a las 3:00, ejecuta la actualización en el próximo arranque.
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target
+```
+
+Y activamos
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now crowdsec-update.timer
+```
+
+Verificaciones:
+```bash
+# Estado del timer
+systemctl status crowdsec-update.timer
+
+# Cuándo ejecutará la próxima vez
+systemctl list-timers crowdsec-update.timer
+
+# Probar manualmente
+sudo systemctl start crowdsec-update.service
+journalctl -u crowdsec-update.service -f
+```
+
 
 ### Configuración de CAPI en Crowdsec
 
