@@ -856,7 +856,8 @@ Salida:
 Modificamos nuestro fichero **appsec-default.yaml**
 ```bash
 sudo nano ~/traefik-crowdsec/crowdsec/config/hub/appsec-configs/crowdsecurity/appsec-default.yaml
-
+```
+```bash
 # Contenido:
 name: crowdsecurity/appsec-default
 default_remediation: ban
@@ -865,7 +866,7 @@ inband_rules:
  - crowdsecurity/base-config
  - crowdsecurity/vpatch-*
  - crowdsecurity/generic-*
- - crowdsecurity/crs            <---- AÑADIMOS ESTO
+ - crowdsecurity/crs           # <---- AÑADIMOS ESTO
 
 outofband_rules:
  - crowdsecurity/experimental-*
@@ -916,7 +917,8 @@ El motivo es el siguiente: El problema es que cuando usas appsec_config: myconfi
 Vamos a editar nuevamente nuestro fichero **myconfig-appsec-default.yaml**:
 ```bash
 sudo nano ~/traefik-crowdsec/crowdsec/config/appsec-configs/myconfig-appsec-default.yaml
-
+```
+```bash
 # Contenido: 
 name: custom/appsec-default  # <--- MODIFICAMOS EL NOMBRE
 default_remediation: ban
@@ -930,11 +932,12 @@ inband_rules:
 outofband_rules:
  - crowdsecurity/experimental-*
  - crowdsecurity/appsec-generic-test
-
+```
 
 ```bash
 sudo nano ~/traefik-crowdsec/crowdsec/config/acquis.d/appsec.yaml
-
+```
+```bash
 # Contenido:
 appsec_configs:
   - custom/appsec-default
