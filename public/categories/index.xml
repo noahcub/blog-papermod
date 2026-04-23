@@ -6,8 +6,15 @@
     <description>Recent content in Categories on Las notas de Noah</description>
     <generator>Hugo -- 0.155.3</generator>
     <language>es-es</language>
-    <lastBuildDate>Sat, 04 Apr 2026 07:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 23 Apr 2026 07:00:00 +0100</lastBuildDate>
     <atom:link href="https://blog.lasnotasdenoah.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unraid</title>
+      <link>https://blog.lasnotasdenoah.com/categories/unraid/</link>
+      <pubDate>Thu, 23 Apr 2026 07:00:00 +0100</pubDate>
+      <guid>https://blog.lasnotasdenoah.com/categories/unraid/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Debian</title>
       <link>https://blog.lasnotasdenoah.com/categories/debian/</link>
@@ -20,13 +27,6 @@
       <link>https://blog.lasnotasdenoah.com/categories/nas/</link>
       <pubDate>Fri, 23 Jan 2026 07:00:00 +0100</pubDate>
       <guid>https://blog.lasnotasdenoah.com/categories/nas/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Unraid</title>
-      <link>https://blog.lasnotasdenoah.com/categories/unraid/</link>
-      <pubDate>Thu, 21 Aug 2025 13:40:36 +0200</pubDate>
-      <guid>https://blog.lasnotasdenoah.com/categories/unraid/</guid>
       <description></description>
     </item>
     <item>

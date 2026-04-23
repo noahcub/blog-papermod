@@ -147,6 +147,21 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Systemd
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Crear un servicio con systemd Crear un script Antes que nada necesitamos crear un script que no es más que un simple archivo, que debe contener algo muy importante para arrancar y es #!/bin/bash, así que usamos un editor, en mi caso nano para crearlo:
+nano /usr/local/sbin/servicios Dentro vamos a colocar lo que necesitamos quedando con la siguiente estructura:
+#!/bin/bash contenido del script Una vez que lo guardamos con F2, le damos permisos de ejecución.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-21 22:00:00 +0100 CET'>February 21, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Systemd" href="https://blog.lasnotasdenoah.com/posts/systemd/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Problemas con Nvidia
     </h2>
   </header>
@@ -284,23 +299,6 @@ locale-gen Hacemos el cambio en “Region &amp; Language”
   </div>
   <footer class="entry-footer"><span title='2023-02-02 14:00:00 +0200 +0200'>February 2, 2023</span></footer>
   <a class="entry-link" aria-label="post link to Locales Debian" href="https://blog.lasnotasdenoah.com/posts/locales-debian/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Flatpak
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Soporte Flatpak en Debian 11 Bullseye Información en la web oficial de Flatpak.
-Aunque, a mi modo de ver, es importante instalar el software con la paquetería .deb, en ocasiones es necesario usar flatpak porque el software no está disponible en otro formato.
-Instalamos el paquete flatpak
-Dependiendo nuestro sistema operativo, el comando será el siguiente:
-# Debian apt install flatpak # Fedora dnf install flatpak Instalamos el plugin para la tienda de software. En este caso la tienda de Gnome.
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-02-01 14:00:00 +0200 +0200'>February 1, 2023</span></footer>
-  <a class="entry-link" aria-label="post link to Flatpak" href="https://blog.lasnotasdenoah.com/posts/flatpak/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

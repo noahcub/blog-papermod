@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Instalación de Owncloud oCIS en Unraid | Las notas de Noah</title>
+<meta name="keywords" content="Admin">
+<meta name="description" content="Nube privada para mi servidor">
+<meta name="author" content="">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/owncloud/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/owncloud/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/owncloud/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Instalación de Owncloud oCIS en Unraid">
+  <meta property="og:description" content="Nube privada para mi servidor">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-04-23T07:00:00+01:00">
+    <meta property="article:modified_time" content="2026-04-23T07:00:00+01:00">
+    <meta property="article:tag" content="Admin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Instalación de Owncloud oCIS en Unraid">
+<meta name="twitter:description" content="Nube privada para mi servidor">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Instalación de Owncloud oCIS en Unraid",
+      "item": "https://blog.lasnotasdenoah.com/posts/owncloud/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Instalación de Owncloud oCIS en Unraid",
+  "name": "Instalación de Owncloud oCIS en Unraid",
+  "description": "Nube privada para mi servidor",
+  "keywords": [
+    "Admin"
+  ],
+  "articleBody": "Owncloud oCIS oCIS está escrito en Go, lo que lo hace extremadamente rápido y ligero, funcionando como un binario único. Nextcloud utiliza PHP, lo que facilita su personalización pero requiere más recursos y optimización del servidor para grandes volúmenes.\nMientras que oCIS se centra en ser un especialista en almacenamiento y sincronización a gran escala, Nextcloud se posiciona como una “Content Collaboration Platform” completa, incluyendo chat, videollamadas y oficina en línea de forma nativa.\nLlevo varios años usando Nextcloud y nunca he usado ninguna de sus aplicaciones. Tengo la sensación que es lento y por eso vamos a probar Owncloud.\nDocker-compose Si dejamos que docker cree las carpetas nos dará errores de permisos, por tanto las creamos de forma manual:\n# Ficheros de configuración en appdata como siempre mkdir -p /mnt/user/appdata/owncloud # Almacenamiento de datos mkdir -p /mnt/user/Owncloud-Files/ocis-data mkdir -p /mnt/user/Owncloud-Files/thumbnails Docker-compose:\nservices: ocis: image: owncloud/ocis:7 container_name: owncloud user: 99:100 # nobody:users de Unraid ports: - 9200:9200 entrypoint: - /bin/sh command: [\"-c\", \"ocis init || true; ocis server\"] environment: # URL publica OCIS_URL: https://cloud.midominio.com # Modo seguro OCIS_INSECURE: \"false\" # true solo si usas cert autofirmado local HTTP_INSECURE: \"true\" PROXY_TLS: \"false\" # el reverse proxy termina TLS PROXY_ENABLE_BASIC_AUTH: \"false\" # solo activar para clientes WebDAV sin OIDC # Logs OCIS_LOG_LEVEL: error # en el primer arranque lo hacemos así para no tener muchas líneas de log. Después podemos poner info o debug si tenemos algún problema con servicios. # Authentication y OICD # Esta parte la configuramos luego. Nuestro primer arranque tiene que ser por password #PROXY_AUTOPROVISION_ACCOUNTS: true #PROXY_ROLE_ASSIGNMENT_DRIVER: oidc #OCIS_OIDC_ISSUER: https://pocket-id.midominio.com #PROXY_OIDC_REWRITE_WELLKNOWN: true #WEB_OIDC_CLIENT_ID: xxxxxxxxxxxxx-xxxxx-xxxx-xxxx-xxxxxxxxxxxxxx #PROXY_USER_OIDC_CLAIM: preferred_username #OCIS_EXCLUDE_RUN_SERVICES: idp # Configuración de seguridad y CSP #PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml # Servicios de oCIS SETTINGS_GRPC_ADDR: 0.0.0.0:9191 GATEWAY_GRPC_ADDR: 0.0.0.0:9142 OCIS_ADD_RUN_SERVICES: \"notifications\" # Almacenamiento datos y Thumbnails THUMBNAILS_FILESYSTEMSTORAGE_ROOT: /var/lib/ocis-thumbnails STORAGE_USERS_DATA_GATEWAY_URL: http://ocis:9200/data # Notificaciones por email OCIS_LDAP_USER_EMAIL_VERIFIED: \"true\" # Email SMTP NOTIFICATIONS_SMTP_HOST: \"${SMTP_HOST}\" NOTIFICATIONS_SMTP_PORT: \"${SMTP_PORT}\" NOTIFICATIONS_SMTP_SENDER: \"${SMTP_SENDER}\" NOTIFICATIONS_SMTP_USERNAME: \"${SMTP_USERNAME}\" NOTIFICATIONS_SMTP_PASSWORD: \"${SMTP_PASSWORD}\" NOTIFICATIONS_SMTP_AUTHENTICATION: \"${SMTP_AUTHENTICATION}\" NOTIFICATIONS_SMTP_ENCRYPTION: \"${SMTP_ENCRYPTION}\" NOTIFICATIONS_SMTP_INSECURE: \"${SMTP_INSECURE}\" # Invitaciones de usuarios externos OCIS_GUEST_ENABLED: true NOTIFICATIONS_SEND_GUEST_INVITATIONS: true volumes: - /mnt/user/appdata/owncloud:/etc/ocis - /mnt/user/Owncloud-Files/ocis-data:/var/lib/ocis - /mnt/user/Owncloud-Files/thumbnails:/var/lib/ocis-thumbnails logging: driver: \"local\" restart: always networks: default: name: cloud external: true Fichero .env:\n# Datos SMTP de Gmail SMTP_HOST=smtp.gmail.com SMTP_PORT=587 #SMTP_SENDER=oCIS notifications SMTP_SENDER=mi_correo@gmail.com SMTP_USERNAME=mi_correo@gmail.com SMTP_PASSWORD=xxxx xxxx xxxx xxxx SMTP_AUTHENTICATION=login SMTP_ENCRYPTION=starttls SMTP_INSECURE=false Traefik Por último, creamos nuestro fichero estático de traefik para nuestro dominio:\n# cat cloud.yml http: routers: cloud: rule: \"Host(`cloud.midominio.com`)\" service: cloud entryPoints: - websecure tls: {} # o simplemente ‘tls: true’ en v3 middlewares: - geoblock-es - crowdsec-bouncer-noappsec - security-headers # En primer momento usé este header pero creo que no es necesario, por eso lo he comentado # - cloud-headers # middlewares: # cloud-headers: # headers: # customRequestHeaders: # X-Forwarded-Proto: \"https\" services: cloud: loadBalancer: servers: - url: \"http://100.105.100.10:9200\" Primer arranque Arrancamos nuestro compose desde Unraid y verificamos los logs para ver nuestra pass de administrador:\ndocker logs owncloud # Salida esperada: ========================================= generated OCIS Config ========================================= configpath : /etc/ocis/ocis.yaml user : admin password : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Usuarios Vamos a crear nuestros usuarios. En mi caso crearemos varios usuarios desde el panel de administración de oCIS y luego activaremos el acceso a través de pocket-id con passkey.\nMis usuarios: Configuración de pocket-id En la web de pocket-id tenemos varios ejemplos de aplicaciones.\nLos pasos son sencillos:\n1.- Creamos los grupos de oCIS necesarios, en mi caso el grupo de administrador y el de usuarios normales.\nEn cada grupo le tenemos que añadir las reclamaciones personalizadas que se indican:\nAdd roles and ocisAdmin to Custom Claims and click Save in ocisAdmin group. Add admin users to this group under Users. Add roles and ocisUser to Custom Claims and click Save in ocisUser group. Add standard users to this group under Users. 2.- Añadimos los usuarios correspondientes a cada grupo. Yo soy del grupo administrador y el resto de la familia del grupo usuarios.\nCreamos el cliente OIDC con los siguientes datos:\nNombre: Owncloud URL callback: https://cloud.midominio.com/oidc-callback.html # Según el manual hay que poner estas de callback, pero yo lo había hecho anteriormente y con la de arriba fue suficiente. https://ocis.company.com/ https://ocis.company.com/oidc-callback.html https://ocis.company.com/oidc-silent-redirect.html Cliente público: MARCADO [X] Añadimos los grupos de usuarios permitidos en el nuevo cliente OIDC Variables de entorno a añadir en el docker-compose:\nSolo tenemos que descomentar las que ya teníamos:\n# Authentication y OICD PROXY_AUTOPROVISION_ACCOUNTS: true PROXY_ROLE_ASSIGNMENT_DRIVER: oidc OCIS_OIDC_ISSUER: https://pocket-id.midominio.com PROXY_OIDC_REWRITE_WELLKNOWN: true WEB_OIDC_CLIENT_ID: xxxxxxxxxxxx-xxxx-xxxx-xxxxx-xxxxxxxxxxxxxxxxxxx PROXY_USER_OIDC_CLAIM: preferred_username OCIS_EXCLUDE_RUN_SERVICES: idp # Configuración de seguridad y CSP PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml Creamos nuestro fichero /mnt/user/appdata/owncloud/csp.yaml con el siguiente contenido:\ndirectives: child-src: - '''self''' connect-src: - '''self''' - 'blob:' - 'https://raw.githubusercontent.com/owncloud/awesome-ocis/' # In contrary to bash and docker the default is given after the | character - 'https://pocket-id.midominio.com/' default-src: - '''none''' font-src: - '''self''' frame-ancestors: - '''none''' frame-src: - '''self''' - 'blob:' - 'https://embed.diagrams.net/' img-src: - '''self''' - 'data:' - 'blob:' - 'https://raw.githubusercontent.com/owncloud/awesome-ocis/' manifest-src: - '''self''' media-src: - '''self''' object-src: - '''self''' - 'blob:' script-src: - '''self''' - '''unsafe-inline''' style-src: - '''self''' - '''unsafe-inline''' Reiniciamos nuestro contenedor y verificamos el login desde pocket-id.\nComandos útliles para verificar funcionamiento Para que estos comandos funcionen, es importante que en el docker-compose modifiquemos el loglevel:\n# Logs OCIS_LOG_LEVEL: error / debug / info DEBUG:\tDetalle granular. Muestra cada paso interno, variables y eventos técnicos.\tSe usa en Desarrollo y diagnóstico de errores complejos.\tImpacto en rendimiento Alto: Genera archivos muy grandes rápidamente. INFO\tConfirmación de que las cosas funcionan. Reporta eventos normales (inicio de servicios, conexiones).\tSe usa en Producción (por defecto en la mayoría de sistemas).\tImpacto en rendimiento Moderado: Es el equilibrio estándar. ERROR\tNotificación de fallos críticos. Solo registra eventos que impiden una operación.\tSistemas estables donde solo te interesa saber si algo se rompió.\tImpacto en rendimiento Bajo: Solo escribe cuando algo sale mal. Revisar notificaciones:\ndocker inspect owncloud | grep NOTIFICATIONS_SMTP Revisar logs docker:\ndocker logs ocis --tail=50 Verificar si oCIS está escuchando en el puerto:\ndocker exec ocis netstat -tlnp 2\u003e/dev/null || docker exec ocis ss -tlnp Prueba de conexión directa:\ncurl -k https://100.105.100.10:9200 Listado de servicios oCIS en ejecución:\ndocker exec owncloud ocis list Verificaciones de notificaciones:\ndocker logs -f owncloud 2\u003e\u00261 | grep -i -E \"notification|smtp|email|mail|send\" Variables de entorno que carga oCIS:\ndocker exec owncloud env Vitaminar nuestro Owncloud Instalación de tika.\nPor defecto oCIS solo indexa nombres de archivo y contenido de texto plano. Con Apache Tika puedes activar búsqueda en PDFs usando OCR.\nAñadimos esto a nuestro compose:\n# Añadir estas variables a ocis \u003e environment: # SEARCH_EXTRACTOR_TYPE: tika # SEARCH_EXTRACTOR_TIKA_TIKA_URL: http://tika:9998 # FRONTEND_FULL_TEXT_SEARCH_ENABLED: \"true\" tika: image: apache/tika:latest-full container_name: tika restart: always logging: driver: local Antivirus con ClamAV.\nAñadimos al compose:\n# Añadir a ocis \u003e environment: # ANTIVIRUS_SCANNER_TYPE: clamav # ANTIVIRUS_INFECTED_FILE_HANDLING: delete # ANTIVIRUS_CLAMAV_SOCKET: \"/var/run/clamav/clamd.sock\" # OCIS_ADD_RUN_SERVICES: \"antivirus\" # POSTPROCESSING_STEPS: \"virusscan\" # Y añadir volumen: clamav-socket:/var/run/clamav clamav: image: clamav/clamav:latest container_name: clamav volumes: - /mnt/user/appdata/ocis/clamav:/var/lib/clamav - clamav-socket:/tmp volumes: clamav-socket: Fuentes:\nDocumentación Owncloud\nOwncloud oCIS en docker\n",
+  "wordCount" : "1129",
+  "inLanguage": "en",
+  "datePublished": "2026-04-23T07:00:00+01:00",
+  "dateModified": "2026-04-23T07:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/owncloud/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                    <span>Buscar</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
+                    <span>Publicaciones</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
+                    <span>Archivo</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Instalación de Owncloud oCIS en Unraid
+    </h1>
+    <div class="post-description">
+      Nube privada para mi servidor
+    </div>
+    <div class="post-meta"><span title='2026-04-23 07:00:00 +0100 +0100'>April 23, 2026</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#owncloud-ocis" aria-label="Owncloud oCIS">Owncloud oCIS</a></li>
+                <li>
+                    <a href="#docker-compose" aria-label="Docker-compose">Docker-compose</a></li>
+                <li>
+                    <a href="#traefik" aria-label="Traefik">Traefik</a></li>
+                <li>
+                    <a href="#primer-arranque" aria-label="Primer arranque">Primer arranque</a></li>
+                <li>
+                    <a href="#usuarios" aria-label="Usuarios">Usuarios</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-de-pocket-id" aria-label="Configuración de pocket-id">Configuración de pocket-id</a></li>
+                <li>
+                    <a href="#comandos-%c3%batliles-para-verificar-funcionamiento" aria-label="Comandos útliles para verificar funcionamiento">Comandos útliles para verificar funcionamiento</a></li>
+                <li>
+                    <a href="#vitaminar-nuestro-owncloud" aria-label="Vitaminar nuestro Owncloud">Vitaminar nuestro Owncloud</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h3 id="owncloud-ocis">Owncloud oCIS<a hidden class="anchor" aria-hidden="true" href="#owncloud-ocis">#</a></h3>
+<p>oCIS está escrito en Go, lo que lo hace extremadamente rápido y ligero, funcionando como un binario único. Nextcloud utiliza PHP, lo que facilita su personalización pero requiere más recursos y optimización del servidor para grandes volúmenes.</p>
+<p>Mientras que oCIS se centra en ser un especialista en almacenamiento y sincronización a gran escala, Nextcloud se posiciona como una &ldquo;Content Collaboration Platform&rdquo; completa, incluyendo chat, videollamadas y oficina en línea de forma nativa.</p>
+<p>Llevo varios años usando Nextcloud y nunca he usado ninguna de sus aplicaciones. Tengo la sensación que es lento y por eso vamos a probar Owncloud.</p>
+<h3 id="docker-compose">Docker-compose<a hidden class="anchor" aria-hidden="true" href="#docker-compose">#</a></h3>
+<p>Si dejamos que docker cree las carpetas nos dará errores de permisos, por tanto las creamos de forma manual:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Ficheros de configuración en appdata como siempre</span>
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/appdata/owncloud
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Almacenamiento de datos</span>
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/Owncloud-Files/ocis-data                          
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/Owncloud-Files/thumbnails
+</span></span></code></pre></div><p>Docker-compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  ocis:
+</span></span><span style="display:flex;"><span>    image: owncloud/ocis:7
+</span></span><span style="display:flex;"><span>    container_name: owncloud
+</span></span><span style="display:flex;"><span>    user: 99:100          <span style="color:#75715e"># nobody:users de Unraid</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>      - 9200:9200
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>    entrypoint:
+</span></span><span style="display:flex;"><span>      - /bin/sh
+</span></span><span style="display:flex;"><span>    command: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#e6db74">&#34;ocis init || true; ocis server&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># URL publica</span>
+</span></span><span style="display:flex;"><span>      OCIS_URL: https://cloud.midominio.com
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Modo seguro</span>
+</span></span><span style="display:flex;"><span>      OCIS_INSECURE: <span style="color:#e6db74">&#34;false&#34;</span>        <span style="color:#75715e"># true solo si usas cert autofirmado local</span>
+</span></span><span style="display:flex;"><span>      HTTP_INSECURE: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>      PROXY_TLS: <span style="color:#e6db74">&#34;false&#34;</span>            <span style="color:#75715e"># el reverse proxy termina TLS</span>
+</span></span><span style="display:flex;"><span>      PROXY_ENABLE_BASIC_AUTH: <span style="color:#e6db74">&#34;false&#34;</span>   <span style="color:#75715e"># solo activar para clientes WebDAV sin OIDC</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Logs</span>
+</span></span><span style="display:flex;"><span>      OCIS_LOG_LEVEL: error <span style="color:#75715e"># en el primer arranque lo hacemos así para no tener muchas líneas de log. Después podemos poner info o debug si tenemos algún problema con servicios.</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Authentication y OICD </span>
+</span></span><span style="display:flex;"><span>	  <span style="color:#75715e"># Esta parte la configuramos luego. Nuestro primer arranque tiene que ser por password</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_AUTOPROVISION_ACCOUNTS: true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_ROLE_ASSIGNMENT_DRIVER: oidc</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#OCIS_OIDC_ISSUER: https://pocket-id.midominio.com</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_OIDC_REWRITE_WELLKNOWN: true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#WEB_OIDC_CLIENT_ID: xxxxxxxxxxxxx-xxxxx-xxxx-xxxx-xxxxxxxxxxxxxx</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_USER_OIDC_CLAIM: preferred_username</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#OCIS_EXCLUDE_RUN_SERVICES: idp</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Configuración de seguridad y CSP</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Servicios de oCIS</span>
+</span></span><span style="display:flex;"><span>      SETTINGS_GRPC_ADDR: 0.0.0.0:9191
+</span></span><span style="display:flex;"><span>      GATEWAY_GRPC_ADDR: 0.0.0.0:9142
+</span></span><span style="display:flex;"><span>      OCIS_ADD_RUN_SERVICES: <span style="color:#e6db74">&#34;notifications&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Almacenamiento datos y Thumbnails</span>
+</span></span><span style="display:flex;"><span>      THUMBNAILS_FILESYSTEMSTORAGE_ROOT: /var/lib/ocis-thumbnails
+</span></span><span style="display:flex;"><span>      STORAGE_USERS_DATA_GATEWAY_URL: http://ocis:9200/data
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Notificaciones por email</span>
+</span></span><span style="display:flex;"><span>      OCIS_LDAP_USER_EMAIL_VERIFIED: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Email SMTP    </span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_HOST: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_HOST<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_PORT: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_PORT<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_SENDER: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_SENDER<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_USERNAME: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_USERNAME<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_PASSWORD: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_PASSWORD<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_AUTHENTICATION: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_AUTHENTICATION<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_ENCRYPTION: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_ENCRYPTION<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_INSECURE: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_INSECURE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Invitaciones de usuarios externos</span>
+</span></span><span style="display:flex;"><span>      OCIS_GUEST_ENABLED: true
+</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SEND_GUEST_INVITATIONS: true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/owncloud:/etc/ocis
+</span></span><span style="display:flex;"><span>      - /mnt/user/Owncloud-Files/ocis-data:/var/lib/ocis
+</span></span><span style="display:flex;"><span>      - /mnt/user/Owncloud-Files/thumbnails:/var/lib/ocis-thumbnails
+</span></span><span style="display:flex;"><span>    logging:
+</span></span><span style="display:flex;"><span>      driver: <span style="color:#e6db74">&#34;local&#34;</span>
+</span></span><span style="display:flex;"><span>    restart: always
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  default:
+</span></span><span style="display:flex;"><span>    name: cloud
+</span></span><span style="display:flex;"><span>    external: true
+</span></span></code></pre></div><p>Fichero .env:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Datos SMTP de Gmail</span>
+</span></span><span style="display:flex;"><span>SMTP_HOST<span style="color:#f92672">=</span>smtp.gmail.com
+</span></span><span style="display:flex;"><span>SMTP_PORT<span style="color:#f92672">=</span><span style="color:#ae81ff">587</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#SMTP_SENDER=oCIS notifications &lt;mi_correo@gmail.com&gt;</span>
+</span></span><span style="display:flex;"><span>SMTP_SENDER<span style="color:#f92672">=</span>mi_correo@gmail.com
+</span></span><span style="display:flex;"><span>SMTP_USERNAME<span style="color:#f92672">=</span>mi_correo@gmail.com
+</span></span><span style="display:flex;"><span>SMTP_PASSWORD<span style="color:#f92672">=</span>xxxx xxxx xxxx xxxx
+</span></span><span style="display:flex;"><span>SMTP_AUTHENTICATION<span style="color:#f92672">=</span>login
+</span></span><span style="display:flex;"><span>SMTP_ENCRYPTION<span style="color:#f92672">=</span>starttls
+</span></span><span style="display:flex;"><span>SMTP_INSECURE<span style="color:#f92672">=</span>false
+</span></span></code></pre></div><h3 id="traefik">Traefik<a hidden class="anchor" aria-hidden="true" href="#traefik">#</a></h3>
+<p>Por último, creamos nuestro fichero estático de traefik para nuestro dominio:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># cat cloud.yml                     </span>
+</span></span><span style="display:flex;"><span>http:
+</span></span><span style="display:flex;"><span>  routers:
+</span></span><span style="display:flex;"><span>    cloud:
+</span></span><span style="display:flex;"><span>      rule: <span style="color:#e6db74">&#34;Host(`cloud.midominio.com`)&#34;</span>
+</span></span><span style="display:flex;"><span>      service: cloud
+</span></span><span style="display:flex;"><span>      entryPoints:
+</span></span><span style="display:flex;"><span>        - websecure
+</span></span><span style="display:flex;"><span>      tls: <span style="color:#f92672">{}</span>   <span style="color:#75715e"># o simplemente ‘tls: true’ en v3</span>
+</span></span><span style="display:flex;"><span>      middlewares:
+</span></span><span style="display:flex;"><span>        - geoblock-es
+</span></span><span style="display:flex;"><span>        - crowdsec-bouncer-noappsec
+</span></span><span style="display:flex;"><span>        - security-headers
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># En primer momento usé este header pero creo que no es necesario, por eso lo he comentado</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        - cloud-headers</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  middlewares:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    cloud-headers:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#      headers:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#        customRequestHeaders:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          X-Forwarded-Proto: &#34;https&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  services:
+</span></span><span style="display:flex;"><span>    cloud:
+</span></span><span style="display:flex;"><span>      loadBalancer:
+</span></span><span style="display:flex;"><span>        servers:
+</span></span><span style="display:flex;"><span>          - url: <span style="color:#e6db74">&#34;http://100.105.100.10:9200&#34;</span>
+</span></span></code></pre></div><h3 id="primer-arranque">Primer arranque<a hidden class="anchor" aria-hidden="true" href="#primer-arranque">#</a></h3>
+<p>Arrancamos nuestro compose desde Unraid y verificamos los logs para ver nuestra pass de administrador:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker logs owncloud
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Salida esperada:</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=========================================</span>
+</span></span><span style="display:flex;"><span> generated OCIS Config
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=========================================</span>
+</span></span><span style="display:flex;"><span> configpath : /etc/ocis/ocis.yaml
+</span></span><span style="display:flex;"><span> user       : admin
+</span></span><span style="display:flex;"><span> password   : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</span></span></code></pre></div><h3 id="usuarios">Usuarios<a hidden class="anchor" aria-hidden="true" href="#usuarios">#</a></h3>
+<p>Vamos a crear nuestros usuarios. En mi caso crearemos varios usuarios desde el panel de administración de oCIS y luego activaremos el acceso a través de pocket-id con passkey.<br>
+Mis usuarios:
+<img alt="owncloud-1.png" loading="lazy" src="/posts/owncloud/owncloud-1.png"></p>
+<h3 id="configuración-de-pocket-id">Configuración de pocket-id<a hidden class="anchor" aria-hidden="true" href="#configuración-de-pocket-id">#</a></h3>
+<p>En <a href="https://pocket-id.org/docs/client-examples/oCIS">la web de pocket-id</a> tenemos varios ejemplos de aplicaciones.</p>
+<p>Los pasos son sencillos:<br>
+1.- Creamos los grupos de oCIS necesarios, en mi caso el grupo de administrador y el de usuarios normales.</p>
+<p>En cada grupo le tenemos que añadir las reclamaciones personalizadas que se indican:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Add roles and ocisAdmin to Custom Claims and click Save in ocisAdmin group. Add admin users to this group under Users.
+</span></span><span style="display:flex;"><span>Add roles and ocisUser to Custom Claims and click Save in ocisUser group. Add standard users to this group under Users.
+</span></span></code></pre></div><p>2.- Añadimos los usuarios correspondientes a cada grupo. Yo soy del grupo administrador y el resto de la familia del grupo usuarios.</p>
+<p>Creamos el cliente OIDC con los siguientes datos:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Nombre: Owncloud
+</span></span><span style="display:flex;"><span>URL callback: https://cloud.midominio.com/oidc-callback.html
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Según el manual hay que poner estas de callback, pero yo lo había hecho anteriormente y con la de arriba fue suficiente.</span>
+</span></span><span style="display:flex;"><span>    https://ocis.company.com/
+</span></span><span style="display:flex;"><span>    https://ocis.company.com/oidc-callback.html
+</span></span><span style="display:flex;"><span>    https://ocis.company.com/oidc-silent-redirect.html
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Cliente público: MARCADO <span style="color:#f92672">[</span>X<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Añadimos los grupos de usuarios permitidos en el nuevo cliente OIDC
+</span></span></code></pre></div><p>Variables de entorno a añadir en el docker-compose:<br>
+<strong>Solo tenemos que descomentar las que ya teníamos</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Authentication y OICD </span>
+</span></span><span style="display:flex;"><span>PROXY_AUTOPROVISION_ACCOUNTS: true
+</span></span><span style="display:flex;"><span>PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
+</span></span><span style="display:flex;"><span>OCIS_OIDC_ISSUER: https://pocket-id.midominio.com
+</span></span><span style="display:flex;"><span>PROXY_OIDC_REWRITE_WELLKNOWN: true
+</span></span><span style="display:flex;"><span>WEB_OIDC_CLIENT_ID: xxxxxxxxxxxx-xxxx-xxxx-xxxxx-xxxxxxxxxxxxxxxxxxx
+</span></span><span style="display:flex;"><span>PROXY_USER_OIDC_CLAIM: preferred_username
+</span></span><span style="display:flex;"><span>OCIS_EXCLUDE_RUN_SERVICES: idp
+</span></span><span style="display:flex;"><span>     
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configuración de seguridad y CSP</span>
+</span></span><span style="display:flex;"><span>PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml
+</span></span></code></pre></div><p>Creamos nuestro fichero /mnt/user/appdata/owncloud/csp.yaml con el siguiente contenido:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>directives:
+</span></span><span style="display:flex;"><span>  child-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  connect-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/owncloud/awesome-ocis/&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># In contrary to bash and docker the default is given after the | character</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://pocket-id.midominio.com/&#39;</span>
+</span></span><span style="display:flex;"><span>  default-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;none&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  font-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  frame-ancestors:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;none&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  frame-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://embed.diagrams.net/&#39;</span>
+</span></span><span style="display:flex;"><span>  img-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;data:&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/owncloud/awesome-ocis/&#39;</span>
+</span></span><span style="display:flex;"><span>  manifest-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  media-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  object-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
+</span></span><span style="display:flex;"><span>  script-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;unsafe-inline&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  style-src:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;unsafe-inline&#39;&#39;&#39;</span>
+</span></span></code></pre></div><p>Reiniciamos nuestro contenedor y verificamos el login desde pocket-id.</p>
+<h3 id="comandos-útliles-para-verificar-funcionamiento">Comandos útliles para verificar funcionamiento<a hidden class="anchor" aria-hidden="true" href="#comandos-útliles-para-verificar-funcionamiento">#</a></h3>
+<p>Para que estos comandos funcionen, es importante que en el docker-compose modifiquemos el loglevel:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Logs</span>
+</span></span><span style="display:flex;"><span>OCIS_LOG_LEVEL: error / debug / info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>DEBUG:	Detalle granular. Muestra cada paso interno, variables y eventos técnicos.	Se usa en Desarrollo y diagnóstico de errores complejos.	Impacto en rendimiento Alto: Genera archivos muy grandes rápidamente.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INFO	Confirmación de que las cosas funcionan. Reporta eventos normales <span style="color:#f92672">(</span>inicio de servicios, conexiones<span style="color:#f92672">)</span>.	Se usa en Producción <span style="color:#f92672">(</span>por defecto en la mayoría de sistemas<span style="color:#f92672">)</span>.	Impacto en rendimiento Moderado: Es el equilibrio estándar.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ERROR	Notificación de fallos críticos. Solo registra eventos que impiden una operación.	Sistemas estables donde solo te interesa saber si algo se rompió.	Impacto en rendimiento Bajo: Solo escribe cuando algo sale mal.
+</span></span></code></pre></div><p>Revisar notificaciones:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker inspect owncloud | grep NOTIFICATIONS_SMTP
+</span></span></code></pre></div><p>Revisar logs docker:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker logs ocis --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">50</span>
+</span></span></code></pre></div><p>Verificar si oCIS está escuchando en el puerto:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec ocis netstat -tlnp 2&gt;/dev/null <span style="color:#f92672">||</span> docker exec ocis ss -tlnp
+</span></span></code></pre></div><p>Prueba de conexión directa:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -k https://100.105.100.10:9200
+</span></span></code></pre></div><p>Listado de servicios oCIS en ejecución:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec owncloud ocis list
+</span></span></code></pre></div><p>Verificaciones de notificaciones:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker logs -f owncloud 2&gt;&amp;<span style="color:#ae81ff">1</span> | grep -i -E <span style="color:#e6db74">&#34;notification|smtp|email|mail|send&#34;</span>
+</span></span></code></pre></div><p>Variables de entorno que carga oCIS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker exec owncloud env
+</span></span></code></pre></div><h3 id="vitaminar-nuestro-owncloud">Vitaminar nuestro Owncloud<a hidden class="anchor" aria-hidden="true" href="#vitaminar-nuestro-owncloud">#</a></h3>
+<p>Instalación de tika.<br>
+Por defecto oCIS solo indexa nombres de archivo y contenido de texto plano. Con Apache Tika puedes activar búsqueda en PDFs usando OCR.</p>
+<p>Añadimos esto a nuestro compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Añadir estas variables a ocis &gt; environment:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># SEARCH_EXTRACTOR_TYPE: tika</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># SEARCH_EXTRACTOR_TIKA_TIKA_URL: http://tika:9998</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># FRONTEND_FULL_TEXT_SEARCH_ENABLED: &#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  tika:
+</span></span><span style="display:flex;"><span>    image: apache/tika:latest-full
+</span></span><span style="display:flex;"><span>    container_name: tika
+</span></span><span style="display:flex;"><span>    restart: always
+</span></span><span style="display:flex;"><span>    logging:
+</span></span><span style="display:flex;"><span>      driver: local
+</span></span></code></pre></div><p>Antivirus con ClamAV.</p>
+<p>Añadimos al compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Añadir a ocis &gt; environment:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># ANTIVIRUS_SCANNER_TYPE: clamav</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># ANTIVIRUS_INFECTED_FILE_HANDLING: delete</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># ANTIVIRUS_CLAMAV_SOCKET: &#34;/var/run/clamav/clamd.sock&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># OCIS_ADD_RUN_SERVICES: &#34;antivirus&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># POSTPROCESSING_STEPS: &#34;virusscan&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Y añadir volumen: clamav-socket:/var/run/clamav</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  clamav:
+</span></span><span style="display:flex;"><span>    image: clamav/clamav:latest
+</span></span><span style="display:flex;"><span>    container_name: clamav
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/ocis/clamav:/var/lib/clamav
+</span></span><span style="display:flex;"><span>      - clamav-socket:/tmp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>volumes:
+</span></span><span style="display:flex;"><span>  clamav-socket:
+</span></span></code></pre></div><hr>
+<p>Fuentes:<br>
+<a href="https://doc.owncloud.com/ocis/next/depl-examples/ubuntu-compose/ubuntu-compose-prod.html#download-and-transfer-the-example">Documentación Owncloud</a><br>
+<a href="https://owncloud.dev/ocis/guides/ocis-local-docker/">Owncloud oCIS en docker</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
