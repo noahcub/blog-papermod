@@ -73,7 +73,9 @@ nano s24.conf
 # Clave privada del cliente s24
 PrivateKey = # CLAVE PRIVADA DE s24 GENERADA EN EL PASO ANTERIOR FICHERO s24.key
 Address = 10.8.0.2/24
-DNS = 1.1.1.1
+#### OJO CON ESTO ######
+# DNS = 1.1.1.1 # NETCUP es muy exigente con su firewall externo y no permite las consultas DNS. Un problema parecido he tenido en la configuración de AdguardHome
+# Para hacer funcionar esta configuración de wireguard en mi vps de NetCUP tengo que comentar la línea de DNS, cuando estaba en piensasolutions no me hacía falta comentar la línea.
 
 [Peer]
 # Public key del servidor

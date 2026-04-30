@@ -282,9 +282,12 @@ s24-XXXXXXXXX.dns.midominio.com
 
 Al cambiar mi VPS a NetCUP he tenido un problema con el firewall del propio netcup. Por motivos desconocidos el firewall bloqueaba los proveedores de DNS y no había manera de hacerlo funcionar. Daba igual las reglas que pusiera que netcup siempre bloqueaba cualquier comunicación a través del puerto DNS 53. La única forma de hacerlo funcionar era desactivando el firewall.  
 
-Preguntando a Claude encontré la solución para dejar activado el firewall de netcup y que funciona adguardhome sin problemas. Por cierto, era bastante sencilla y Gemini me estuvo volviendo loco con configuraciones muy extranñas. Y yo venga a decirle que el problema no era de mi debian 13, que era de netcup y erre que erre.
+Preguntando a Claude encontré la solución para dejar activado el firewall de netcup y que funciona adguardhome sin problemas. Por cierto, era bastante sencilla y Gemini me estuvo volviendo loco con configuraciones muy extranñas. Y yo venga a decirle que el problema no era de mi debian 13, que era de netcup y erre que erre.  
+
 
 ```bash
+# Simplemente tenemos que liberar a adguardhome de tener que hacer una consulta DNS para resolver dns.quad9.net.
+# Le damos la IP directamente y ya no tiene que hacer esa consulta.
 # Sustituimos:
 https://dns.quad9.net/dns-query
 # por:
