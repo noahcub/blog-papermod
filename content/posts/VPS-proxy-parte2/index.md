@@ -220,7 +220,17 @@ apprise:
     body: Backups Piensa failed
 ```
 
-Con esto ya está configurado el backup de nuestros datos.  
+Con esto ya está configurado el backup de nuestros datos.   
+
+Ahora tenemos que verificar que la configuración sea correcta, iniciamos el repositorio de borg en el servidor remoto y hacemos el primer backup:
+```bash
+# Verificamos configuración
+sudo env "PATH=$PATH" borgmatic config validate
+# Iniciamos el repositorio
+sudo env "PATH=$PATH" borgmatic init --encryption repokey-blake2
+# Primer backup
+sudo borgmatic create --list --stats
+```
 
 Vamos a programar los backups. En [la web de borgmatic](https://torsion.org/borgmatic/how-to/set-up-backups/) nos explica como hacerlo con tareas de systemd.
 
