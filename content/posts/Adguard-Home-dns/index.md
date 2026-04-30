@@ -278,6 +278,32 @@ s24-XXXXXXXXX.dns.midominio.com
 ```
 ![adguard-7.jpg](adguard-7.jpg)
 
+### Modificación para VPS en NetCUP
+
+Al cambiar mi VPS a NetCUP he tenido un problema con el firewall del propio netcup. Por motivos desconocidos el firewall bloqueaba los proveedores de DNS y no había manera de hacerlo funcionar. Daba igual las reglas que pusiera que netcup siempre bloqueaba cualquier comunicación a través del puerto DNS 53. La única forma de hacerlo funcionar era desactivando el firewall.  
+
+Preguntando a Claude encontré la solución para dejar activado el firewall de netcup y que funciona adguardhome sin problemas. Por cierto, era bastante sencilla y Gemini me estuvo volviendo loco con configuraciones muy extranñas. Y yo venga a decirle que el problema no era de mi debian 13, que era de netcup y erre que erre.
+
+```bash
+# Sustituimos:
+https://dns.quad9.net/dns-query
+# por:
+# Proveedores DNS
+https://9.9.9.10/dns-query
+https://149.112.112.10/dns-query
+tls://9.9.9.9
+tls://1.1.1.1
+
+# Servidores DNS de arranque
+9.9.9.9
+1.1.1.1
+```
+
+Quedando en mi caso de esta forma:
+![adguard-8.png](adguard-8.png)
+
+y los DNS de arranque:
+![adguard-9.png](adguard-9.png)
 ***
 Fuentes:  
 **Debo decir que en esta guía he tirado mucho de IA.**   
