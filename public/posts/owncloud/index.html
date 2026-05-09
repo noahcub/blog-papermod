@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Instalación de Owncloud oCIS en Unraid | Las notas de Noah</title>
 <meta name="keywords" content="Admin">
 <meta name="description" content="Nube privada para mi servidor">
 <meta name="author" content="">
-<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/owncloud/">
+<link rel="canonical" href="http://localhost:1313/posts/owncloud/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
-<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/owncloud/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/owncloud/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,76 +70,13 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/owncloud/">
-  <meta property="og:site_name" content="Las notas de Noah">
-  <meta property="og:title" content="Instalación de Owncloud oCIS en Unraid">
-  <meta property="og:description" content="Nube privada para mi servidor">
-  <meta property="og:locale" content="es-es">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-04-23T07:00:00+01:00">
-    <meta property="article:modified_time" content="2026-04-23T07:00:00+01:00">
-    <meta property="article:tag" content="Admin">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Instalación de Owncloud oCIS en Unraid">
-<meta name="twitter:description" content="Nube privada para mi servidor">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://blog.lasnotasdenoah.com/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "Instalación de Owncloud oCIS en Unraid",
-      "item": "https://blog.lasnotasdenoah.com/posts/owncloud/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Instalación de Owncloud oCIS en Unraid",
-  "name": "Instalación de Owncloud oCIS en Unraid",
-  "description": "Nube privada para mi servidor",
-  "keywords": [
-    "Admin"
-  ],
-  "articleBody": "Owncloud oCIS oCIS está escrito en Go, lo que lo hace extremadamente rápido y ligero, funcionando como un binario único. Nextcloud utiliza PHP, lo que facilita su personalización pero requiere más recursos y optimización del servidor para grandes volúmenes.\nMientras que oCIS se centra en ser un especialista en almacenamiento y sincronización a gran escala, Nextcloud se posiciona como una “Content Collaboration Platform” completa, incluyendo chat, videollamadas y oficina en línea de forma nativa.\nLlevo varios años usando Nextcloud y nunca he usado ninguna de sus aplicaciones. Tengo la sensación que es lento y por eso vamos a probar Owncloud.\nDocker-compose Si dejamos que docker cree las carpetas nos dará errores de permisos, por tanto las creamos de forma manual:\n# Ficheros de configuración en appdata como siempre mkdir -p /mnt/user/appdata/owncloud # Almacenamiento de datos mkdir -p /mnt/user/Owncloud-Files/ocis-data mkdir -p /mnt/user/Owncloud-Files/thumbnails Docker-compose:\nservices: ocis: image: owncloud/ocis:7 container_name: owncloud user: 99:100 # nobody:users de Unraid ports: - 9200:9200 entrypoint: - /bin/sh command: [\"-c\", \"ocis init || true; ocis server\"] environment: # URL publica OCIS_URL: https://cloud.midominio.com # Modo seguro OCIS_INSECURE: \"false\" # true solo si usas cert autofirmado local HTTP_INSECURE: \"true\" PROXY_TLS: \"false\" # el reverse proxy termina TLS PROXY_ENABLE_BASIC_AUTH: \"false\" # solo activar para clientes WebDAV sin OIDC # Logs OCIS_LOG_LEVEL: error # en el primer arranque lo hacemos así para no tener muchas líneas de log. Después podemos poner info o debug si tenemos algún problema con servicios. # Authentication y OICD # Esta parte la configuramos luego. Nuestro primer arranque tiene que ser por password #PROXY_AUTOPROVISION_ACCOUNTS: true #PROXY_ROLE_ASSIGNMENT_DRIVER: oidc #OCIS_OIDC_ISSUER: https://pocket-id.midominio.com #PROXY_OIDC_REWRITE_WELLKNOWN: true #WEB_OIDC_CLIENT_ID: xxxxxxxxxxxxx-xxxxx-xxxx-xxxx-xxxxxxxxxxxxxx #PROXY_USER_OIDC_CLAIM: preferred_username #OCIS_EXCLUDE_RUN_SERVICES: idp # Configuración de seguridad y CSP #PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml # Servicios de oCIS SETTINGS_GRPC_ADDR: 0.0.0.0:9191 GATEWAY_GRPC_ADDR: 0.0.0.0:9142 OCIS_ADD_RUN_SERVICES: \"notifications\" # Almacenamiento datos y Thumbnails THUMBNAILS_FILESYSTEMSTORAGE_ROOT: /var/lib/ocis-thumbnails STORAGE_USERS_DATA_GATEWAY_URL: http://ocis:9200/data # Notificaciones por email OCIS_LDAP_USER_EMAIL_VERIFIED: \"true\" # Email SMTP NOTIFICATIONS_SMTP_HOST: \"${SMTP_HOST}\" NOTIFICATIONS_SMTP_PORT: \"${SMTP_PORT}\" NOTIFICATIONS_SMTP_SENDER: \"${SMTP_SENDER}\" NOTIFICATIONS_SMTP_USERNAME: \"${SMTP_USERNAME}\" NOTIFICATIONS_SMTP_PASSWORD: \"${SMTP_PASSWORD}\" NOTIFICATIONS_SMTP_AUTHENTICATION: \"${SMTP_AUTHENTICATION}\" NOTIFICATIONS_SMTP_ENCRYPTION: \"${SMTP_ENCRYPTION}\" NOTIFICATIONS_SMTP_INSECURE: \"${SMTP_INSECURE}\" # Invitaciones de usuarios externos OCIS_GUEST_ENABLED: true NOTIFICATIONS_SEND_GUEST_INVITATIONS: true volumes: - /mnt/user/appdata/owncloud:/etc/ocis - /mnt/user/Owncloud-Files/ocis-data:/var/lib/ocis - /mnt/user/Owncloud-Files/thumbnails:/var/lib/ocis-thumbnails logging: driver: \"local\" restart: always networks: default: name: cloud external: true Fichero .env:\n# Datos SMTP de Gmail SMTP_HOST=smtp.gmail.com SMTP_PORT=587 #SMTP_SENDER=oCIS notifications SMTP_SENDER=mi_correo@gmail.com SMTP_USERNAME=mi_correo@gmail.com SMTP_PASSWORD=xxxx xxxx xxxx xxxx SMTP_AUTHENTICATION=login SMTP_ENCRYPTION=starttls SMTP_INSECURE=false Traefik Por último, creamos nuestro fichero estático de traefik para nuestro dominio:\n# cat cloud.yml http: routers: cloud: rule: \"Host(`cloud.midominio.com`)\" service: cloud entryPoints: - websecure tls: {} # o simplemente ‘tls: true’ en v3 middlewares: - geoblock-es - crowdsec-bouncer-noappsec - security-headers # En primer momento usé este header pero creo que no es necesario, por eso lo he comentado # - cloud-headers # middlewares: # cloud-headers: # headers: # customRequestHeaders: # X-Forwarded-Proto: \"https\" services: cloud: loadBalancer: servers: - url: \"http://100.105.100.10:9200\" Primer arranque Arrancamos nuestro compose desde Unraid y verificamos los logs para ver nuestra pass de administrador:\ndocker logs owncloud # Salida esperada: ========================================= generated OCIS Config ========================================= configpath : /etc/ocis/ocis.yaml user : admin password : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Usuarios Vamos a crear nuestros usuarios. En mi caso crearemos varios usuarios desde el panel de administración de oCIS y luego activaremos el acceso a través de pocket-id con passkey.\nMis usuarios: Configuración de pocket-id En la web de pocket-id tenemos varios ejemplos de aplicaciones.\nLos pasos son sencillos:\n1.- Creamos los grupos de oCIS necesarios, en mi caso el grupo de administrador y el de usuarios normales.\nEn cada grupo le tenemos que añadir las reclamaciones personalizadas que se indican:\nAdd roles and ocisAdmin to Custom Claims and click Save in ocisAdmin group. Add admin users to this group under Users. Add roles and ocisUser to Custom Claims and click Save in ocisUser group. Add standard users to this group under Users. 2.- Añadimos los usuarios correspondientes a cada grupo. Yo soy del grupo administrador y el resto de la familia del grupo usuarios.\nCreamos el cliente OIDC con los siguientes datos:\nNombre: Owncloud URL callback: https://cloud.midominio.com/oidc-callback.html # Según el manual hay que poner estas de callback, pero yo lo había hecho anteriormente y con la de arriba fue suficiente. https://ocis.company.com/ https://ocis.company.com/oidc-callback.html https://ocis.company.com/oidc-silent-redirect.html Cliente público: MARCADO [X] Añadimos los grupos de usuarios permitidos en el nuevo cliente OIDC Variables de entorno a añadir en el docker-compose:\nSolo tenemos que descomentar las que ya teníamos:\n# Authentication y OICD PROXY_AUTOPROVISION_ACCOUNTS: true PROXY_ROLE_ASSIGNMENT_DRIVER: oidc OCIS_OIDC_ISSUER: https://pocket-id.midominio.com PROXY_OIDC_REWRITE_WELLKNOWN: true WEB_OIDC_CLIENT_ID: xxxxxxxxxxxx-xxxx-xxxx-xxxxx-xxxxxxxxxxxxxxxxxxx PROXY_USER_OIDC_CLAIM: preferred_username OCIS_EXCLUDE_RUN_SERVICES: idp # Configuración de seguridad y CSP PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml Creamos nuestro fichero /mnt/user/appdata/owncloud/csp.yaml con el siguiente contenido:\ndirectives: child-src: - '''self''' connect-src: - '''self''' - 'blob:' - 'https://raw.githubusercontent.com/owncloud/awesome-ocis/' # In contrary to bash and docker the default is given after the | character - 'https://pocket-id.midominio.com/' default-src: - '''none''' font-src: - '''self''' frame-ancestors: - '''none''' frame-src: - '''self''' - 'blob:' - 'https://embed.diagrams.net/' img-src: - '''self''' - 'data:' - 'blob:' - 'https://raw.githubusercontent.com/owncloud/awesome-ocis/' manifest-src: - '''self''' media-src: - '''self''' object-src: - '''self''' - 'blob:' script-src: - '''self''' - '''unsafe-inline''' style-src: - '''self''' - '''unsafe-inline''' Reiniciamos nuestro contenedor y verificamos el login desde pocket-id.\nComandos útliles para verificar funcionamiento Para que estos comandos funcionen, es importante que en el docker-compose modifiquemos el loglevel:\n# Logs OCIS_LOG_LEVEL: error / debug / info DEBUG:\tDetalle granular. Muestra cada paso interno, variables y eventos técnicos.\tSe usa en Desarrollo y diagnóstico de errores complejos.\tImpacto en rendimiento Alto: Genera archivos muy grandes rápidamente. INFO\tConfirmación de que las cosas funcionan. Reporta eventos normales (inicio de servicios, conexiones).\tSe usa en Producción (por defecto en la mayoría de sistemas).\tImpacto en rendimiento Moderado: Es el equilibrio estándar. ERROR\tNotificación de fallos críticos. Solo registra eventos que impiden una operación.\tSistemas estables donde solo te interesa saber si algo se rompió.\tImpacto en rendimiento Bajo: Solo escribe cuando algo sale mal. Revisar notificaciones:\ndocker inspect owncloud | grep NOTIFICATIONS_SMTP Revisar logs docker:\ndocker logs ocis --tail=50 Verificar si oCIS está escuchando en el puerto:\ndocker exec ocis netstat -tlnp 2\u003e/dev/null || docker exec ocis ss -tlnp Prueba de conexión directa:\ncurl -k https://100.105.100.10:9200 Listado de servicios oCIS en ejecución:\ndocker exec owncloud ocis list Verificaciones de notificaciones:\ndocker logs -f owncloud 2\u003e\u00261 | grep -i -E \"notification|smtp|email|mail|send\" Variables de entorno que carga oCIS:\ndocker exec owncloud env Vitaminar nuestro Owncloud Instalación de tika.\nPor defecto oCIS solo indexa nombres de archivo y contenido de texto plano. Con Apache Tika puedes activar búsqueda en PDFs usando OCR.\nAñadimos esto a nuestro compose:\n# Añadir estas variables a ocis \u003e environment: # SEARCH_EXTRACTOR_TYPE: tika # SEARCH_EXTRACTOR_TIKA_TIKA_URL: http://tika:9998 # FRONTEND_FULL_TEXT_SEARCH_ENABLED: \"true\" tika: image: apache/tika:latest-full container_name: tika restart: always logging: driver: local Antivirus con ClamAV.\nAñadimos al compose:\n# Añadir a ocis \u003e environment: # ANTIVIRUS_SCANNER_TYPE: clamav # ANTIVIRUS_INFECTED_FILE_HANDLING: delete # ANTIVIRUS_CLAMAV_SOCKET: \"/var/run/clamav/clamd.sock\" # OCIS_ADD_RUN_SERVICES: \"antivirus\" # POSTPROCESSING_STEPS: \"virusscan\" # Y añadir volumen: clamav-socket:/var/run/clamav clamav: image: clamav/clamav:latest container_name: clamav volumes: - /mnt/user/appdata/ocis/clamav:/var/lib/clamav - clamav-socket:/tmp volumes: clamav-socket: Fuentes:\nDocumentación Owncloud\nOwncloud oCIS en docker\n",
-  "wordCount" : "1129",
-  "inLanguage": "en",
-  "datePublished": "2026-04-23T07:00:00+01:00",
-  "dateModified": "2026-04-23T07:00:00+01:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://blog.lasnotasdenoah.com/posts/owncloud/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Las notas de Noah",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
-    }
-  }
-}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -165,27 +102,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
+                <a href="http://localhost:1313/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
+                <a href="http://localhost:1313/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
+                <a href="http://localhost:1313/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
+                <a href="http://localhost:1313/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -203,7 +140,7 @@
     <div class="post-description">
       Nube privada para mi servidor
     </div>
-    <div class="post-meta"><span title='2026-04-23 07:00:00 +0100 +0100'>April 23, 2026</span>
+    <div class="post-meta"><span title='2026-05-09 07:00:00 +0100 +0100'>May 9, 2026</span>
 
 </div>
   </header> <div class="toc">
@@ -216,6 +153,8 @@
                 <li>
                     <a href="#owncloud-ocis" aria-label="Owncloud oCIS">Owncloud oCIS</a></li>
                 <li>
+                    <a href="#esquema-inicial" aria-label="Esquema inicial">Esquema inicial</a></li>
+                <li>
                     <a href="#docker-compose" aria-label="Docker-compose">Docker-compose</a></li>
                 <li>
                     <a href="#traefik" aria-label="Traefik">Traefik</a></li>
@@ -224,7 +163,19 @@
                 <li>
                     <a href="#usuarios" aria-label="Usuarios">Usuarios</a></li>
                 <li>
-                    <a href="#configuraci%c3%b3n-de-pocket-id" aria-label="Configuración de pocket-id">Configuración de pocket-id</a></li>
+                    <a href="#configuraci%c3%b3n-de-lldap" aria-label="Configuración de LLDAP">Configuración de LLDAP</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-de-authelia-redis" aria-label="Configuración de Authelia-redis">Configuración de Authelia-redis</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-de-authelia" aria-label="Configuración de Authelia">Configuración de Authelia</a></li>
+                <li>
+                    <a href="#fichero-de-configuraci%c3%b3n-de-authelia" aria-label="Fichero de configuración de Authelia">Fichero de configuración de Authelia</a></li>
+                <li>
+                    <a href="#configuraci%c3%b3n-de-usuario-de-authelia" aria-label="Configuración de usuario de Authelia">Configuración de usuario de Authelia</a></li>
+                <li>
+                    <a href="#clientes-de-escritorio-y-android-para-ocis" aria-label="Clientes de escritorio y Android para oCIS">Clientes de escritorio y Android para oCIS</a></li>
+                <li>
+                    <a href="#inicio-de-ocis" aria-label="Inicio de oCIS">Inicio de oCIS</a></li>
                 <li>
                     <a href="#comandos-%c3%batliles-para-verificar-funcionamiento" aria-label="Comandos útliles para verificar funcionamiento">Comandos útliles para verificar funcionamiento</a></li>
                 <li>
@@ -239,66 +190,85 @@
 <p>oCIS está escrito en Go, lo que lo hace extremadamente rápido y ligero, funcionando como un binario único. Nextcloud utiliza PHP, lo que facilita su personalización pero requiere más recursos y optimización del servidor para grandes volúmenes.</p>
 <p>Mientras que oCIS se centra en ser un especialista en almacenamiento y sincronización a gran escala, Nextcloud se posiciona como una &ldquo;Content Collaboration Platform&rdquo; completa, incluyendo chat, videollamadas y oficina en línea de forma nativa.</p>
 <p>Llevo varios años usando Nextcloud y nunca he usado ninguna de sus aplicaciones. Tengo la sensación que es lento y por eso vamos a probar Owncloud.</p>
+<h3 id="esquema-inicial">Esquema inicial<a hidden class="anchor" aria-hidden="true" href="#esquema-inicial">#</a></h3>
+<p><em><strong>Petición a cloud.midominio.com &mdash;&gt; VPS con traefik + lldap + authelia &mdash;&gt; NAS con Owncloud</strong></em></p>
 <h3 id="docker-compose">Docker-compose<a hidden class="anchor" aria-hidden="true" href="#docker-compose">#</a></h3>
 <p>Si dejamos que docker cree las carpetas nos dará errores de permisos, por tanto las creamos de forma manual:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Ficheros de configuración en appdata como siempre</span>
-</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/appdata/owncloud
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/appdata/ocis/config
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># Almacenamiento de datos</span>
-</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/Owncloud-Files/ocis-data                          
-</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/Owncloud-Files/thumbnails
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Creamos el recurso compartido en Unraid y después los directorios necesarios</span>
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/Ocis-Files/ocis-data                          
+</span></span><span style="display:flex;"><span>mkdir -p /mnt/user/Ocis-Files/thumbnails
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Cambiamos el usuario de los directorios porque sino Ocis nos dará problemas de permisos.</span>
+</span></span><span style="display:flex;"><span>chown -Rfv 1000:1000 /mnt/user/appdata/ocis
+</span></span><span style="display:flex;"><span>chown -Rfv 1000:1000 /mnt/user/Ocis-Files
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Como unraid deja permisos 777 vamos a cambiarlos tambien</span>
+</span></span><span style="display:flex;"><span>chmod -R <span style="color:#ae81ff">755</span> /mnt/user/Ocis-Files
+</span></span><span style="display:flex;"><span>chmod -R <span style="color:#ae81ff">755</span> /mnt/user/appdata/ocis
 </span></span></code></pre></div><p>Docker-compose:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
 </span></span><span style="display:flex;"><span>  ocis:
-</span></span><span style="display:flex;"><span>    image: owncloud/ocis:7
-</span></span><span style="display:flex;"><span>    container_name: owncloud
-</span></span><span style="display:flex;"><span>    user: 99:100          <span style="color:#75715e"># nobody:users de Unraid</span>
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    ports:
-</span></span><span style="display:flex;"><span>      - 9200:9200
-</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>    image: owncloud/ocis:latest
+</span></span><span style="display:flex;"><span>    container_name: ocis
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    user: <span style="color:#e6db74">&#34;1000:1000&#34;</span>
 </span></span><span style="display:flex;"><span>    entrypoint:
 </span></span><span style="display:flex;"><span>      - /bin/sh
 </span></span><span style="display:flex;"><span>    command: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#e6db74">&#34;ocis init || true; ocis server&#34;</span><span style="color:#f92672">]</span>
-</span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    environment:
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># URL publica</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># --- Dominio público (el que Traefik expone en el VPS) ---</span>
 </span></span><span style="display:flex;"><span>      OCIS_URL: https://cloud.midominio.com
-</span></span><span style="display:flex;"><span>      
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Modo seguro</span>
-</span></span><span style="display:flex;"><span>      OCIS_INSECURE: <span style="color:#e6db74">&#34;false&#34;</span>        <span style="color:#75715e"># true solo si usas cert autofirmado local</span>
-</span></span><span style="display:flex;"><span>      HTTP_INSECURE: <span style="color:#e6db74">&#34;true&#34;</span>
-</span></span><span style="display:flex;"><span>      PROXY_TLS: <span style="color:#e6db74">&#34;false&#34;</span>            <span style="color:#75715e"># el reverse proxy termina TLS</span>
-</span></span><span style="display:flex;"><span>      PROXY_ENABLE_BASIC_AUTH: <span style="color:#e6db74">&#34;false&#34;</span>   <span style="color:#75715e"># solo activar para clientes WebDAV sin OIDC</span>
+</span></span><span style="display:flex;"><span>      OCIS_LOG_LEVEL: info  <span style="color:#75715e"># Cambiar a debug si hay problemas</span>
+</span></span><span style="display:flex;"><span>      OCIS_LOG_COLOR: true
+</span></span><span style="display:flex;"><span>      OCIS_LOG_PRETTY: true
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Logs</span>
-</span></span><span style="display:flex;"><span>      OCIS_LOG_LEVEL: error <span style="color:#75715e"># en el primer arranque lo hacemos así para no tener muchas líneas de log. Después podemos poner info o debug si tenemos algún problema con servicios.</span>
-</span></span><span style="display:flex;"><span>      
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Authentication y OICD </span>
-</span></span><span style="display:flex;"><span>	  <span style="color:#75715e"># Esta parte la configuramos luego. Nuestro primer arranque tiene que ser por password</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_AUTOPROVISION_ACCOUNTS: true</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_ROLE_ASSIGNMENT_DRIVER: oidc</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#OCIS_OIDC_ISSUER: https://pocket-id.midominio.com</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_OIDC_REWRITE_WELLKNOWN: true</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#WEB_OIDC_CLIENT_ID: xxxxxxxxxxxxx-xxxxx-xxxx-xxxx-xxxxxxxxxxxxxx</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_USER_OIDC_CLAIM: preferred_username</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#OCIS_EXCLUDE_RUN_SERVICES: idp</span>
-</span></span><span style="display:flex;"><span>      
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Configuración de seguridad y CSP</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">#PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml</span>
-</span></span><span style="display:flex;"><span>      
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Servicios de oCIS</span>
-</span></span><span style="display:flex;"><span>      SETTINGS_GRPC_ADDR: 0.0.0.0:9191
-</span></span><span style="display:flex;"><span>      GATEWAY_GRPC_ADDR: 0.0.0.0:9142
-</span></span><span style="display:flex;"><span>      OCIS_ADD_RUN_SERVICES: <span style="color:#e6db74">&#34;notifications&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># --- Deshabilita TLS interno (Traefik termina TLS) ---</span>
+</span></span><span style="display:flex;"><span>      PROXY_TLS: <span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>      OCIS_INSECURE: <span style="color:#e6db74">&#34;true&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Almacenamiento datos y Thumbnails</span>
-</span></span><span style="display:flex;"><span>      THUMBNAILS_FILESYSTEMSTORAGE_ROOT: /var/lib/ocis-thumbnails
-</span></span><span style="display:flex;"><span>      STORAGE_USERS_DATA_GATEWAY_URL: http://ocis:9200/data
-</span></span><span style="display:flex;"><span>      
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Notificaciones por email</span>
-</span></span><span style="display:flex;"><span>      OCIS_LDAP_USER_EMAIL_VERIFIED: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Configuración para que no se cierre sesión tan a menudo</span>
+</span></span><span style="display:flex;"><span>      OCIS_ACCESS_TOKEN_LIFETIME: 1h
+</span></span><span style="display:flex;"><span>      OCIS_REFRESH_TOKEN_LIFETIME: 2160h
+</span></span><span style="display:flex;"><span>       
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/ocis/config:/etc/ocis
+</span></span><span style="display:flex;"><span>      - /mnt/user/Ocis-Files/ocis-data:/var/lib/ocis
+</span></span><span style="display:flex;"><span>      - /mnt/user/Ocis-Files/thumbnails:/var/lib/ocis-thumbnails
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Email SMTP    </span>
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Solo escucha en la IP de Tailscale, no expone al exterior</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;100.105.100.10:9200:9200&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    healthcheck:
+</span></span><span style="display:flex;"><span>      test: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;CMD&#34;</span>, <span style="color:#e6db74">&#34;curl&#34;</span>, <span style="color:#e6db74">&#34;-f&#34;</span>, <span style="color:#e6db74">&#34;http://localhost:9200/health&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      interval: 30s
+</span></span><span style="display:flex;"><span>      timeout: 10s
+</span></span><span style="display:flex;"><span>      retries: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  default:
+</span></span><span style="display:flex;"><span>    name: cloud
+</span></span><span style="display:flex;"><span>    external: true
+</span></span></code></pre></div><p>Después de configurar Authelia añadiremos las siguientes variables al compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># --- OIDC / Authelia ---</span>
+</span></span><span style="display:flex;"><span>      OCIS_EXCLUDE_RUN_SERVICES: <span style="color:#e6db74">&#34;idp&#34;</span>
+</span></span><span style="display:flex;"><span>      WEB_OIDC_CLIENT_ID: <span style="color:#e6db74">&#39;ocis&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_ISSUER: <span style="color:#e6db74">&#39;https://auth.midominio.com&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_REWRITE_WELLKNOWN: <span style="color:#e6db74">&#39;true&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: <span style="color:#e6db74">&#39;none&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_ACCOUNTS: <span style="color:#e6db74">&#39;true&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_USERNAME: <span style="color:#e6db74">&#39;preferred_username&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_EMAIL: <span style="color:#e6db74">&#39;email&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME: <span style="color:#e6db74">&#39;name&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_GROUPS: <span style="color:#e6db74">&#39;groups&#39;</span>
+</span></span></code></pre></div><p>Si queremos usar notificaciones por mail:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>      <span style="color:#75715e"># Email SMTP    </span>
 </span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_HOST: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_HOST<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
 </span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_PORT: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_PORT<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
 </span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_SENDER: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_SENDER<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
@@ -307,25 +277,7 @@
 </span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_AUTHENTICATION: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_AUTHENTICATION<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
 </span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_ENCRYPTION: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_ENCRYPTION<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
 </span></span><span style="display:flex;"><span>      NOTIFICATIONS_SMTP_INSECURE: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>SMTP_INSECURE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>      
-</span></span><span style="display:flex;"><span>      
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># Invitaciones de usuarios externos</span>
-</span></span><span style="display:flex;"><span>      OCIS_GUEST_ENABLED: true
-</span></span><span style="display:flex;"><span>      NOTIFICATIONS_SEND_GUEST_INVITATIONS: true
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    volumes:
-</span></span><span style="display:flex;"><span>      - /mnt/user/appdata/owncloud:/etc/ocis
-</span></span><span style="display:flex;"><span>      - /mnt/user/Owncloud-Files/ocis-data:/var/lib/ocis
-</span></span><span style="display:flex;"><span>      - /mnt/user/Owncloud-Files/thumbnails:/var/lib/ocis-thumbnails
-</span></span><span style="display:flex;"><span>    logging:
-</span></span><span style="display:flex;"><span>      driver: <span style="color:#e6db74">&#34;local&#34;</span>
-</span></span><span style="display:flex;"><span>    restart: always
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>networks:
-</span></span><span style="display:flex;"><span>  default:
-</span></span><span style="display:flex;"><span>    name: cloud
-</span></span><span style="display:flex;"><span>    external: true
-</span></span></code></pre></div><p>Fichero .env:</p>
+</span></span></code></pre></div><p>Después de añadir nuestras variables, modificamos el fichero .env:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Datos SMTP de Gmail</span>
 </span></span><span style="display:flex;"><span>SMTP_HOST<span style="color:#f92672">=</span>smtp.gmail.com
 </span></span><span style="display:flex;"><span>SMTP_PORT<span style="color:#f92672">=</span><span style="color:#ae81ff">587</span>
@@ -338,7 +290,7 @@
 </span></span><span style="display:flex;"><span>SMTP_INSECURE<span style="color:#f92672">=</span>false
 </span></span></code></pre></div><h3 id="traefik">Traefik<a hidden class="anchor" aria-hidden="true" href="#traefik">#</a></h3>
 <p>Por último, creamos nuestro fichero estático de traefik para nuestro dominio:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># cat cloud.yml                     </span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># cat ocis.yml                     </span>
 </span></span><span style="display:flex;"><span>http:
 </span></span><span style="display:flex;"><span>  routers:
 </span></span><span style="display:flex;"><span>    cloud:
@@ -349,106 +301,427 @@
 </span></span><span style="display:flex;"><span>      tls: <span style="color:#f92672">{}</span>   <span style="color:#75715e"># o simplemente ‘tls: true’ en v3</span>
 </span></span><span style="display:flex;"><span>      middlewares:
 </span></span><span style="display:flex;"><span>        - geoblock-es
-</span></span><span style="display:flex;"><span>        - crowdsec-bouncer-noappsec
-</span></span><span style="display:flex;"><span>        - security-headers
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># En primer momento usé este header pero creo que no es necesario, por eso lo he comentado</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#        - cloud-headers</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#  middlewares:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    cloud-headers:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#      headers:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#        customRequestHeaders:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#          X-Forwarded-Proto: &#34;https&#34;</span>
+</span></span><span style="display:flex;"><span>        - crowdsec-bouncer-noappsec <span style="color:#75715e"># IMPORTANTE USAR EL MIDDLEWARE NOAPPSEC PORQUE SINO ME DA PROBLEMAS EN LAS REDIRECCIONES DEL 2FA</span>
+</span></span><span style="display:flex;"><span>        - ocis-headers
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  services:
 </span></span><span style="display:flex;"><span>    cloud:
 </span></span><span style="display:flex;"><span>      loadBalancer:
 </span></span><span style="display:flex;"><span>        servers:
 </span></span><span style="display:flex;"><span>          - url: <span style="color:#e6db74">&#34;http://100.105.100.10:9200&#34;</span>
+</span></span><span style="display:flex;"><span>        passHostHeader: true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  middlewares:
+</span></span><span style="display:flex;"><span>    ocis-headers:
+</span></span><span style="display:flex;"><span>      headers:
+</span></span><span style="display:flex;"><span>        customRequestHeaders:
+</span></span><span style="display:flex;"><span>          X-Forwarded-Proto: <span style="color:#e6db74">&#34;https&#34;</span>
+</span></span><span style="display:flex;"><span>          X-Real-IP: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        customResponseHeaders:
+</span></span><span style="display:flex;"><span>          X-Frame-Options: <span style="color:#e6db74">&#34;SAMEORIGIN&#34;</span>
+</span></span><span style="display:flex;"><span>          Content-Security-Policy: <span style="color:#e6db74">&#34;default-src &#39;self&#39; https://auth.midominio.com; script-src &#39;self&#39; &#39;unsafe-inline&#39; &#39;unsafe-eval&#39;; style-src &#39;self&#39; &#39;unsafe-inline&#39;; img-src &#39;self&#39; data: blob:; connect-src &#39;self&#39; https://auth.midominio.com; frame-ancestors &#39;self&#39;&#34;</span>
+</span></span><span style="display:flex;"><span>          Content-Security-Policy: <span style="color:#e6db74">&#34;&#34;</span>
 </span></span></code></pre></div><h3 id="primer-arranque">Primer arranque<a hidden class="anchor" aria-hidden="true" href="#primer-arranque">#</a></h3>
 <p>Arrancamos nuestro compose desde Unraid y verificamos los logs para ver nuestra pass de administrador:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker logs owncloud
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Salida esperada:</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">=========================================</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">=========================================</span>
 </span></span><span style="display:flex;"><span> generated OCIS Config
 </span></span><span style="display:flex;"><span><span style="color:#f92672">=========================================</span>
 </span></span><span style="display:flex;"><span> configpath : /etc/ocis/ocis.yaml
 </span></span><span style="display:flex;"><span> user       : admin
-</span></span><span style="display:flex;"><span> password   : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</span></span><span style="display:flex;"><span> password   : <span style="color:#75715e">#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2026-05-09T07:07:41Z WRN starting service nats line<span style="color:#f92672">=</span>github.com/owncloud/ocis/v2/services/nats/pkg/command/server.go:97 service<span style="color:#f92672">=</span>nats
+</span></span><span style="display:flex;"><span>2026-05-09T07:07:41Z INF Starting nats-server line<span style="color:#f92672">=</span>github.com/owncloud/ocis/v2/services/nats/pkg/logging/nats.go:21 service<span style="color:#f92672">=</span>nats
 </span></span></code></pre></div><h3 id="usuarios">Usuarios<a hidden class="anchor" aria-hidden="true" href="#usuarios">#</a></h3>
-<p>Vamos a crear nuestros usuarios. En mi caso crearemos varios usuarios desde el panel de administración de oCIS y luego activaremos el acceso a través de pocket-id con passkey.<br>
-Mis usuarios:
+<p>Tenemos dos opciones. Accedemos como administrador y vamos creando los usuarios:
 <img alt="owncloud-1.png" loading="lazy" src="/posts/owncloud/owncloud-1.png"></p>
-<h3 id="configuración-de-pocket-id">Configuración de pocket-id<a hidden class="anchor" aria-hidden="true" href="#configuración-de-pocket-id">#</a></h3>
-<p>En <a href="https://pocket-id.org/docs/client-examples/oCIS">la web de pocket-id</a> tenemos varios ejemplos de aplicaciones.</p>
-<p>Los pasos son sencillos:<br>
-1.- Creamos los grupos de oCIS necesarios, en mi caso el grupo de administrador y el de usuarios normales.</p>
-<p>En cada grupo le tenemos que añadir las reclamaciones personalizadas que se indican:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Add roles and ocisAdmin to Custom Claims and click Save in ocisAdmin group. Add admin users to this group under Users.
-</span></span><span style="display:flex;"><span>Add roles and ocisUser to Custom Claims and click Save in ocisUser group. Add standard users to this group under Users.
-</span></span></code></pre></div><p>2.- Añadimos los usuarios correspondientes a cada grupo. Yo soy del grupo administrador y el resto de la familia del grupo usuarios.</p>
-<p>Creamos el cliente OIDC con los siguientes datos:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Nombre: Owncloud
-</span></span><span style="display:flex;"><span>URL callback: https://cloud.midominio.com/oidc-callback.html
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Según el manual hay que poner estas de callback, pero yo lo había hecho anteriormente y con la de arriba fue suficiente.</span>
-</span></span><span style="display:flex;"><span>    https://ocis.company.com/
-</span></span><span style="display:flex;"><span>    https://ocis.company.com/oidc-callback.html
-</span></span><span style="display:flex;"><span>    https://ocis.company.com/oidc-silent-redirect.html
+<p>O bien, usamos un sistema centralizado de usuarios Ldap y nos logueamos a través de Authelia. Si el usuario está en Ldap y no está en Owncloud oCIS se genera automáticamente. Optaremos por la opción 2.</p>
+<h3 id="configuración-de-lldap">Configuración de LLDAP<a hidden class="anchor" aria-hidden="true" href="#configuración-de-lldap">#</a></h3>
+<p>Docker compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  lldap:
+</span></span><span style="display:flex;"><span>    container_name: lldap
+</span></span><span style="display:flex;"><span>    hostname: lldap
+</span></span><span style="display:flex;"><span>    image: lldap/lldap:stable
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    expose:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">3890</span>   <span style="color:#75715e"># LDAP</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">17170</span>  <span style="color:#75715e"># Web UI</span>
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      LLDAP_LDAP_BASE_DN: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>LLDAP_LDAP_BASE_DN<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      LLDAP_JWT_SECRET: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>JWT_SECRET<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>      LLDAP_LDAP_USER_PASS: <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>LDAP_USER_PASS<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - ./data:/data
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - infra_network
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Cliente público: MARCADO <span style="color:#f92672">[</span>X<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  infra_network:
+</span></span><span style="display:flex;"><span>    external: true
+</span></span></code></pre></div><p>Generamos las llaves aleatorias:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># JWT_SECRET</span>
+</span></span><span style="display:flex;"><span>tr -cd <span style="color:#e6db74">&#39;[:alnum:]&#39;</span> &lt; /dev/urandom | fold -w <span style="color:#e6db74">&#34;64&#34;</span> | head -n <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#mIyud6Bz6TKGPDxV3b1SlixrRdIdemNu3LmgvdZ3f9bKyNCyMvyyQ7hlXCfyoYq6</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Añadimos los grupos de usuarios permitidos en el nuevo cliente OIDC
-</span></span></code></pre></div><p>Variables de entorno a añadir en el docker-compose:<br>
-<strong>Solo tenemos que descomentar las que ya teníamos</strong>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Authentication y OICD </span>
-</span></span><span style="display:flex;"><span>PROXY_AUTOPROVISION_ACCOUNTS: true
-</span></span><span style="display:flex;"><span>PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
-</span></span><span style="display:flex;"><span>OCIS_OIDC_ISSUER: https://pocket-id.midominio.com
-</span></span><span style="display:flex;"><span>PROXY_OIDC_REWRITE_WELLKNOWN: true
-</span></span><span style="display:flex;"><span>WEB_OIDC_CLIENT_ID: xxxxxxxxxxxx-xxxx-xxxx-xxxxx-xxxxxxxxxxxxxxxxxxx
-</span></span><span style="display:flex;"><span>PROXY_USER_OIDC_CLAIM: preferred_username
-</span></span><span style="display:flex;"><span>OCIS_EXCLUDE_RUN_SERVICES: idp
-</span></span><span style="display:flex;"><span>     
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configuración de seguridad y CSP</span>
-</span></span><span style="display:flex;"><span>PROXY_CSP_CONFIG_FILE_LOCATION: /etc/ocis/csp.yaml
-</span></span></code></pre></div><p>Creamos nuestro fichero /mnt/user/appdata/owncloud/csp.yaml con el siguiente contenido:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>directives:
-</span></span><span style="display:flex;"><span>  child-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>  connect-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/owncloud/awesome-ocis/&#39;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># In contrary to bash and docker the default is given after the | character</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://pocket-id.midominio.com/&#39;</span>
-</span></span><span style="display:flex;"><span>  default-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;none&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>  font-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>  frame-ancestors:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;none&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>  frame-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://embed.diagrams.net/&#39;</span>
-</span></span><span style="display:flex;"><span>  img-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;data:&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/owncloud/awesome-ocis/&#39;</span>
-</span></span><span style="display:flex;"><span>  manifest-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>  media-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>  object-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;blob:&#39;</span>
-</span></span><span style="display:flex;"><span>  script-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;unsafe-inline&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>  style-src:
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;self&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#39;&#39;&#39;unsafe-inline&#39;&#39;&#39;</span>
-</span></span></code></pre></div><p>Reiniciamos nuestro contenedor y verificamos el login desde pocket-id.</p>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LDAP_USER_PASS</span>
+</span></span><span style="display:flex;"><span>tr -cd <span style="color:#e6db74">&#39;[:alnum:]&#39;</span> &lt; /dev/urandom | fold -w <span style="color:#e6db74">&#34;20&#34;</span> | head -n <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#TE7z8T3Ii1rm4u5NUkRC</span>
+</span></span></code></pre></div><p>Y las pasamos a nuestro fichero .env:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>LLDAP_LDAP_BASE_DN<span style="color:#f92672">=</span>dc<span style="color:#f92672">=</span>midominio,dc<span style="color:#f92672">=</span>com
+</span></span><span style="display:flex;"><span>JWT_SECRET<span style="color:#f92672">=</span>mIyud6Bz6TKGPDxV3b1SlixrRdIdemNu3LmgvdZ3f9bKyNCyMvyyQ7hlXCfyoYq6
+</span></span><span style="display:flex;"><span>LDAP_USER_PASS<span style="color:#f92672">=</span>TE7z8T3Ii1rm4u5NUkRC
+</span></span></code></pre></div><p>Arrancamos nuestro contenedor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker compose up -d
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># verificamos logs</span>
+</span></span><span style="display:flex;"><span>docker logs lldap
+</span></span></code></pre></div><p>Ahora podremos acceder a nuestro ldap desde <a href="https://lldap.midominio.com">https://lldap.midominio.com</a>.</p>
+<p>En mi caso he creado los usuarios necesarios y un grupo llamado ocis.</p>
+<h3 id="configuración-de-authelia-redis">Configuración de Authelia-redis<a hidden class="anchor" aria-hidden="true" href="#configuración-de-authelia-redis">#</a></h3>
+<p>Vamos a configurar un contenedor Redis.<br>
+Redis es un sistema de almacenamiento de datos en memoria que Authelia puede utilizar como proveedor de almacenamiento de sesiones. Al usar un servicio externo para los datos de sesión, Authelia se puede reiniciar sin que los usuarios tengan que volver a autenticarse y lo que más importante, no se cerrarán nuestras sesiones al poco tiempo o pocos días de iniciar (por ejemplo en aplicación de escritorio o de Android).</p>
+<p>Docker compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  redis:
+</span></span><span style="display:flex;"><span>    container_name: authelia-redis
+</span></span><span style="display:flex;"><span>    hostname: authelia-redis
+</span></span><span style="display:flex;"><span>    image: redis:latest
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    command: redis-server --save <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">1</span> --appendonly yes  <span style="color:#75715e"># ← persiste en disco</span>
+</span></span><span style="display:flex;"><span>    expose:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">6379</span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - ./data:/data
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - infra_network
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  infra_network:
+</span></span><span style="display:flex;"><span>    external: true
+</span></span></code></pre></div><p>Arrancamos el contenedor y debe funcionar sin problemas.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker compose up -d
+</span></span></code></pre></div><h3 id="configuración-de-authelia">Configuración de Authelia<a hidden class="anchor" aria-hidden="true" href="#configuración-de-authelia">#</a></h3>
+<p>Este es el más complejo de configurar y el corazón de nuestro sistema de login.<br>
+Ocis redirige la autenticación hacia Authelia, que a su vez se conecta con ldap y verifica que el usuario esté activo tenga los permisos necesarios.</p>
+<p>Docker-compose:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  authelia:
+</span></span><span style="display:flex;"><span>    image: authelia/authelia:latest
+</span></span><span style="display:flex;"><span>    container_name: authelia
+</span></span><span style="display:flex;"><span>    restart: unless-stopped
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - ./config:/config
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      - TZ<span style="color:#f92672">=</span>Europe/Madrid
+</span></span><span style="display:flex;"><span>      - AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>AUTHELIA_JWT_SECRET<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>      - AUTHELIA_SESSION_SECRET<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>AUTHELIA_SESSION_SECRET<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>      - AUTHELIA_STORAGE_ENCRYPTION_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>AUTHELIA_STORAGE_ENCRYPTION_KEY<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>      - AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>LLDAP_ADMIN_PASSWORD<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>      - infra_network
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  infra_network:
+</span></span><span style="display:flex;"><span>    external: true
+</span></span></code></pre></div><p>Vamos a generar los secretos.<br>
+Ejecutamos cada línea y copiamos el resultado al fichero .env:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Ejecuta cada línea y copia el resultado:</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;AUTHELIA_JWT_SECRET=</span><span style="color:#66d9ef">$(</span>openssl rand -hex 32<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;AUTHELIA_SESSION_SECRET=</span><span style="color:#66d9ef">$(</span>openssl rand -hex 32<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;AUTHELIA_STORAGE_ENCRYPTION_KEY=</span><span style="color:#66d9ef">$(</span>openssl rand -hex 32<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;AUTHELIA_OIDC_HMAC_SECRET=</span><span style="color:#66d9ef">$(</span>openssl rand -base64 48<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LLDAP_ADMIN_PASSWORD</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;LLDAP_ADMIN_PASSWORD=Pass_generada_en_la_conf_de_lldap&#34;</span>
+</span></span></code></pre></div><p>Y los añadimos a nuestro fichero .env:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># cat .env:</span>
+</span></span><span style="display:flex;"><span>AUTHELIA_JWT_SECRET<span style="color:#f92672">=</span>c8207bb043e77a53ba096497877cc13a9af82d7e229454cd2a4dd04c956653b0
+</span></span><span style="display:flex;"><span>AUTHELIA_SESSION_SECRET<span style="color:#f92672">=</span>904c93860b0e66e43124d0ad62c52ec990c099177dfbfd3c29d681b7888c0709
+</span></span><span style="display:flex;"><span>AUTHELIA_STORAGE_ENCRYPTION_KEY<span style="color:#f92672">=</span>05990b793ee23f896d151121645c2f57cf0f594e881f96c5cc1936fbec7e4546
+</span></span><span style="display:flex;"><span>LLDAP_ADMIN_PASSWORD<span style="color:#f92672">=</span>6LbWYgj9sn3EZyIP6KTC
+</span></span><span style="display:flex;"><span>AUTHELIA_OIDC_HMAC_SECRET<span style="color:#f92672">=</span>zjGQ1ZGejeRJghaEqcQA2iykIE9et6INn6ZNLrWTigl3ORNBYczgXZomETXTFXrY
+</span></span></code></pre></div><p>Docker-compose de oCIS. Añadimos las siguientes variables de entorno:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># --- OIDC / Authelia ---</span>
+</span></span><span style="display:flex;"><span>      OCIS_EXCLUDE_RUN_SERVICES: <span style="color:#e6db74">&#34;idp&#34;</span>
+</span></span><span style="display:flex;"><span>      WEB_OIDC_CLIENT_ID: <span style="color:#e6db74">&#39;ocis&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_ISSUER: <span style="color:#e6db74">&#39;https://auth.midominio.com&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_REWRITE_WELLKNOWN: <span style="color:#e6db74">&#39;true&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: <span style="color:#e6db74">&#39;none&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_ACCOUNTS: <span style="color:#e6db74">&#39;true&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_USERNAME: <span style="color:#e6db74">&#39;preferred_username&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_EMAIL: <span style="color:#e6db74">&#39;email&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME: <span style="color:#e6db74">&#39;name&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_GROUPS: <span style="color:#e6db74">&#39;groups&#39;</span>
+</span></span></code></pre></div><h3 id="fichero-de-configuración-de-authelia">Fichero de configuración de Authelia<a hidden class="anchor" aria-hidden="true" href="#fichero-de-configuración-de-authelia">#</a></h3>
+<p>Aquí añadimos la configuración base y los clientes necesarios:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>╰─ cat config/configuration.yml              
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># AUTHELIA - CONFIGURACIÓN PRINCIPAL (compatible 4.38+)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LLDAP + SQLite + TOTP + Traefik (ficheros)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>theme: dark
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server:
+</span></span><span style="display:flex;"><span>  address: tcp://0.0.0.0:9091/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>log:
+</span></span><span style="display:flex;"><span>  level: debug
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># level: debug  # Descomenta para depurar</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>totp:
+</span></span><span style="display:flex;"><span>  issuer: midominio.com
+</span></span><span style="display:flex;"><span>  period: <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>  skew: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># AUTENTICACIÓN - LLDAP</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>authentication_backend:
+</span></span><span style="display:flex;"><span>  password_reset:
+</span></span><span style="display:flex;"><span>    disable: false
+</span></span><span style="display:flex;"><span>  refresh_interval: 1m
+</span></span><span style="display:flex;"><span>  ldap:
+</span></span><span style="display:flex;"><span>    implementation: custom
+</span></span><span style="display:flex;"><span>    address: ldap://lldap:3890
+</span></span><span style="display:flex;"><span>    timeout: 5s
+</span></span><span style="display:flex;"><span>    start_tls: false
+</span></span><span style="display:flex;"><span>    base_dn: dc<span style="color:#f92672">=</span>midominio,dc<span style="color:#f92672">=</span>com
+</span></span><span style="display:flex;"><span>    additional_users_dn: ou<span style="color:#f92672">=</span>people
+</span></span><span style="display:flex;"><span>    users_filter: <span style="color:#f92672">(</span>&amp;<span style="color:#f92672">({</span>username_attribute<span style="color:#f92672">}={</span>input<span style="color:#f92672">})(</span>objectClass<span style="color:#f92672">=</span>person<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>    additional_groups_dn: ou<span style="color:#f92672">=</span>groups
+</span></span><span style="display:flex;"><span>    groups_filter: <span style="color:#f92672">(</span>member<span style="color:#f92672">={</span>dn<span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span>    user: uid<span style="color:#f92672">=</span>admin,ou<span style="color:#f92672">=</span>people,dc<span style="color:#f92672">=</span>midominio,dc<span style="color:#f92672">=</span>com
+</span></span><span style="display:flex;"><span>    password: <span style="color:#e6db74">${</span>LLDAP_ADMIN_PASSWORD<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    attributes:
+</span></span><span style="display:flex;"><span>      username: uid
+</span></span><span style="display:flex;"><span>      group_name: cn
+</span></span><span style="display:flex;"><span>      mail: mail
+</span></span><span style="display:flex;"><span>      display_name: displayName
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># CONTROL DE ACCESO</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>access_control:
+</span></span><span style="display:flex;"><span>  default_policy: deny
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  rules:
+</span></span><span style="display:flex;"><span>    - domain: auth.midominio.com
+</span></span><span style="display:flex;"><span>      policy: bypass
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    - domain: cloud.midominio.com
+</span></span><span style="display:flex;"><span>      policy: two_factor
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># - domain: blog.midominio.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#   policy: one_factor</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># - domain: outline.midominio.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#   policy: two_factor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#   subject:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#     - &#34;group:admins&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># SESIONES</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>session:
+</span></span><span style="display:flex;"><span>  secret: <span style="color:#e6db74">${</span>AUTHELIA_SESSION_SECRET<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>  cookies:
+</span></span><span style="display:flex;"><span>    - name: authelia_session
+</span></span><span style="display:flex;"><span>      domain: midominio.com
+</span></span><span style="display:flex;"><span>      authelia_url: https://auth.midominio.com
+</span></span><span style="display:flex;"><span>      expiration: 1y     <span style="color:#75715e"># sesión dura 1 año</span>
+</span></span><span style="display:flex;"><span>      inactivity: 6M     <span style="color:#75715e"># se cierra solo si no usas nada en 6 meses</span>
+</span></span><span style="display:flex;"><span>      remember_me: 1y    <span style="color:#75715e"># cookie remember_me dura 1 año</span>
+</span></span><span style="display:flex;"><span>  redis:
+</span></span><span style="display:flex;"><span>    host: authelia-redis
+</span></span><span style="display:flex;"><span>    port: <span style="color:#ae81ff">6379</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ALMACENAMIENTO - SQLite</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>storage:
+</span></span><span style="display:flex;"><span>  encryption_key: <span style="color:#e6db74">${</span>AUTHELIA_STORAGE_ENCRYPTION_KEY<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>  local:
+</span></span><span style="display:flex;"><span>    path: /config/db.sqlite3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># NOTIFICADOR - Solo uno activo a la vez</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Opción A: filesystem (para pruebas, sin SMTP) &lt;- ACTIVO AHORA</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Opción B: SMTP (descomenta cuando tengas SMTP listo)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>notifier:
+</span></span><span style="display:flex;"><span>  disable_startup_check: false
+</span></span><span style="display:flex;"><span>  filesystem:
+</span></span><span style="display:flex;"><span>    filename: /config/notifications.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --- Opción B: SMTP (comenta el filesystem de arriba si activas esto) ---</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># notifier:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   smtp:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     username: tu@email.com</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     password: ${AUTHELIA_SMTP_PASSWORD}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     host: smtp.gmail.com</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     port: 587</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     sender: &#34;Authelia &lt;authelia@midominio.com&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     subject: &#34;[Authelia] {title}&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#     startup_check_address: tu@email.com</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># JWT</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>identity_validation:
+</span></span><span style="display:flex;"><span>  reset_password:
+</span></span><span style="display:flex;"><span>    jwt_secret: <span style="color:#e6db74">${</span>AUTHELIA_JWT_SECRET<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># OIDC - Provider para oCIS</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">###############################################################################</span>
+</span></span><span style="display:flex;"><span>identity_providers:
+</span></span><span style="display:flex;"><span>  oidc:
+</span></span><span style="display:flex;"><span>    access_token_lifespan: 1h
+</span></span><span style="display:flex;"><span>    authorize_code_lifespan: 1m
+</span></span><span style="display:flex;"><span>    id_token_lifespan: 1h
+</span></span><span style="display:flex;"><span>    refresh_token_lifespan: 90d
+</span></span><span style="display:flex;"><span>    hmac_secret: <span style="color:#e6db74">${</span>AUTHELIA_OIDC_HMAC_SECRET<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    cors:
+</span></span><span style="display:flex;"><span>      endpoints:
+</span></span><span style="display:flex;"><span>        - authorization
+</span></span><span style="display:flex;"><span>        - token
+</span></span><span style="display:flex;"><span>        - revocation
+</span></span><span style="display:flex;"><span>        - introspection
+</span></span><span style="display:flex;"><span>        - userinfo
+</span></span><span style="display:flex;"><span>    jwks:
+</span></span><span style="display:flex;"><span>      - key: |
+</span></span><span style="display:flex;"><span>          -----BEGIN PRIVATE KEY-----
+</span></span><span style="display:flex;"><span>          MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDOI9Y/nQssjJSD
+</span></span><span style="display:flex;"><span>          /sYc3/agPGpyPWKoFAJw3iGQc8+cxpGS6QELAGASYBPbq11xQOMbMe5YEe2U3zJy
+</span></span><span style="display:flex;"><span>          n/b8heXqRqik79FC3YiO4YaUDz1OWzUnpEcBWeDmEqKSTGPoR0EEiu9u7orM0kX8
+</span></span><span style="display:flex;"><span>          j3uLGz4uHPWSrrTZtoipGADm4yrHk3/GSH9ubC2s8zQVJ47l/0VX7pzNDakCBMDJ
+</span></span><span style="display:flex;"><span>          RlNTGb9Y5b1/aMej6LGkZXAzchdnj3ZnzcVgC2kKQg21fG5xx3SPIZ56BMXW8On0
+</span></span><span style="display:flex;"><span>          FeHi/OPPSYhhbaMVav6uWckcCgab469tjcitk3eLFfyWSRxV29KlH5gKu2yvI6Ia
+</span></span><span style="display:flex;"><span>          4R0ynbb/AgMBAAECggEAFDxlYFpIygdE3w5IIXaE7ebwZiWLhUdtk+nibp1H0LKX
+</span></span><span style="display:flex;"><span>          gM35ybwwMi2XVXWllyQRB07oAGJGKdqdR65XXyO/1bc4//QA3WkE6k3OWcODN6lx
+</span></span><span style="display:flex;"><span>          duJEDChoEP3cUrNIDXnNMqZ26bNmEcRElY36SUYT3Q//tXYMD+FA2iSelgvP28Z8
+</span></span><span style="display:flex;"><span>          PzxxJJ0KJ2Ay9muenR+6rJjT7eaE2Y4oiASTrHjG1A04WHHKQ4ip3VznRaqRMzO6
+</span></span><span style="display:flex;"><span>          HsjdeCwu2WCsuQjwSkbUd3YfjSm4Fyky8abUNUbGyyVJXMJ9hp8A9u7dR6l5YsJ1
+</span></span><span style="display:flex;"><span>          AG1Kd/SNgp9H7lf+cyGplMFHZBnRruMfWygHx9j2DQKBgQD5km3p8wFu9kUk7h8/
+</span></span><span style="display:flex;"><span>          ATchPvWAnv10YZDiXtKdSl7FVdDx+yW0c+adc8Ujomfu+C0H/os8lFGCwDvdN33D
+</span></span><span style="display:flex;"><span>          ngZTlcnGZUJeXNbCT/aXqzA/TIt+8PnHjmRwSmNPxaUbf6+otEqM6Fspgz4kAn1s
+</span></span><span style="display:flex;"><span>          WFPMQGCwnEoJFLP2z938aKYB5QKBgQDTcwka8PltbCfoaRVcxsj8EvHOqBYvLB8H
+</span></span><span style="display:flex;"><span>          iJcEwpRd4E0k5vXAWSLAfK1ns6UcucIT54ocCyXpzu10crUZcIdrz4S6hjwOqqgM
+</span></span><span style="display:flex;"><span>          RTVHyVaT67CWQqNlsyIwKozWoMtrgjxFzFTEES51LcDI2sl8u8+U+HVIlnH0asDq
+</span></span><span style="display:flex;"><span>          A3iisaAXEwKBgQDPquWk5x0JPQkaCr6bSaKbGm1kYmeaYNkTVD3CvjCP2bGsuQON
+</span></span><span style="display:flex;"><span>          3WdHGx8uYKRFN+MYpNktRmlw+A6YK+WNUcAH6zrjyDxqkqvtMmaJm9vgwAvPTCs7
+</span></span><span style="display:flex;"><span>          vyOaQHvU1Cxn7l63bZYfG/VHXLrncd71uaW47tTGALamScDaHeukbVu9dQKBgDFR
+</span></span><span style="display:flex;"><span>          pZAJIMRq86v7xqXLH9nbuVbQUcxS6DHjpAXSNLToulWfITbqE3b+HZwQhLR8h04J
+</span></span><span style="display:flex;"><span>          NWdxGji8sRn2H1N9sbhtwLGY2a06FNQ32EOULIN398o0ZNQ1wgWmBw+QlaHP0Ksf
+</span></span><span style="display:flex;"><span>          C65nq4RdVZgDn/dd/v7qLMDvhkjSFYj/okWgVIzNAoGBAPh+DsV/Lo9JDsFhUiHq
+</span></span><span style="display:flex;"><span>          KEEhOS5GaljhqTLhRt8QA56vIXsWc74t+leP9/pZHWa3p06kbeqzKCV2Xa+3wLUH
+</span></span><span style="display:flex;"><span>          AyCavZboq2NLQZVvE3D6TlST3gSY6bRp9pzRe/GC89VgTjQWU2/PcICgtKxbD8wS
+</span></span><span style="display:flex;"><span>          AnlBZr6T5/VrSs8oOOBtSGE6
+</span></span><span style="display:flex;"><span>          -----END PRIVATE KEY-----
+</span></span><span style="display:flex;"><span>    clients:
+</span></span><span style="display:flex;"><span>      - client_id: ocis
+</span></span><span style="display:flex;"><span>        client_name: ownCloud Infinite Scale
+</span></span><span style="display:flex;"><span>        public: true
+</span></span><span style="display:flex;"><span>        authorization_policy: two_factor
+</span></span><span style="display:flex;"><span>        redirect_uris:
+</span></span><span style="display:flex;"><span>          - https://cloud.midominio.com/oidc-callback.html
+</span></span><span style="display:flex;"><span>          - https://cloud.midominio.com/
+</span></span><span style="display:flex;"><span>        scopes:
+</span></span><span style="display:flex;"><span>          - openid
+</span></span><span style="display:flex;"><span>          - profile
+</span></span><span style="display:flex;"><span>          - email
+</span></span><span style="display:flex;"><span>          - groups
+</span></span><span style="display:flex;"><span>        userinfo_signed_response_alg: none
+</span></span></code></pre></div><p><strong>Clave JWKS</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>openssl genrsa -out /tmp/oidc_private.pem <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>cat /tmp/oidc_private.pem
+</span></span></code></pre></div><p>Y la añadimos a nuestro fichero configuration.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jwks:
+</span></span><span style="display:flex;"><span>      - key: |
+</span></span><span style="display:flex;"><span>          -----BEGIN PRIVATE KEY-----
+</span></span><span style="display:flex;"><span>          MIIEvgIBADA... <span style="color:#f92672">(</span>clave generada<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>          -----END PRIVATE KEY-----
+</span></span></code></pre></div><p><strong>Es muy importante pegar la clave JWKS con exactamente 10 espacios de indentación en cada línea del PEM</strong>.</p>
+<h3 id="configuración-de-usuario-de-authelia">Configuración de usuario de Authelia<a hidden class="anchor" aria-hidden="true" href="#configuración-de-usuario-de-authelia">#</a></h3>
+<p>Accedemos a nuestro authelia desde <a href="https://auth.midominio.com">https://auth.midominio.com</a> con nuestro usuario de ldap. Según nuestro fichero de configuración de authelia, la política de acceso a cloud.midominio.com es de doble factor, por lo que debemos configurar uno.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    - domain: cloud.midominio.com
+</span></span><span style="display:flex;"><span>      policy: two_factor
+</span></span></code></pre></div><p>En mi caso, he elegido passkey como doble factor, porque me resulta mucho más sencillo a la hora de acceder desde mi app móvil. En <strong>Credenciales WebAuthn</strong> se crean las passkeys, aunque podemos usar OTP si queremos una aplicación tipo Google Authenticator o Aegis.</p>
+<p><img alt="owncloud-3.png" loading="lazy" src="/posts/owncloud/owncloud-3.png"></p>
+<h3 id="clientes-de-escritorio-y-android-para-ocis">Clientes de escritorio y Android para oCIS<a hidden class="anchor" aria-hidden="true" href="#clientes-de-escritorio-y-android-para-ocis">#</a></h3>
+<p>Clientes para aplicación de escritorio y Android. Estas aplicaciones llevan el client_id fijo, por lo que debemos añadirlo con los datos necesarios, siguiendo las instrucciones de la <a href="https://www.authelia.com/integration/openid-connect/clients/ocis/">web de Authelia</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>      - client_id: <span style="color:#e6db74">&#39;xdXOt13JKxym1B1QcEncf2XDkLAexMBFwiT9j6EfhhHFJhs2KM9jbjTmf8JBXE69&#39;</span>
+</span></span><span style="display:flex;"><span>        client_name: <span style="color:#e6db74">&#39;ownCloud Infinite Scale (Desktop Client)&#39;</span>
+</span></span><span style="display:flex;"><span>        client_secret: <span style="color:#e6db74">&#39;UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh&#39;</span>
+</span></span><span style="display:flex;"><span>        public: false
+</span></span><span style="display:flex;"><span>        authorization_policy: <span style="color:#e6db74">&#39;two_factor&#39;</span>
+</span></span><span style="display:flex;"><span>        require_pkce: true
+</span></span><span style="display:flex;"><span>        pkce_challenge_method: <span style="color:#e6db74">&#39;S256&#39;</span>
+</span></span><span style="display:flex;"><span>        scopes:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;openid&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;offline_access&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;groups&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;profile&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;email&#39;</span>
+</span></span><span style="display:flex;"><span>        redirect_uris:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;http://127.0.0.1&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;http://localhost&#39;</span>
+</span></span><span style="display:flex;"><span>        response_types:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;code&#39;</span>
+</span></span><span style="display:flex;"><span>        grant_types:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;authorization_code&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;refresh_token&#39;</span>
+</span></span><span style="display:flex;"><span>        access_token_signed_response_alg: <span style="color:#e6db74">&#39;none&#39;</span>
+</span></span><span style="display:flex;"><span>        userinfo_signed_response_alg: <span style="color:#e6db74">&#39;none&#39;</span>
+</span></span><span style="display:flex;"><span>        token_endpoint_auth_method: <span style="color:#e6db74">&#39;client_secret_basic&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - client_id: <span style="color:#e6db74">&#39;e4rAsNUSIUs0lF4nbv9FmCeUkTlV9GdgTLDH1b5uie7syb90SzEVrbN7HIpmWJeD&#39;</span>
+</span></span><span style="display:flex;"><span>        client_name: <span style="color:#e6db74">&#39;ownCloud Infinite Scale (Android)&#39;</span>
+</span></span><span style="display:flex;"><span>        client_secret: <span style="color:#e6db74">&#39;dInFYGV33xKzhbRmpqQltYNdfLdJIfJ9L5ISoKhNoT9qZftpdWSP71VrpGR9pmoD&#39;</span>
+</span></span><span style="display:flex;"><span>        public: false
+</span></span><span style="display:flex;"><span>        authorization_policy: <span style="color:#e6db74">&#39;two_factor&#39;</span>
+</span></span><span style="display:flex;"><span>        require_pkce: true
+</span></span><span style="display:flex;"><span>        pkce_challenge_method: <span style="color:#e6db74">&#39;S256&#39;</span>
+</span></span><span style="display:flex;"><span>        redirect_uris:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;oc://android.owncloud.com&#39;</span>
+</span></span><span style="display:flex;"><span>        scopes:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;openid&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;offline_access&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;groups&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;profile&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;email&#39;</span>
+</span></span><span style="display:flex;"><span>        response_types:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;code&#39;</span>
+</span></span><span style="display:flex;"><span>        grant_types:
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;authorization_code&#39;</span>
+</span></span><span style="display:flex;"><span>          - <span style="color:#e6db74">&#39;refresh_token&#39;</span>
+</span></span><span style="display:flex;"><span>        access_token_signed_response_alg: <span style="color:#e6db74">&#39;none&#39;</span>
+</span></span><span style="display:flex;"><span>        userinfo_signed_response_alg: <span style="color:#e6db74">&#39;none&#39;</span>
+</span></span><span style="display:flex;"><span>        token_endpoint_auth_method: <span style="color:#e6db74">&#39;client_secret_post&#39;</span>
+</span></span></code></pre></div><h3 id="inicio-de-ocis">Inicio de oCIS<a hidden class="anchor" aria-hidden="true" href="#inicio-de-ocis">#</a></h3>
+<p>Volvemos a Unraid y verificamos que las nuevas variables de entorno de Authelia de oCIS estén correctamente:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># --- OIDC / Authelia ---</span>
+</span></span><span style="display:flex;"><span>      OCIS_EXCLUDE_RUN_SERVICES: <span style="color:#e6db74">&#34;idp&#34;</span>
+</span></span><span style="display:flex;"><span>      WEB_OIDC_CLIENT_ID: <span style="color:#e6db74">&#39;ocis&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_ISSUER: <span style="color:#e6db74">&#39;https://auth.midominio.com&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_REWRITE_WELLKNOWN: <span style="color:#e6db74">&#39;true&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: <span style="color:#e6db74">&#39;none&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_ACCOUNTS: <span style="color:#e6db74">&#39;true&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_USERNAME: <span style="color:#e6db74">&#39;preferred_username&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_EMAIL: <span style="color:#e6db74">&#39;email&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME: <span style="color:#e6db74">&#39;name&#39;</span>
+</span></span><span style="display:flex;"><span>      PROXY_AUTOPROVISION_CLAIM_GROUPS: <span style="color:#e6db74">&#39;groups&#39;</span>
+</span></span></code></pre></div><p>Arrancamos nuestro contenedor oCIS y hacemos el primer inicio de sesión con mi usuario.</p>
+<p><img alt="owncloud-2.png" loading="lazy" src="/posts/owncloud/owncloud-2.png"></p>
+<p>Después de aceptar vemos que nos crea nuestro primer usuario y ya podemos trabajar con nuestro nuevo Owncloud oCIS.</p>
 <h3 id="comandos-útliles-para-verificar-funcionamiento">Comandos útliles para verificar funcionamiento<a hidden class="anchor" aria-hidden="true" href="#comandos-útliles-para-verificar-funcionamiento">#</a></h3>
 <p>Para que estos comandos funcionen, es importante que en el docker-compose modifiquemos el loglevel:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Logs</span>
@@ -510,21 +783,24 @@ Por defecto oCIS solo indexa nombres de archivo y contenido de texto plano. Con 
 </span></span></code></pre></div><hr>
 <p>Fuentes:<br>
 <a href="https://doc.owncloud.com/ocis/next/depl-examples/ubuntu-compose/ubuntu-compose-prod.html#download-and-transfer-the-example">Documentación Owncloud</a><br>
-<a href="https://owncloud.dev/ocis/guides/ocis-local-docker/">Owncloud oCIS en docker</a></p>
+<a href="https://owncloud.dev/ocis/guides/ocis-local-docker/">Owncloud oCIS en docker</a><br>
+<a href="https://www.authelia.com/integration/openid-connect/clients/ocis/">Authelia y oCIS</a><br>
+<a href="https://helgeklein.com/blog/authelia-lldap-authentication-sso-user-management-password-reset-for-home-networks/#what-is-lldap">Authelia y ldap</a><br>
+<a href="https://helgeklein.com/blog/owncloud-infinite-scale-with-openid-connect-authentication-for-home-networks/">Owncloud con OpenID</a></p>
 
 
   </div>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
+      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by
