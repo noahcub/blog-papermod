@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Backups a USB automático | Las notas de Noah</title>
 <meta name="keywords" content="Admin">
 <meta name="description" content="Backup carpetas USB automaticamente al conectar al equipo">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/backup-usb/">
+<link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/backup-usb/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.lasnotasdenoah.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.lasnotasdenoah.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/backup-usb/">
+<link rel="alternate" hreflang="en" href="https://blog.lasnotasdenoah.com/posts/backup-usb/">
 <noscript>
     <style>
         #theme-toggle,
@@ -70,13 +70,76 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://blog.lasnotasdenoah.com/posts/backup-usb/">
+  <meta property="og:site_name" content="Las notas de Noah">
+  <meta property="og:title" content="Backups a USB automático">
+  <meta property="og:description" content="Backup carpetas USB automaticamente al conectar al equipo">
+  <meta property="og:locale" content="es-es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-01-13T08:00:00+01:00">
+    <meta property="article:modified_time" content="2024-01-13T08:00:00+01:00">
+    <meta property="article:tag" content="Admin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Backups a USB automático">
+<meta name="twitter:description" content="Backup carpetas USB automaticamente al conectar al equipo">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.lasnotasdenoah.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Backups a USB automático",
+      "item": "https://blog.lasnotasdenoah.com/posts/backup-usb/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Backups a USB automático",
+  "name": "Backups a USB automático",
+  "description": "Backup carpetas USB automaticamente al conectar al equipo",
+  "keywords": [
+    "Admin"
+  ],
+  "articleBody": "Script de backup con rsync Con este pequeño script hacemos el backup del USB del trabajo a nuestro disco duro:\nOrigen: /ruta origen\nDestino: /ruta destino\nOJO - cuando tenemos espacios en los nombres hay que usar ‘' para que el script sepa que es un espacio\n#!/bin/bash \u003c\u003c 'Comment' Opciones rsync: --delete: borrar los archivos que fueron borrados de la carpeta origen en la carpeta destino -a: mantiene el usuario, grupo, permisos, fecha y hora, así como los enlaces simbólicos -v: la información imprimida durante la ejecución del programa será mucho más detallada, -h: nos da las tasas de transferencia y el tamaño de los archivos en unidades razonables -u: evitar copiar archivos que ya tenemos en la carpeta de destino que no has sido modificados en la carpeta de origen Comment rsync --progress --stats --delete -avhiu /media/user/Nuevo\\ vol/Origen /home/user/Destino Configuración con reglas UDEV Primero debemos obtener el idProduct y el idVendor del nuestro usb\nlsusb Bus 002 Device 003: ID 0781:5581 SanDisk Corp. Ultra Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub idVendor = 0781\nidProduct = 5581\nCon estos datos creamos un fichero .rules:\nsudo nano /etc/udev/rules.d/10.backup_usb.rules SUBSYSTEM==\"block\", ACTION==\"add\", ATTRS{idVendor}==\"0781\", ATTRS{idProduct}==\"5581\", SYMLINK+=\"external\", RUN+=\"/home/user/backup_usb.sh\" Por último, recargamos las reglas udev para que el sistema ejecute el script al enchufar nuestro pendrive:\nudevadm control --reload Este método funcionaria de maravilla para usb normales. El problema es que mi usb del trabajo está encritado con bitlocker y cuando se ejecuta la regla udev todavía no está montada la partción del usb porque antes tenemos que introducir la contraseña de bitlocker, por lo que no funciona mi backup automático.\nConfiguración con systemd La solución al problema anterior es crear un servicio systemd que ejecute mi script de backup cuando se monta la partición que nos interesa.\nCreamos nuestro backup_usb.service en /home/user/.config/systemd/user:\ncat backup_usb.service [Unit] Description=Backup pendrive trabajo Requires=media-label-user.mount After=media-label-user.mount [Service] ExecStart=/home/user/Apps/backup_usb.sh [Install] WantedBy=media-label-user.mount Para buscar las media label:\nsudo systemctl list-units -t mount Aqui aparecerá una etiqueta similar a esta entre otras muchas:\nmedia-user-Work.mount Por último habilitamos nuestro servicio:\nsystemctl --user enable backup_usb.service Al crear el enlace simbólico nos dirá el sistema que estamos creando un servicio con una dependencia que no existe:\nUnit /home/user/.config/systemd/user/backup_usb.service is added as a dependency to a non-existent unit media-user-Work.mount. No importa porque cuando se ejecute el servicio al insertar el pendrive debería funcionar correctamente ya que la unidad se crea en ese momento.\nFuentes:\nSystemd\nhttps://askubuntu.com/questions/25071/how-to-run-a-script-when-a-specific-flash-drive-is-mounted\n",
+  "wordCount" : "404",
+  "inLanguage": "en",
+  "datePublished": "2024-01-13T08:00:00+01:00",
+  "dateModified": "2024-01-13T08:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.lasnotasdenoah.com/posts/backup-usb/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Las notas de Noah",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.lasnotasdenoah.com/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
+            <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -102,27 +165,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/search/" title="Buscar (Alt &#43; /)" accesskey=/>
+                <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/posts/" title="Publicaciones">
+                <a href="https://blog.lasnotasdenoah.com/posts/" title="Publicaciones">
                     <span>Publicaciones</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="Archivo">
+                <a href="https://blog.lasnotasdenoah.com/archives/" title="Archivo">
                     <span>Archivo</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categorías">
+                <a href="https://blog.lasnotasdenoah.com/categories/" title="Categorías">
                     <span>Categorías</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Etiquetas">
+                <a href="https://blog.lasnotasdenoah.com/tags/" title="Etiquetas">
                     <span>Etiquetas</span>
                 </a>
             </li>
@@ -224,14 +287,14 @@ idProduct = 5581</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/admin/">Admin</a></li>
+      <li><a href="https://blog.lasnotasdenoah.com/tags/admin/">Admin</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/">Las notas de Noah</a></span> · 
+        <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
     <span>
         Powered by
