@@ -147,6 +147,22 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Authelia
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Configuración de clientes en Authelia Ya tenemos configurado nuestro sistema de autenticación a través de Authelia que dejamos bastante detallado en el post de Owncloud oCIS.
+Añadir cliente nuevo en Authelia Vamos a añadir otro cliente para Immich.
+Siguiendo la documentación oficial de Authelia creamos un nuevo cliente modificando nuestro fichero configuration.yml:
+identity_providers: oidc: ## The other portions of the mandatory OpenID Connect 1.0 configuration go here. ## See: https://www.authelia.com/c/oidc clients: - client_id: &#39;immich&#39; client_name: &#39;immich&#39; client_secret: &#39;$pbkdf2-sha512$310000$c8p78n7pUMln0jzvd4aK4Q$JNRBzwAo0ek5qKn50cFzzvE9RXV88h1wJn5KGiHrD0YKtZaR/nCb2CJPOsKaPK0hjf.9yHxzQGZziziccp6Yng&#39; # The digest of &#39;insecure_secret&#39;. public: false authorization_policy: &#39;two_factor&#39; require_pkce: false pkce_challenge_method: &#39;&#39; redirect_uris: - &#39;https://immich.midominio.com/auth/login&#39; - &#39;https://immich.midominio.com/user-settings&#39; - &#39;app.immich:///oauth-callback&#39; scopes: - &#39;openid&#39; - &#39;profile&#39; - &#39;email&#39; response_types: - &#39;code&#39; grant_types: - &#39;authorization_code&#39; access_token_signed_response_alg: &#39;none&#39; userinfo_signed_response_alg: &#39;none&#39; token_endpoint_auth_method: &#39;client_secret_post&#39; En este punto, la única parte complicada es el client_secret. Vamos a generarlo:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-10 08:00:00 +0100 +0100'>May 10, 2026</span></footer>
+  <a class="entry-link" aria-label="post link to Authelia" href="https://blog.lasnotasdenoah.com/posts/authelia/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Instalación de Owncloud oCIS en Unraid
     </h2>
   </header>
@@ -289,20 +305,6 @@ Nos conectamos por ssh al router y ejecutamos el script de instalación:
   </div>
   <footer class="entry-footer"><span title='2023-10-20 09:00:00 +0100 +0100'>October 20, 2023</span></footer>
   <a class="entry-link" aria-label="post link to Nextdns" href="https://blog.lasnotasdenoah.com/posts/nextdns/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">KVM y VirtManager
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Instalación de Entware en firmware Merlin Fedora con Gnome trae instalado por defecto Gnome-Boxes. La verdad es que está genial pero tiene algunas carencias, como por ejemplo la conectividad de red.
-Con Gnome Boxes solo podemos acceder a nuestra máquina virtual desde el host pero no podemos acceder desde la red local o contactar con la red local desde la máquina virtual. Para eso vamos a instalar y configurar KVM Y Virt Manger.
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-07-19 18:00:00 +0100 +0100'>July 19, 2023</span></footer>
-  <a class="entry-link" aria-label="post link to KVM y VirtManager" href="https://blog.lasnotasdenoah.com/posts/kvm-virtmanager/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
