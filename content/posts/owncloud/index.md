@@ -167,7 +167,7 @@ http:
         customResponseHeaders:
           X-Frame-Options: "SAMEORIGIN"
           Content-Security-Policy: "default-src 'self' https://auth.midominio.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://auth.midominio.com; frame-ancestors 'self'"
-          Content-Security-Policy: ""
+          #Content-Security-Policy: ""
 ```
 
 ### Primer arranque
