@@ -65,7 +65,7 @@ services:
       OCIS_INSECURE: "true"
 
       # Configuración para que no se cierre sesión tan a menudo
-      OCIS_ACCESS_TOKEN_LIFETIME: 1h
+      OCIS_ACCESS_TOKEN_LIFETIME: 24h
       OCIS_REFRESH_TOKEN_LIFETIME: 2160h
        
     volumes:
@@ -98,7 +98,7 @@ Después de configurar Authelia añadiremos las siguientes variables al compose:
       WEB_OIDC_CLIENT_ID: 'ocis'
       PROXY_OIDC_ISSUER: 'https://auth.midominio.com'
       PROXY_OIDC_REWRITE_WELLKNOWN: 'true'
-      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'none'
+      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'jwt'
       PROXY_AUTOPROVISION_ACCOUNTS: 'true'
       PROXY_AUTOPROVISION_CLAIM_USERNAME: 'preferred_username'
       PROXY_AUTOPROVISION_CLAIM_EMAIL: 'email'
@@ -136,6 +136,12 @@ SMTP_INSECURE=false
 ### Traefik
 Por último, creamos nuestro fichero estático de traefik para nuestro dominio:
 
+Importante: Durante subidas grandes, Traeﬁk puede cerrar la conexión por timeout. En tu ocis.yml hay que tenerlo en cuenta:
+```bash
+serversTransport: ocis-transport
+responseHeaderTimeout: 0s # 0 = sin límite
+```
+
 ```bash
 # cat ocis.yml                     
 http:
@@ -148,8 +154,9 @@ http:
       tls: {}   # o simplemente ‘tls: true’ en v3
       middlewares:
         - geoblock-es
-        - crowdsec-bouncer-noappsec # IMPORTANTE USAR EL MIDDLEWARE NOAPPSEC PORQUE SINO ME DA PROBLEMAS EN LAS REDIRECCIONES DEL 2FA
+        - crowdsec-bouncer-noappsec
         - ocis-headers
+        - ocis-upload-buffer        # ← AÑADIR
 
   services:
     cloud:
@@ -157,8 +164,16 @@ http:
         servers:
           - url: "http://100.105.100.10:9200"
         passHostHeader: true
+        responseForwarding:
+          flushInterval: 100ms      # ← AÑADIR para streaming
 
   middlewares:
+    ocis-upload-buffer:
+      buffering:
+        maxRequestBodyBytes: 0      # sin límite en subidas
+        memRequestBodyBytes: 2097152
+        retryExpression: "IsNetworkError() && Attempts() < 3"
+
     ocis-headers:
       headers:
         customRequestHeaders:
@@ -167,7 +182,6 @@ http:
         customResponseHeaders:
           X-Frame-Options: "SAMEORIGIN"
           Content-Security-Policy: "default-src 'self' https://auth.midominio.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://auth.midominio.com; frame-ancestors 'self'"
-          #Content-Security-Policy: ""
 ```
 
 ### Primer arranque
@@ -342,12 +356,26 @@ Docker-compose de oCIS. Añadimos las siguientes variables de entorno:
       WEB_OIDC_CLIENT_ID: 'ocis'
       PROXY_OIDC_ISSUER: 'https://auth.midominio.com'
       PROXY_OIDC_REWRITE_WELLKNOWN: 'true'
-      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'none'
+      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'jwt'
       PROXY_AUTOPROVISION_ACCOUNTS: 'true'
       PROXY_AUTOPROVISION_CLAIM_USERNAME: 'preferred_username'
       PROXY_AUTOPROVISION_CLAIM_EMAIL: 'email'
       PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME: 'name'
       PROXY_AUTOPROVISION_CLAIM_GROUPS: 'groups'
+```
+
+Al principio tenía configurado **PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD** mal, lo que provocaba que con cada fichero que se subia, se hacía una llamada al endpoint userinfo de Authelia. Para solucionarlo tenemos que hacer el siguiente cambio:
+```bash
+# Debemos cambiar en el docker-compose de oCIS:
+PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'none'
+# por
+PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'jwt'
+
+# y añadir a cada cliente de Authelia en configuration.yml lo siguiente:
+clients:
+  - client_id: ocis
+    # ...resto igual...
+    access_token_signed_response_alg: 'RS256'   # ← AÑADIR
 ```
 
 ### Fichero de configuración de Authelia
@@ -480,10 +508,11 @@ identity_validation:
 ###############################################################################
 identity_providers:
   oidc:
-    access_token_lifespan: 1h
-    authorize_code_lifespan: 1m
-    id_token_lifespan: 1h
-    refresh_token_lifespan: 90d
+    lifespans:
+      access_token: 24h
+      refresh_token: 90d
+      authorize_code: 1m
+      id_token: 24h
     hmac_secret: ${AUTHELIA_OIDC_HMAC_SECRET}
     cors:
       endpoints:
@@ -531,10 +560,17 @@ identity_providers:
           - https://cloud.midominio.com/oidc-callback.html
           - https://cloud.midominio.com/
         scopes:
-          - openid
-          - profile
-          - email
-          - groups
+          - 'openid'
+          - 'profile'
+          - 'email'
+          - 'groups'
+          - 'offline_access'
+        response_types:
+          - code
+        grant_types:
+          - 'authorization_code'
+          - 'refresh_token'
+        access_token_signed_response_alg: 'RS256'
         userinfo_signed_response_alg: none
 ```
 
@@ -568,13 +604,18 @@ En mi caso, he elegido passkey como doble factor, porque me resulta mucho más s
 
 ![owncloud-3.png](owncloud-3.png)
 
+
+**MUY IMPORTANTE - MUY IMPORTANTE - MUY IMPORTANTE** Definir una política adecuada de backups de la base de Authelia para no perder acceso a nuestras aplicaciones.
+
+
 ### Clientes de escritorio y Android para oCIS
 
 Clientes para aplicación de escritorio y Android. Estas aplicaciones llevan el client_id fijo, por lo que debemos añadirlo con los datos necesarios, siguiendo las instrucciones de la [web de Authelia](https://www.authelia.com/integration/openid-connect/clients/ocis/):
 ```bash
       - client_id: 'xdXOt13JKxym1B1QcEncf2XDkLAexMBFwiT9j6EfhhHFJhs2KM9jbjTmf8JBXE69'
         client_name: 'ownCloud Infinite Scale (Desktop Client)'
-        client_secret: 'UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh'
+#        client_secret: 'UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh' 
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$OVq2YVWmLGibRRqH98qtwA$tITLZACNq2j1f43vPH6fxkdP06rYhR3bLRXCG0mvm0U'
         public: false
         authorization_policy: 'two_factor'
         require_pkce: true
@@ -593,13 +634,15 @@ Clientes para aplicación de escritorio y Android. Estas aplicaciones llevan el 
         grant_types:
           - 'authorization_code'
           - 'refresh_token'
-        access_token_signed_response_alg: 'none'
+        access_token_signed_response_alg: 'RS256'   # ← AÑADIR
         userinfo_signed_response_alg: 'none'
         token_endpoint_auth_method: 'client_secret_basic'
 
+
       - client_id: 'e4rAsNUSIUs0lF4nbv9FmCeUkTlV9GdgTLDH1b5uie7syb90SzEVrbN7HIpmWJeD'
         client_name: 'ownCloud Infinite Scale (Android)'
-        client_secret: 'dInFYGV33xKzhbRmpqQltYNdfLdJIfJ9L5ISoKhNoT9qZftpdWSP71VrpGR9pmoD'
+#        client_secret: 'dInFYGV33xKzhbRmpqQltYNdfLdJIfJ9L5ISoKhNoT9qZftpdWSP71VrpGR9pmoD'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$sEHOFVA6UqdIq+3l8e7TtQ$sY7mai6PoZTV44l3DaBUdGyn4+YL8M7dIu1Um32FQyw'
         public: false
         authorization_policy: 'two_factor'
         require_pkce: true
@@ -617,10 +660,24 @@ Clientes para aplicación de escritorio y Android. Estas aplicaciones llevan el 
         grant_types:
           - 'authorization_code'
           - 'refresh_token'
-        access_token_signed_response_alg: 'none'
+#        access_token_signed_response_alg: 'none'
+        access_token_signed_response_alg: 'RS256'   # ← AÑADIR
         userinfo_signed_response_alg: 'none'
         token_endpoint_auth_method: 'client_secret_post'
 ```
+
+Al arrancar Authelia muestra warning por los client_secret de la aplicación de escritorio y de Android. No pasa nada por estar en texto plano porque así está definido pero podemos hashearlos para no recibir el warning:   
+
+Comando para hacer el hash:
+```bash
+docker exec authelia authelia crypto hash generate argon2 \
+  --password 'dInFYGV33xKzhbRmpqQltYNdfLdJIfJ9L5ISoKhNoT9qZftpdWSP71VrpGR9pmoD'
+
+# Salida
+Digest: $argon2id$v=19$m=65536,t=3,p=4$ZWAI68YRTbHNGjUWnLv/gA$eAltG2ylbCp+n1LTJpb4knPbcjMVwwVHBfBOUKYr01U
+```
+Este comando nos sirve para hacer el hash de cualquier secret.  
+
 
 ### Inicio de oCIS
 
@@ -633,7 +690,7 @@ Volvemos a Unraid y verificamos que las nuevas variables de entorno de Authelia 
       WEB_OIDC_CLIENT_ID: 'ocis'
       PROXY_OIDC_ISSUER: 'https://auth.midominio.com'
       PROXY_OIDC_REWRITE_WELLKNOWN: 'true'
-      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'none'
+      PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: 'jwt'
       PROXY_AUTOPROVISION_ACCOUNTS: 'true'
       PROXY_AUTOPROVISION_CLAIM_USERNAME: 'preferred_username'
       PROXY_AUTOPROVISION_CLAIM_EMAIL: 'email'
@@ -646,7 +703,6 @@ Arrancamos nuestro contenedor oCIS y hacemos el primer inicio de sesión con mi 
 ![owncloud-2.png](owncloud-2.png)
 
 Después de aceptar vemos que nos crea nuestro primer usuario y ya podemos trabajar con nuestro nuevo Owncloud oCIS.
-
 
 
 
@@ -698,6 +754,121 @@ Variables de entorno que carga oCIS:
 ```bash
 docker exec owncloud env
 ```
+
+Borrar las claves de redis:
+```bash
+# Borrar todas
+docker exec authelia-redis redis-cli FLUSHALL
+
+# Borrar solo las sesiones de Authelia:
+docker exec authelia-redis redis-cli --scan --pattern "authelia:*" | xargs docker
+
+# Despues reiniciamos Authelia para arranque limpio:
+docker restart authelia
+```
+
+### Configuración de Tailscale
+
+Como uso Tailscale para conectar traefik con oCIS tengo el problema que la conexión se hace por un servidor intermedio de tailscale.   
+Eso se notaba mogollón al hacer la carga de datos, que era superlenta.  
+
+Para garantizar que tenemos conexión directa vamos a abrir el puerto 41641 de tailscale.
+
+**Importante**: antes de configurar ufw tenemos que asegurarnos que el puerto 41641 está abierto en el firewall de nuestro vps:
+```bash
+sudo ufw allow 41641/udp
+sudo ufw reload
+sudo ufw status numbered
+# Verificamos que el puerto está abierto
+ss -ulnp | grep 41641
+```
+
+```bash
+➜  ~ tailscale status
+                                                           
+100.105.100.20  envy       noecubi@  linux    active; direct 192.168.10.220:41641, tx 695908 rx 783636         
+                                
+100.105.100.14  my-vps     noecubi@  linux    active; direct xx.xx.xx.xx:41641, tx 8194354248 rx 28761750016
+
+```
+Con esto la carga de nuestros datos aumenta de forma espectacular.
+
+
+### Solución de errores
+Después de toda la subida de datos veo que tengo un problema importante. El contenedor ocis tiene una carga muy elevada de procesamiento.   
+
+Eso es debido a que la cola NATS estaba corrupta.   
+
+
+NATS es el bus de mensajes interno de OCIS — es el sistema que usan todos los microservicios de OCIS para comunicarse entre sí.
+
+Cuando subes un archivo, OCIS no procesa todo de golpe — publica un evento en NATS ("archivo subido") y los distintos servicios internos (búsqueda, miniaturas, actividad, etc.) van consumiendo esos eventos a su ritmo.  
+Los datos de NATS que borraste eran solo esa cola de eventos pendientes — básicamente una lista de tareas pendientes. No contenían tus archivos ni tus metadatos, por eso borrarlos fue seguro.   
+El problema fue que al subir mucha información de golpe, la cola se llenó tanto que algunos archivos de bloque (.blk) se corrompieron o eliminaron antes de ser procesados, dejando referencias rotas que hacían que OCIS entrara en bucle intentando procesar eventos que ya no existían.   
+La consecuencia práctica de haberla borrado es que algunos archivos que subimos a oCIS puede que no aparezcan en los resultados de búsqueda.   
+
+Solución:
+```bash
+du -sh /mnt/user/Ocis-Files    
+
+# Salida
+du: cannot access '/mnt/user/Ocis-Files/ocis-data/nats/jetstream/$G/streams/KV_activitylog/msgs/152413.blk': No such file or directory
+du: cannot access '/mnt/user/Ocis-Files/ocis-data/nats/jetstream/$G/streams/KV_activitylog/msgs/151988.blk': No such file or directory
+du: cannot access '/mnt/user/Ocis-Files/ocis-data/nats/jetstream/$G/streams/KV_activitylog/msgs/151987.blk': No such file or directory
+du: cannot access '/mnt/user/Ocis-Files/ocis-data/nats/jetstream/$G/streams/KV_activitylog/msgs/151990.blk': No such file or directory
+33G	/mnt/user/Ocis-Files
+```
+Los errores No such file or directory en los archivos .blk de NATS JetStream indican que la cola de NATS está corrupta — hay referencias a bloques que ya no existen físicamente. Eso explica el bucle infinito y el 146% de CPU.
+
+```bash
+docker stop ocis
+
+# 2. Limpia SOLO los datos de NATS (no toca tus archivos). Los archivos de usuario están en otra ruta dentro de ocis-data (storages, metadata, etc.) — la carpeta nats/ solo contiene la cola de eventos, no datos de usuario. Borrarla es seguro.
+rm -rf /mnt/user/Ocis-Files/ocis-data/nats/
+
+# 3. Reinicia OCIS — reconstruirá NATS desde cero
+docker start ocis
+```
+Tras el reinicio comprobamos:
+
+```bash
+# Que la CPU baje
+docker stats ocis --no-stream
+
+# Que NATS se reconstruya sin errores
+docker logs ocis --tail 50 | grep -i nats
+```
+
+Podemos forzar el  reindexado para garantizar que las busquedas incluyen todo:
+```bash
+docker exec ocis ocis search index --all
+```
+
+
+HACER REFERENCIA A LA IMPORTANCIA DE HACER BACKUPS PARA BASE AUTHELIA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Vitaminar nuestro Owncloud
 
