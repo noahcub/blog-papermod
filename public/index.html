@@ -2,7 +2,7 @@
 <html lang="en" dir="auto" data-theme="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.155.3"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.163.3"><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,7 +11,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="canonical" href="https://blog.lasnotasdenoah.com/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.40b40ac2e5b321adfb79cf0241dad965c353ad7249578953a8bba5b63a493af7.css" integrity="sha256-QLQKwuWzIa37ec8CQdrZZcNTrXJJV4lTqLultjpJOvc=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
@@ -54,12 +54,6 @@
             }
         }
 
-        @media (prefers-color-scheme: light) {
-            .list::-webkit-scrollbar-thumb {
-                border-color: var(--code-bg);
-            }
-        }
-
     </style>
 </noscript>
 <script>
@@ -76,11 +70,11 @@
 </script><meta property="og:url" content="https://blog.lasnotasdenoah.com/">
   <meta property="og:site_name" content="Las notas de Noah">
   <meta property="og:title" content="Las notas de Noah">
-  <meta property="og:locale" content="es-es">
+  <meta property="og:locale" content="es_es">
   <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Las notas de Noah">
-<meta name="twitter:description" content="">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Las notas de Noah">
 
 <script type="application/ld+json">
 {
@@ -98,17 +92,17 @@
 </head>
 <body class="list" id="top">
     <header class="header">
-    <nav class="nav">
+    <nav class="header-nav">
         <div class="logo">
             <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -124,7 +118,7 @@
                 </button>
             </div>
         </div>
-        <ul id="menu">
+        <ul id="menu" class="menu">
             <li>
                 <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
@@ -158,8 +152,10 @@
     <header class="entry-header">
         <h1>Apuntes de linux y tecnología 💾</h1>
     </header>
-    <div class="entry-content">
-        Producido por un humano imperfecto. Errores incluidos sin coste adicional.
+    <div class="entry-content md-content">
+        
+        <p>Producido por un humano imperfecto. Errores incluidos sin coste adicional.</p>
+
     </div>
     <footer class="entry-footer">
         <div class="social-icons" >
@@ -201,7 +197,9 @@ Siguiendo la documentación oficial de Authelia creamos un nuevo cliente modific
 identity_providers: oidc: ## The other portions of the mandatory OpenID Connect 1.0 configuration go here. ## See: https://www.authelia.com/c/oidc clients: - client_id: &#39;immich&#39; client_name: &#39;immich&#39; client_secret: &#39;$pbkdf2-sha512$310000$c8p78n7pUMln0jzvd4aK4Q$JNRBzwAo0ek5qKn50cFzzvE9RXV88h1wJn5KGiHrD0YKtZaR/nCb2CJPOsKaPK0hjf.9yHxzQGZziziccp6Yng&#39; # The digest of &#39;insecure_secret&#39;. public: false authorization_policy: &#39;two_factor&#39; require_pkce: false pkce_challenge_method: &#39;&#39; redirect_uris: - &#39;https://immich.midominio.com/auth/login&#39; - &#39;https://immich.midominio.com/user-settings&#39; - &#39;app.immich:///oauth-callback&#39; scopes: - &#39;openid&#39; - &#39;profile&#39; - &#39;email&#39; response_types: - &#39;code&#39; grant_types: - &#39;authorization_code&#39; access_token_signed_response_alg: &#39;none&#39; userinfo_signed_response_alg: &#39;none&#39; token_endpoint_auth_method: &#39;client_secret_post&#39; En este punto, la única parte complicada es el client_secret. Vamos a generarlo:
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-05-10 08:00:00 +0100 +0100'>May 10, 2026</span></footer>
+  <footer class="entry-footer">
+
+<span title='2026-05-10 08:00:00 +0100 +0100'>10 de mayo de 2026</span></footer>
   <a class="entry-link" aria-label="post link to Authelia" href="https://blog.lasnotasdenoah.com/posts/authelia/"></a>
 </article>
 
@@ -215,7 +213,9 @@ identity_providers: oidc: ## The other portions of the mandatory OpenID Connect 
 Mientras que oCIS se centra en ser un especialista en almacenamiento y sincronización a gran escala, Nextcloud se posiciona como una “Content Collaboration Platform” completa, incluyendo chat, videollamadas y oficina en línea de forma nativa.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-05-09 07:00:00 +0100 +0100'>May 9, 2026</span></footer>
+  <footer class="entry-footer">
+
+<span title='2026-05-09 07:00:00 +0100 +0100'>9 de mayo de 2026</span></footer>
   <a class="entry-link" aria-label="post link to Instalación de Owncloud oCIS en Unraid" href="https://blog.lasnotasdenoah.com/posts/owncloud/"></a>
 </article>
 
@@ -233,7 +233,9 @@ Características:
 4.- Control parental: El bloqueador de anuncios AdGuard protege a los niños del contenido adulto e inapropiado.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-04-04 07:00:00 +0200 CEST'>April 4, 2026</span></footer>
+  <footer class="entry-footer">
+
+<span title='2026-04-04 07:00:00 +0200 CEST'>4 de abril de 2026</span></footer>
   <a class="entry-link" aria-label="post link to AdguardHome como servidor DNS" href="https://blog.lasnotasdenoah.com/posts/adguard-home-dns/"></a>
 </article>
 
@@ -248,7 +250,9 @@ Características:
 nano wg0.conf [Interface] # IP que tendrá el VPS dentro de la VPN Address = 10.8.0.1/24 # Puerto de escucha (OJO - abrir el puerto en ufw y panel de nuestro vps si es necesario) ListenPort = 51820 # Clave privada del servidor PrivateKey = # GENERADA EN EL APARTADO ANTERIOR - FICHERO server.key # Reglas para permitir que el tráfico fluya y salga a internet #PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ens6 -j MASQUERADE #PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ens6 -j MASQUERADE # Reglas combinadas: Acceso a Internet (ens6) &#43; Acceso a Tailscale (tailscale0) PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ens6 -j MASQUERADE; iptables -A FORWARD -i %i -o tailscale0 -j ACCEPT; iptables -A FORWARD -i tailscale0 -o %i -m state --state RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -A POSTROUTING -o tailscale0 -j MASQUERADE PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ens6 -j MASQUERADE; iptables -D FORWARD -i %i -o tailscale0 -j ACCEPT; iptables -D FORWARD -i tailscale0 -o %i -m state --state RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -D POSTROUTING -o tailscale0 -j MASQUERADE # CLIENTES # s24 [Peer] PublicKey = # CLAVE PUBLICA DE NUESTRO CLIENTE S24 AllowedIPs = 10.8.0.2/32 # envy [Peer] PublicKey = # CLAVE PUBLICA DE NUESTRO CLIENTE ENVY AllowedIPs = 10.8.0.3/32 Generamos las claves de nuestro primer cliente:
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-04-03 14:00:00 +0200 CEST'>April 3, 2026</span></footer>
+  <footer class="entry-footer">
+
+<span title='2026-04-03 14:00:00 +0200 CEST'>3 de abril de 2026</span></footer>
   <a class="entry-link" aria-label="post link to Proxy Inverso en VPS (parte 2)" href="https://blog.lasnotasdenoah.com/posts/vps-proxy-parte2/"></a>
 </article>
 
@@ -265,7 +269,9 @@ El VPS tiene 1 GB de RAM, 1 vCPU, 10GB SSD NVMe y conexión de 1Gbps.
 Al principio intenté instalar Pangolín, que ya lo tuve operativo en un VPS de prueba más potente. Pero creo que en este servidor es muy exigente y no puede para nada con él. Solo Pangolín consume 300 Mb de RAM más el sistema, crowdsec, etc. IMPOSIBLE !!!!!
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-02-23 14:00:00 +0200 +0200'>February 23, 2026</span></footer>
+  <footer class="entry-footer">
+
+<span title='2026-02-23 14:00:00 +0200 +0200'>23 de febrero de 2026</span></footer>
   <a class="entry-link" aria-label="post link to Proxy Inverso en VPS" href="https://blog.lasnotasdenoah.com/posts/vps-proxy/"></a>
 </article>
 
@@ -280,7 +286,9 @@ He decicido hacer una instalación limpia desde 0 y aquí va.
 Gran parte de este manual se ha hecho usando Perplexity. Debo decir que tiene mucho que mejorar, pero nos marca unas bases buenas para empezar.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-01-23 07:00:00 +0100 CET'>January 23, 2026</span></footer>
+  <footer class="entry-footer">
+
+<span title='2026-01-23 07:00:00 +0100 CET'>23 de enero de 2026</span></footer>
   <a class="entry-link" aria-label="post link to Traefik v3 y Crowdsec" href="https://blog.lasnotasdenoah.com/posts/traefik/"></a>
 </article>
 
@@ -296,7 +304,9 @@ El primero es la necesidad de hacer backup de nuestros servidores secundarios. P
 Segundo, los equipos de oficina estaban configurados con Gnome y usando la herramienta Deja-dup hacía los backups. El problema es que Deja-dup no funciona con KDE y me he visto obligado a emplear otra aplicación. Kbackup es una buena opción, pero no acaba de convencerme. Vorta me parece que es una opción excelente así que vamos a ello.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2025-08-21 13:40:36 +0200 CEST'>August 21, 2025</span></footer>
+  <footer class="entry-footer">
+
+<span title='2025-08-21 13:40:36 +0200 CEST'>21 de agosto de 2025</span></footer>
   <a class="entry-link" aria-label="post link to Borg Backups" href="https://blog.lasnotasdenoah.com/posts/borg-backups/"></a>
 </article>
 
@@ -313,7 +323,9 @@ Continuamos con la instalación y nos detenemos antes de Detect disks:
 Accedemos a una consola con ctrl&#43;alt&#43;f2 y realizamos la carga de nuestro LVM:
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-02-08 08:00:00 +0100 CET'>February 8, 2024</span></footer>
+  <footer class="entry-footer">
+
+<span title='2024-02-08 08:00:00 +0100 CET'>8 de febrero de 2024</span></footer>
   <a class="entry-link" aria-label="post link to Reinstalar Debian con LVM" href="https://blog.lasnotasdenoah.com/posts/debian-luks-recovery/"></a>
 </article>
 
@@ -329,7 +341,9 @@ Para obtener el id del chat usamos @GetIDs bot
 telegram_bot: - platform: polling api_key: xxxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx allowed_chat_ids: - 123456789 - 123456789-dos notify: - platform: telegram name: &#34;telegram&#34; chat_id: 123456789 - platform: telegram name: &#34;telegram_dos&#34; chat_id: 123456789-dos En name: “telegram” podemos poner el nombre que queramos, teniendo en cuenta que cuando llamemos a nuestro servicio debemos usar: notify.telegram, notify.my_home, etc…
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-02-02 09:00:00 +0100 CET'>February 2, 2024</span></footer>
+  <footer class="entry-footer">
+
+<span title='2024-02-02 09:00:00 +0100 CET'>2 de febrero de 2024</span></footer>
   <a class="entry-link" aria-label="post link to Home Assistant y Telegram" href="https://blog.lasnotasdenoah.com/posts/home-assistant/"></a>
 </article>
 
@@ -346,7 +360,9 @@ OJO - cuando tenemos espacios en los nombres hay que usar ‘&#39; para que el s
 #!/bin/bash &lt;&lt; &#39;Comment&#39; Opciones rsync: --delete: borrar los archivos que fueron borrados de la carpeta origen en la carpeta destino -a: mantiene el usuario, grupo, permisos, fecha y hora, así como los enlaces simbólicos -v: la información imprimida durante la ejecución del programa será mucho más detallada, -h: nos da las tasas de transferencia y el tamaño de los archivos en unidades razonables -u: evitar copiar archivos que ya tenemos en la carpeta de destino que no has sido modificados en la carpeta de origen Comment rsync --progress --stats --delete -avhiu /media/user/Nuevo\ vol/Origen /home/user/Destino Configuración con reglas UDEV Primero debemos obtener el idProduct y el idVendor del nuestro usb
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-01-13 08:00:00 +0100 CET'>January 13, 2024</span></footer>
+  <footer class="entry-footer">
+
+<span title='2024-01-13 08:00:00 +0100 CET'>13 de enero de 2024</span></footer>
   <a class="entry-link" aria-label="post link to Backups a USB automático" href="https://blog.lasnotasdenoah.com/posts/backup-usb/"></a>
 </article>
 <footer class="page-footer">
@@ -360,15 +376,19 @@ OJO - cuando tenemos espacios en los nombres hay que usar ‘&#39; para que el s
 <footer class="footer">
         <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
+    
+    
     <span>
         Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
         <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
 </footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
     </svg>
 </a>
 
@@ -407,14 +427,13 @@ OJO - cuando tenemos espacios en los nombres hay que usar ‘&#39; para que el s
 
 </script>
 <script>
-    var mybutton = document.getElementById("top-link");
+    var toplink = document.getElementById("top-link");
     window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
         } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
+            toplink.classList.add("hidden");
         }
     };
 

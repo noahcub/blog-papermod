@@ -1583,6 +1583,37 @@ Calling /v1/watchers/login
 # Verificamos en la lista nuevamente que ya no esté la IP
 docker exec crowdsec cscli decisions list
 ```
+### Listas blancas en crowdsec
+
+Me ha pasado recientemente que cuando intento sincronizar una elevada cantidad de datos (por ejemplo en Nextcloud o Owncloud) que crowdsec me banea mi propia IP.  
+Eso era muy habitual con Appsec activado y por eso cree otro bouncer llamado **crowdsec-bouncer-noappsec** y es el que uso para servicios como Nextcloud. El problema persiste y la única forma que he encontrado de solucionarlo es añadiendo mi dirección IP a una lista blanca.  
+  
+Este método está genial porque no es necesario reiniciar crowdsec. Se aplica de forma inmediata.
+```bash
+# Creamos nuestra lista blanca
+docker exec crowdsec cscli allowlists create mi_lista_blanca --description "IPs de confianza"
+
+# Añadimos las IPs que necesitamos acceso sin probleas
+docker exec crowdsec cscli allowlists add mi_lista_blanca xx.xx.xx.xx
+```
+
+Para un rango de red (no es aplicable en mi caso):
+```bash
+docker exec crowdsec cscli allowlists add mi_lista_blanca 192.168.1.0/24
+```
+
+Si queremos que el acceso sea tempora:
+```bash
+docker exec crowdsec cscli allowlists add mi_lista_blanca xx.xx.xx.xx -e 7d -d "IP temporal de auditoría"
+```
+
+**Importante**: Si nuestra IP había sido baneada por crowdsec es necesario borrar ese baneo:
+```bash
+docker exec crowdsec cscli decisions delete --ip xx.xx.xx.xx
+```
+
+Hay otro método que consiste en crear un Parser de Whitelist. A mi no me ha funcionado. Además este método exige reiniciar crowdsec.
+
 
 ***   
 Fuentes y enlaces de interés que ayudaran a complementar esta guía:  

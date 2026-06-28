@@ -3,6 +3,10 @@ languageCode = "es-es"
 title = "Las notas de Noah"
 theme = "PaperMod"
 
+[author]
+    name = "Noah"
+    email = "noecubi@hotmail.com"   # (Opcional, pero recomendado por si el RSS lo pide)
+    
 [params]
     defaultTheme = "auto" # Cambia entre modo claro/oscuro según el sistema
     showCodeCopyButtons = true

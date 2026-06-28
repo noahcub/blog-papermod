@@ -10,7 +10,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="canonical" href="https://blog.lasnotasdenoah.com/tags/backups/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.40b40ac2e5b321adfb79cf0241dad965c353ad7249578953a8bba5b63a493af7.css" integrity="sha256-QLQKwuWzIa37ec8CQdrZZcNTrXJJV4lTqLultjpJOvc=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
@@ -52,12 +52,6 @@
             }
         }
 
-        @media (prefers-color-scheme: light) {
-            .list::-webkit-scrollbar-thumb {
-                border-color: var(--code-bg);
-            }
-        }
-
     </style>
 </noscript>
 <script>
@@ -74,26 +68,26 @@
 </script><meta property="og:url" content="https://blog.lasnotasdenoah.com/tags/backups/">
   <meta property="og:site_name" content="Las notas de Noah">
   <meta property="og:title" content="Backups">
-  <meta property="og:locale" content="es-es">
+  <meta property="og:locale" content="es_es">
   <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Backups">
-<meta name="twitter:description" content="">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Backups">
 
 </head>
 <body class="list" id="top">
     <header class="header">
-    <nav class="nav">
+    <nav class="header-nav">
         <div class="logo">
             <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -109,7 +103,7 @@
                 </button>
             </div>
         </div>
-        <ul id="menu">
+        <ul id="menu" class="menu">
             <li>
                 <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
@@ -157,7 +151,9 @@ El primero es la necesidad de hacer backup de nuestros servidores secundarios. P
 Segundo, los equipos de oficina estaban configurados con Gnome y usando la herramienta Deja-dup hacía los backups. El problema es que Deja-dup no funciona con KDE y me he visto obligado a emplear otra aplicación. Kbackup es una buena opción, pero no acaba de convencerme. Vorta me parece que es una opción excelente así que vamos a ello.
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2025-08-21 13:40:36 +0200 CEST'>August 21, 2025</span></footer>
+  <footer class="entry-footer">
+
+<span title='2025-08-21 13:40:36 +0200 CEST'>21 de agosto de 2025</span></footer>
   <a class="entry-link" aria-label="post link to Borg Backups" href="https://blog.lasnotasdenoah.com/posts/borg-backups/"></a>
 </article>
     </main>
@@ -165,15 +161,19 @@ Segundo, los equipos de oficina estaban configurados con Gnome y usando la herra
 <footer class="footer">
         <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
+    
+    
     <span>
         Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
         <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
 </footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
     </svg>
 </a>
 
@@ -212,14 +212,13 @@ Segundo, los equipos de oficina estaban configurados con Gnome y usando la herra
 
 </script>
 <script>
-    var mybutton = document.getElementById("top-link");
+    var toplink = document.getElementById("top-link");
     window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
         } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
+            toplink.classList.add("hidden");
         }
     };
 

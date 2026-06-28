@@ -10,7 +10,7 @@
 <meta name="description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
 <meta name="author" content="">
 <link rel="canonical" href="https://blog.lasnotasdenoah.com/posts/adguard-home-dns/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.cc6ab8f5faa8dc572f6069a132a436924276a646309355c961678b4646b2099f.css" integrity="sha256-zGq49fqo3FcvYGmhMqQ2kkJ2pkYwk1XJYWeLRkayCZ8=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.40b40ac2e5b321adfb79cf0241dad965c353ad7249578953a8bba5b63a493af7.css" integrity="sha256-QLQKwuWzIa37ec8CQdrZZcNTrXJJV4lTqLultjpJOvc=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.lasnotasdenoah.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.lasnotasdenoah.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.lasnotasdenoah.com/favicon-32x32.png">
@@ -51,12 +51,6 @@
             }
         }
 
-        @media (prefers-color-scheme: light) {
-            .list::-webkit-scrollbar-thumb {
-                border-color: var(--code-bg);
-            }
-        }
-
     </style>
 </noscript>
 <script>
@@ -74,15 +68,16 @@
   <meta property="og:site_name" content="Las notas de Noah">
   <meta property="og:title" content="AdguardHome como servidor DNS">
   <meta property="og:description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
-  <meta property="og:locale" content="es-es">
+  <meta property="og:locale" content="es_es">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2026-04-04T07:00:00+02:00">
     <meta property="article:modified_time" content="2026-04-04T07:00:00+02:00">
     <meta property="article:tag" content="Admin">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AdguardHome como servidor DNS">
-<meta name="twitter:description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AdguardHome como servidor DNS">
+  <meta name="twitter:description" content="Configuración de AdguardHome como servidor DNS en nuestro VPS">
 
 
 <script type="application/ld+json">
@@ -137,17 +132,17 @@
 </head>
 <body id="top">
     <header class="header">
-    <nav class="nav">
+    <nav class="header-nav">
         <div class="logo">
             <a href="https://blog.lasnotasdenoah.com/" accesskey="h" title="Las notas de Noah (Alt + H)">Las notas de Noah</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -163,7 +158,7 @@
                 </button>
             </div>
         </div>
-        <ul id="menu">
+        <ul id="menu" class="menu">
             <li>
                 <a href="https://blog.lasnotasdenoah.com/search/" title="Buscar (Alt &#43; /)" accesskey=/>
                     <span>Buscar</span>
@@ -203,42 +198,42 @@
     <div class="post-description">
       Configuración de AdguardHome como servidor DNS en nuestro VPS
     </div>
-    <div class="post-meta"><span title='2026-04-04 07:00:00 +0200 CEST'>April 4, 2026</span>
+    <div class="post-meta">
+
+<span title='2026-04-04 07:00:00 +0200 CEST'>4 de abril de 2026</span>
 
 </div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">Table of Contents</span>
+    </summary>
 
-        <div class="inner"><ul>
-                <li>
-                    <a href="#adguard-home" aria-label="Adguard Home">Adguard Home</a><ul>
-                        
-                <li>
-                    <a href="#instalaci%c3%b3n-en-el-vps" aria-label="Instalación en el VPS">Instalación en el VPS</a></li>
-                <li>
-                    <a href="#configuraciones-en-traefik" aria-label="Configuraciones en traefik">Configuraciones en traefik</a></li>
-                <li>
-                    <a href="#configuraci%c3%b3n-panel-adguard-home" aria-label="Configuración panel Adguard Home">Configuración panel Adguard Home</a></li>
-                <li>
-                    <a href="#configuraci%c3%b3n-de-clientes-en-adguard-home" aria-label="Configuración de clientes en Adguard Home">Configuración de clientes en Adguard Home</a></li>
-                <li>
-                    <a href="#configuraci%c3%b3n-de-clientes-en-linux" aria-label="Configuración de clientes en Linux">Configuración de clientes en Linux</a></li>
-                <li>
-                    <a href="#configuraci%c3%b3n-de-clientes-en-android" aria-label="Configuración de clientes en Android">Configuración de clientes en Android</a></li>
-                <li>
-                    <a href="#modificaci%c3%b3n-para-vps-en-netcup" aria-label="Modificación para VPS en NetCUP">Modificación para VPS en NetCUP</a>
-                </li>
-            </ul>
+    <div class="inner"><ul>
+            <li>
+                <a href="#adguard-home" aria-label="Adguard Home">Adguard Home</a><ul>
+                    
+            <li>
+                <a href="#instalaci%c3%b3n-en-el-vps" aria-label="Instalación en el VPS">Instalación en el VPS</a></li>
+            <li>
+                <a href="#configuraciones-en-traefik" aria-label="Configuraciones en traefik">Configuraciones en traefik</a></li>
+            <li>
+                <a href="#configuraci%c3%b3n-panel-adguard-home" aria-label="Configuración panel Adguard Home">Configuración panel Adguard Home</a></li>
+            <li>
+                <a href="#configuraci%c3%b3n-de-clientes-en-adguard-home" aria-label="Configuración de clientes en Adguard Home">Configuración de clientes en Adguard Home</a></li>
+            <li>
+                <a href="#configuraci%c3%b3n-de-clientes-en-linux" aria-label="Configuración de clientes en Linux">Configuración de clientes en Linux</a></li>
+            <li>
+                <a href="#configuraci%c3%b3n-de-clientes-en-android" aria-label="Configuración de clientes en Android">Configuración de clientes en Android</a></li>
+            <li>
+                <a href="#modificaci%c3%b3n-para-vps-en-netcup" aria-label="Modificación para VPS en NetCUP">Modificación para VPS en NetCUP</a>
             </li>
-            </ul>
-        </div>
-    </details>
-</div>
+        </ul>
+        </li>
+        </ul>
+    </div>
+</details>
 
-  <div class="post-content"><h2 id="adguard-home">Adguard Home<a hidden class="anchor" aria-hidden="true" href="#adguard-home">#</a></h2>
+  <div class="post-content md-content"><h2 id="adguard-home">Adguard Home<a hidden class="anchor" aria-hidden="true" href="#adguard-home">#</a></h2>
 <p>Según su web, <a href="https://adguard.com/es/welcome.html">Adguard Home</a> es el primer bloqueador de anuncios para Linux a nivel de sistema en el mundo. Bloquea anuncios y rastreadores en el dispositivo, selecciona de los filtros preinstalados o añade los tuyos propios, todo a través de la interfaz de línea de comandos.</p>
 <p>Características:<br>
 1.- Bloqueo de anuncios: El bloqueador de anuncios AdGuard elimina los molestos banners, ventanas emergentes y anuncios de vídeo.<br>
@@ -487,15 +482,19 @@ Beneficios inmediatos:<br>
 <footer class="footer">
         <span>&copy; 2026 <a href="https://blog.lasnotasdenoah.com/">Las notas de Noah</a></span> · 
 
+    
+    
     <span>
         Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
         <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
 </footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
     </svg>
 </a>
 
@@ -534,14 +533,13 @@ Beneficios inmediatos:<br>
 
 </script>
 <script>
-    var mybutton = document.getElementById("top-link");
+    var toplink = document.getElementById("top-link");
     window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
         } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
+            toplink.classList.add("hidden");
         }
     };
 
