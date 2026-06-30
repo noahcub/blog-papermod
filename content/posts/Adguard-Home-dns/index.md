@@ -346,7 +346,11 @@ Por último, creamos una **tarea con crontab** para que reinicie nuestro certs-e
 0 5 * * * cd /home/noe/adguard-home && docker compose restart certs-extractor && sleep 30 && docker compose restart adguardhome
 ```
 
-También podemos crear un pequeño script que sólo reinicie en caso de cambios en la fecha del certificado:
+Yo voy a optar por una opción un poco más elegante. Ventajas sobre el cron simple de "siempre reiniciar ambos":
+
+- Solo reinicia AdGuard si el cert realmente cambió.
+- Deja log para  auditar cuándo se renovó cada cert.
+- Sigue siendo simple de leer y depurar.
 
 ```bash
 0 5 * * * /home/noe/scripts/refresh-adguard-certs.sh >> /home/noe/scripts/refresh-adguard-certs.log 2>&1
