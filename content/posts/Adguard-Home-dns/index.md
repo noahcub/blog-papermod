@@ -307,6 +307,78 @@ Quedando en mi caso de esta forma:
 
 y los DNS de arranque:
 ![adguard-9.png](adguard-9.png)
+
+### Actualización de certificados
+El otro día al abrir la interfaz de AdguardHome me doy cuenta que quedan pocos días para la caducidad del certificado y **certs-extractor** no ha renovado el certificado. Me di cuenta de este problema porque por motivos desconocidos traefik no había renovado mis certificados. El certificado que usa adguardhome caducaba unos días despues del certificado que se caducó pero tampoco se había renovado.  
+    
+Una vez solucionado el tema con traefik, vamos a forzar la actualización en adguardhome a través de certs-extractor.  
+Verificación de las fechas del certificado:
+```bash
+# Comprueba la fecha del cert que realmente tiene AdGuard en disco
+openssl x509 -noout -dates -in ~/adguard-home/certs/*.dns.midominio.com/certificate.crt
+```
+
+Reiniciamos cert-extractor:
+```bash
+cd adguard-home
+docker compose restart certs-extractor
+# Volvemos a verificar 
+openssl x509 -noout -dates -in ./certs/*.dns.midominio.com/certificate.crt
+```
+
+Ya deberíamos ver que el certificado es correcto.  
+
+Si nos diera fallo podemos borrar todo y que cree los datos de nuevo:
+```bash
+docker compose stop certs-extractor
+docker compose rm -f certs-extractor
+docker compose up -d certs-extractor
+```
+
+Ahora recargamos adguardhome para que actualice la fecha:
+```bash
+docker compose restart adguardhome
+```
+
+Por último, creamos una **tarea con crontab** para que reinicie nuestro certs-extractor:
+```bash
+# Reinicia el dumper cada día a las 5am para forzar re-extracción tras renovaciones
+0 5 * * * cd /home/noe/adguard-home && docker compose restart certs-extractor && sleep 30 && docker compose restart adguardhome
+```
+
+También podemos crear un pequeño script que sólo reinicie en caso de cambios en la fecha del certificado:
+
+```bash
+0 5 * * * /home/noe/scripts/refresh-adguard-certs.sh >> /home/noe/scripts/refresh-adguard-certs.log 2>&1
+```
+
+```bash
+#!/bin/bash
+# /home/noe/scripts/refresh-adguard-certs.sh
+
+CERT="/home/noe/adguard-home/certs/*.dns.midominio.com/certificate.crt"
+
+# Fecha de expiración ANTES de tocar nada
+BEFORE=$(openssl x509 -noout -enddate -in "$CERT" 2>/dev/null | cut -d= -f2)
+
+cd /home/noe/adguard-home || exit 1
+docker compose restart certs-extractor
+sleep 15
+
+# Fecha de expiración DESPUÉS
+AFTER=$(openssl x509 -noout -enddate -in "$CERT" 2>/dev/null | cut -d= -f2)
+
+echo "$(date): antes=$BEFORE despues=$AFTER"
+
+if [ "$BEFORE" != "$AFTER" ]; then
+    echo "$(date): certificado actualizado, reiniciando AdGuard"
+    docker compose restart adguardhome
+else
+    echo "$(date): sin cambios, no se reinicia AdGuard"
+fi
+```
+
+
 ***
 Fuentes:  
 **Debo decir que en esta guía he tirado mucho de IA.**   
